@@ -17,13 +17,21 @@ module.exports = appInfo => {
 
 
   let configYaml = yaml.parse(fs.readFileSync(path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml'), 'utf8'))
-  
+
   const config = exports = {
     cluster: {
       listen: {
         port: configYaml.port ? +configYaml.port : 7942,
         hostname: configYaml.hostname
       }
+    },
+    mongoose: {
+      client: {
+        url: configYaml.mongodbURL,
+        options: {},
+        // mongoose global plugins, expected a function or an array of function and options
+        plugins: [],
+      },
     }
   };
 
