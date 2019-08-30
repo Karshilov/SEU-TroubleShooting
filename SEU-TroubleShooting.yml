@@ -1,0 +1,10 @@
+# 服务器监听设置
+hostname: 127.0.0.1
+port: 7942
+
+# 服务器URL（以/结尾）
+serverURL: http://127.0.0.1:7002/
+
+# MongoDB 配置
+# mongodbURL: 'mongodb://username:password@host:port/dbname?authMechanism=DEFAULT'
+mongodbURL: 'mongodb://127.0.0.1:27017/Trouble'
