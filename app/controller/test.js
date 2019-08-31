@@ -24,6 +24,12 @@ class TestController extends Controller {
         console.log(person);
     }
 
+    async testGetaccessToken(){
+        const{ ctx } = this;
+        let r = await ctx.service.getAccessToken.accessToken();
+        console.log(r);
+    }
+
 
 }
 

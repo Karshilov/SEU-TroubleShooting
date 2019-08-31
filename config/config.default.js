@@ -19,6 +19,11 @@ module.exports = appInfo => {
   let configYaml = yaml.parse(fs.readFileSync(path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml'), 'utf8'))
 
   const config = exports = {
+    security: {
+      csrf: {
+        enable: false
+      },
+    },
     cluster: {
       listen: {
         port: configYaml.port ? +configYaml.port : 7942,

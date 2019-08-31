@@ -10,7 +10,10 @@
     "egg": "^2.15.1",
     "egg-mongoose": "^3.2.0",
     "egg-scripts": "^2.11.0",
+    "moment": "^2.24.0",
     "sha1": "^1.1.1",
+    "sprintf-js": "^1.1.2",
+    "weixin-js-sdk": "^1.4.0-test",
     "yaml": "^1.6.0"
   },
   "devDependencies": {
