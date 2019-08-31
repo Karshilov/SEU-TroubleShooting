@@ -32,6 +32,11 @@ module.exports = appInfo => {
         // mongoose global plugins, expected a function or an array of function and options
         plugins: [],
       },
+    },
+    wechat:{
+      appID:configYaml.appID,
+      appsecret:configYaml.appsecret,
+      token:configYaml.token
     }
   };
 
