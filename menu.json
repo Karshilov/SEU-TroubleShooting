@@ -1,0 +1,24 @@
+{
+    "button": [
+        {
+            "name": "故障报修",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "故障申报",
+                    "key": "NEW_MALFUNCTION"
+                },
+                {
+                    "type": "click",
+                    "name": "处理进度",
+                    "key": "USER_MALFUCNTION_QUERY"
+                },
+                {
+                    "type": "click",
+                    "name": "抠鸡鸡",
+                    "key": "GRH"
+                }
+            ]
+        }
+    ]
+}
