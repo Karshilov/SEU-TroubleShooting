@@ -11,7 +11,7 @@ class TestController extends Controller {
             indentityType: '管理员',
             Institute: '管理',
             name: '赵拯基',
-            token: 'hisauhdgigd78969',
+            openid: 'hisauhdgigd78969',
         });
         let res = await newWorker.save();
         console.log(res);
@@ -24,11 +24,6 @@ class TestController extends Controller {
         console.log(person);
     }
 
-    async testGetaccessToken(){
-        const{ ctx } = this;
-        let r = await ctx.service.getAccessToken.accessToken();
-        console.log(r);
-    }
 
 
 }

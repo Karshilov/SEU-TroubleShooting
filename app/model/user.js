@@ -7,7 +7,7 @@ module.exports = app => {
         indentityType: { type: String },
         Institute: { type: String },
         name: { type: String },
-        token: { type: String },
+        openid: { type: String },
     });
 
     return mongoose.model('User', UserSchema);

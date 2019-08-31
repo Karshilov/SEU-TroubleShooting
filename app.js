@@ -38,8 +38,8 @@ class AppBootHook {
       access_token = res[0].accessToken;
     } else {
       console.log('重新请求access_token');
-      let url = sprintf('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s', this.config.wechat.appID, this.config.wechat.appsecret);
-      let result = await this.ctx.curl(url, {
+      let url = sprintf('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s', this.app.config.wechat.appID, this.app.config.wechat.appsecret);
+      let result = await this.app.curl(url, {
         dataType: 'json'
       })
       let now = moment().unix();
