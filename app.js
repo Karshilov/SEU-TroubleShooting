@@ -64,6 +64,7 @@ class AppBootHook {
     if(result.data.errcode === 0){
       console.log('自定义菜单创建成功');
     }else{
+      console.log(result.data);
       console.log('自定义菜单创建失败');
     }
 

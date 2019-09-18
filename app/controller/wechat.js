@@ -26,7 +26,6 @@ class wechatController extends Controller {
 
     async post() {
         const { ctx } = this;
-
         // let access_token = await ctx.service.getAccessToken.accessToken();
         // let url = sprintf('https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s', access_token);
         // let result = await ctx.curl(url, {
@@ -45,7 +44,7 @@ class wechatController extends Controller {
         // })
         // console.log(result);
 
-        // 被动回复消息
+        //被动回复消息
         // console.log(ctx.request.body);
         // ctx.response.type = 'application/xml';
         // ctx.response.body =
@@ -55,7 +54,7 @@ class wechatController extends Controller {
         //     <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
         //     <CreateTime>${moment().unix()}</CreateTime>
         //     <MsgType><![CDATA[text]]></MsgType>
-        //     <Content><![CDATA[<a href="http://www.qq.com" data-miniprogram-appid="wxaef6d2413690047f" data-miniprogram-path="pages/index/index">点击跳小程序</a>]]></Content>
+        //     <Content><![CDATA[<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0a7da3cc7de5e1e&redirect_uri=http://47.106.227.224/zzj-wechat/login&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect">点击跳</a>]]></Content>
         // </xml>
         // `
     }
