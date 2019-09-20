@@ -33,7 +33,7 @@ class AppBootHook {
     let nowTime = moment().unix();  //当前时间
     //console.log(nowTime);
     let res = await this.app.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } });
-    if (res.length) {
+    if (res.length && false) {
       console.log('使用缓存的access_token');
       access_token = res[0].accessToken;
     } else {

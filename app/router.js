@@ -8,8 +8,6 @@ module.exports = app => {
   //中间件（此处有赵拯基一次阿鲁巴）
   const checkSignature = app.middleware.checkSignature(app.config);
   const interceptorXML2json = app.middleware.interceptorXML2json();
-  const identity = app.middleware.identity({});
-  const keyword = app.middleware.keyword();
   
   router.post('/', controller.home.index);
   router.get('/people/create', controller.test.create);
