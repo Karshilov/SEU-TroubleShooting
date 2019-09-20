@@ -50,7 +50,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1567152122001_1182';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = ['responseFormatter', 'identity'];
 
   // add your user config here
   const userConfig = {
