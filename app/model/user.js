@@ -4,14 +4,15 @@ module.exports = app => {
     const Schema = mongoose.Schema;
     const UserSchema = new Schema({
         cardnum: { type: String },
-        indentityType: { type: String },
-        Institute: { type: String },
+        institute: { type: String },
         name: { type: String },
         openid: { type: String },
         token: { type: String },
         tokenExpireTime: { type: Number },
         tokenGetTime: { type: Number },
-        phonenum: { type: String }
+        phonenum: { type: String },
+        isAdmin: { type: String },
+        isWorker: { type: String },
     });
 
     return mongoose.model('User', UserSchema);
