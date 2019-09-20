@@ -1,7 +1,6 @@
 'use strict'
 const Service = require('egg').Service
 const moment = require('moment')
-const sprintf = require('sprintf-js').sprintf
 
 class accessTokenService extends Service {
     async accessToken() {
@@ -13,7 +12,7 @@ class accessTokenService extends Service {
             return res[0].accessToken;
         } else {
             console.log('重新请求access_token');
-            let url = sprintf('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s', this.config.wechat.appID, this.config.wechat.appsecret);
+            let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.config.wechat.appID}&secret=${this.config.wechat.appsecret}`;
             let result = await this.ctx.curl(url, {
                 dataType: 'json'
             })

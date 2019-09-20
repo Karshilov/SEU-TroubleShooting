@@ -3,7 +3,7 @@
 const Controller = require('egg').Controller;
 const sha1 = require('sha1');
 const moment = require('moment');
-const sprintf = require('sprintf-js').sprintf;
+
 
 class wechatController extends Controller {
     async checkSignature() {

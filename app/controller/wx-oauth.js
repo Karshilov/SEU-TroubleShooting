@@ -1,7 +1,6 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const sprintf = require('sprintf-js').sprintf;
 const moment = require('moment');
 const uuid = require('uuid/v4');
 const yaml = require('yaml')
@@ -9,11 +8,11 @@ const fs = require('fs')
 const path = require('path')
 
 class loginController extends Controller {
-  async index(app) {
+  async index() {
     const { ctx } = this;
     let code = ctx.request.query.code;
     let state = ctx.request.query.state;
-    let url = sprintf('https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code', this.config.wechat.appID, this.config.wechat.appsecret, code);
+    let url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${this.config.wechat.appID}&secret=${this.config.wechat.appsecret}&code=${code}&grant_type=authorization_code` ;
     let result = await this.ctx.curl(url, {
       dataType: 'json'
     })
@@ -44,10 +43,10 @@ class loginController extends Controller {
       token = person[0].token
     }
 
-    let configYaml = yaml.parse(fs.readFileSync('/Users/zhaozhengji/SEU-TroubleShooting/SEU-TroubleShooting.yml', 'utf8'));
-    //用户存在isnewbi为1,否则为0
-    let redirectURL = sprintf(configYaml.redirectURL + '/#/state?token=%s&isnewbi=%s', token, person.length ? 1 : 0);
-    console.log(redirectURL);
+    
+    //用户存在isnewbi为0,否则为1
+    let redirectURL = this.config.redirectURL + `/#/state?token=${token}&isnewbi=${person.length ? 0 : 1}`;
+    console.log(redirectURL)
     //重定向到前端接口
     ctx.redirect(redirectURL);
 
