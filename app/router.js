@@ -21,5 +21,9 @@ module.exports = app => {
   router.get('/wechatOauth',controller.wechatOauth.index);
 
   router.post('/user/bind',controller.user.bind);
+  router.delete('/user/bind',controller.user.unbind);
   router.get('/user',controller.user.index);
+  router.post('/user/admin',controller.user.setAdmin);
+  router.delete('/user/admin',controller.user.deleteAdmin);
+
 };
