@@ -9,7 +9,7 @@ module.exports = app => {
         evaluation:{type: String}, //用户评价
         phonenum:{type: String}, //联系电话
         qqnum:{type: String}, //qq号
-        typeId:{type: String}, //故障类型
+        typeId:{type: String}, //故障类型ID
         workerId:{type: String}, //维修人员ID
         name:{type: String}, //用户姓名
         userId:{type: String} //用户ID
