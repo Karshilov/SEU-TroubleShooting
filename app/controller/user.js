@@ -23,14 +23,14 @@ class userController extends Controller {
         let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
         if (resOfCardnum) {
             // 一卡通号重复
-            ctx.error(2, "重复绑定");
+            ctx.error(2, "一卡通重复绑定，请解绑后重试");
         }
 
         //确定电话号码是否存在
         let resOfPhonenum = await ctx.model.User.findOne({ phonenum: ctx.request.body.phonenum });
         if (resOfPhonenum) {
             // 电话号码重复
-            ctx.error(3, "电话号码占用");
+            ctx.error(3, "电话号码已占用");
         }
 
         ctx.userInfo.name = ctx.request.body.name;
@@ -75,7 +75,7 @@ class userController extends Controller {
                 ctx.error(-4, '没有查询结果');
             }
             resOfCardnum.cardnum = '';
-            resOfCardnum.save();
+            await resOfCardnum.save();
         } else {
             //普通用户权限，只能解除自己的绑定
             if (!resOfCardnum) {
@@ -86,7 +86,7 @@ class userController extends Controller {
                 resOfCardnum.name = '';
                 resOfCardnum.address = '';
                 resOfCardnum.phonenum = '';
-                resOfCardnum.save();
+                await resOfCardnum.save();
             } else {
                 ctx.error(1, '权限不足');
             }
@@ -102,7 +102,7 @@ class userController extends Controller {
             }
             else {
                 resOfCardnum.isAdmin = true;
-                resOfCardnum.save();
+                await resOfCardnum.save();
             }
         } else {
             ctx.permissionError();
@@ -118,7 +118,7 @@ class userController extends Controller {
             }
             else {
                 resOfCardnum.isAdmin = false;
-                resOfCardnum.save();
+                await resOfCardnum.save();
             }
         } else {
             ctx.permissionError();

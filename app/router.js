@@ -26,4 +26,11 @@ module.exports = app => {
   router.post('/user/admin',controller.user.setAdmin);
   router.delete('/user/admin',controller.user.deleteAdmin);
 
+  router.post('/department',controller.department.createDepartment)
+  router.get('/department',controller.department.listDepartment)
+  router.delete('/department',controller.department.deleteDepartment)
+  router.post('/department/staff',controller.department.bindStaff)
+  router.get('/department/staff',controller.department.listStaff)
+  router.delete('/department/staff',controller.department.unbindStaff)
+  
 };
