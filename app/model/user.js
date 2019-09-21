@@ -12,7 +12,7 @@ module.exports = app => {
         tokenGetTime: { type: Number },
         phonenum: { type: String },
         isAdmin: { type: String },
-        isWorker: { type: String },
+        isStaff: { type: String },
     });
 
     return mongoose.model('User', UserSchema);
