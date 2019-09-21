@@ -26,4 +26,9 @@ module.exports = app => {
   router.post('/user/admin',controller.user.setAdmin);
   router.delete('/user/admin',controller.user.deleteAdmin);
 
+
+  router.post('/type',controller.type.create);
+  router.get('/type',controller.type.troubleList);
+  router.delete('/type',controller.type.delete);
+
 };
