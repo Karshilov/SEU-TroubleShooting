@@ -3,7 +3,7 @@ module.exports = {
         throw {code, message}
     },
 
-    identityError(message='身份信息不完整'){
+    identityError(message='未查到用户信息'){
         throw {code:-1, message}
     },
 
