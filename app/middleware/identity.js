@@ -7,12 +7,13 @@ module.exports = options => {
         let record = token ? await ctx.model.User.findOne({ token }) : false
         if(record){
             ctx.userInfo = record
+            
         } else {
             Object.defineProperty(ctx, 'userInfo', {get:()=>{
                 ctx.identityError()
             }})
         }
-        await next()
+        return await next()
         
     }
 }
