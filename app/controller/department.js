@@ -117,7 +117,7 @@ class DepartmentController extends Controller {
     async listOneDepartment() {
         const { ctx } = this;
         let id = ctx.request.body.departmentId;
-        let resOfDepartmentId = await ctx.model.Department.findById({id});
+        let resOfDepartmentId = await ctx.model.Department.findById(id);
 
         if (!resOfDepartmentId) {
             ctx.error(-4, '没有查询到部门名称');
