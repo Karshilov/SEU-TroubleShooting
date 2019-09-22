@@ -21,14 +21,14 @@ class loginController extends Controller {
       let newPerson = this.ctx.model.User({
         openid: result.data.openid,
         token: token,
-        tokenExpireTime: +moment() + 1800
+        tokenExpireTime: +moment() + 30 * 60 * 1000
       });
       let res = await newPerson.save();
       console.log(res);
   
     }else{
       person.token = token;
-      person.tokenExpireTime = +moment() + 1800;
+      person.tokenExpireTime = +moment() + 30 * 60 * 1000;
       await person.save();
     }
 

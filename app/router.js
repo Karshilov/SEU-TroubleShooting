@@ -25,6 +25,7 @@ module.exports = app => {
   router.get('/user',controller.user.index);
   router.post('/user/admin',controller.user.setAdmin);
   router.delete('/user/admin',controller.user.deleteAdmin);
+  router.get('/user/adminList',controller.user.adminList);
 
 
   router.post('/type',controller.type.create);

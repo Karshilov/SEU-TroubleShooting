@@ -110,7 +110,7 @@ class userController extends Controller {
         }
     }
     //删除管理员
-    async deleteAdmin(){
+    async deleteAdmin() {
         const { ctx } = this;
         if (ctx.userInfo.isAdmin) {
             let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
@@ -124,6 +124,17 @@ class userController extends Controller {
         } else {
             ctx.permissionError();
         }
+    }
+    //获取管理员列表
+    async adminList() {
+        const { ctx } = this;
+        if (!ctx.isAdmin) {
+            ctx.identityError('没有权限查看管理员名单');
+        }
+
+        let resOfAdmin = await ctx.model.User.find({ isAdmin: true }, ['cardnum', 'name']);
+        
+        return resOfAdmin;
     }
 }
 
