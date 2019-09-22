@@ -24,6 +24,20 @@ class TestController extends Controller {
         console.log(person);
     }
 
+    async notice(){
+        const{ctx} = this;
+        await ctx.service.pushNotification.userNotification(
+            '213171610',
+            '你好棒',
+            'asas',
+            'hahahah',
+            'asasa',
+            'asas',
+            'asas',
+            'http://www.baidu.com'
+        );
+    }
+
 
 
 }
