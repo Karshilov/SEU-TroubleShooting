@@ -15,7 +15,8 @@ export default new Router({
     {
       path: '/userbind/:token/:after/:afterArgs?',
       name: 'userBind',
-      component: () => import('./views/UserBind.vue')
+      component: () => import('./views/UserBind.vue'),
+      meta: {title: '绑定身份信息'}
     },
     {
       path: '/post/:token',
@@ -35,12 +36,18 @@ export default new Router({
     {
       path: '/department/:token',
       name: 'departmentAdmin',
-      component: () => import('./views/DepartmentAdmin.vue')
+      component: () => import('./views/Department.vue')
     },
     {
       path: '/type/:token',
       name: 'troubleTypeAdmin',
       component: () => import('./views/TroubleTypeAdmin.vue')
+    },
+    {
+      path: '/config/:token',
+      name: 'config',
+      component: () => import('./views/Config.vue'),
+      meta: {title: '系统配置'}
     },
   ]
 })

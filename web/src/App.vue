@@ -35,4 +35,13 @@ export default {
   margin-left:20px;
 }
 
+.content{
+  margin-top:20px;
+  margin-left:20px;
+}
+.page{
+  margin: 30px 20px 20px 0;
+
+}
+
 </style>
