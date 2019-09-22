@@ -238,8 +238,47 @@ class TroubleController extends Controller {
         return '评价成功！'
     }
 
-    async redispatch() {
+    async redirect() {
+        // 转发故障任务信息
+        // 查询故障信息
+        let {ctx} = this
+        let {troubleId, staffCardnum} = ctx.request.body
+        let cardnum = ctx.userInfo.cardnum
+        let record = await ctx.model.Trouble.findById(troubleId)
+        if(!record){
+            ctx.error(1, '故障信息不存在')
+        }
+        // 只允许转发处于PENDING状态的故障信息
+        // 管理员或者当前故障处理人员可以转发
+        if(record.status !== 'PENDING' && !ctx.userInfo.isAdmin && record.staffCardnum !== cardnum){
+            ctx.permissionError('无权操作')
+        }
+        // 检查是否符合部门要求
+        let staffBind = ctx.model.StaffBind.findOne({
+            staffCardnum,
+            departmentId:record.departmentId
+        })
+        if(!staffBind){
+            ctx.error(2,'指定的员工不属于故障类型所属部门')
+        }
+        // 更新故障记录信息
+        record.staffCardnum = staffCardnum
+        await record.save()
 
+        // 向处理人员推送等待处理
+        await ctx.service.pushNotification.staffNotification(
+            staffCardnum,
+            '有新的故障报修等待处理', // title
+            record._id.toString().toUpperCase(), // code
+            record.typeName, // type
+            '点击查看', // desc
+            record.phoneNum,
+            moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+            '请尽快处理！',
+            `${this.config}/#/detail/${trouble._id}`
+        )
+
+        return '转发成功'
     }
 }
 
