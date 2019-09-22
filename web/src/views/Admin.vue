@@ -6,25 +6,23 @@
       <div class="content">
         <el-form label-width="70px">
           <el-form-item label="一卡通号">
-            <el-input v-model="adminName"></el-input>
+            <el-input v-model="cardnum"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="add">添加</el-button>
+            <el-button type="primary" @click="add">设置管理员</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div style="margin-top:40px;">
-      <div class="title">管理部门设置</div>
-      <div class="title-hint">修改部门负责的故障类型和部门管理的人员信息</div>
+      <div class="title">取消管理员</div>
+      <div class="title-hint">取消管理员资格</div>
       <div class="content">
         <el-table :data="list" style="width: 100%">
-          <el-table-column prop="name" label="部门名称"></el-table-column>
-          <el-table-column label="操作" width="180">
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="editStaff(scope.row.id)" type="text" size="small">人员管理</el-button>
-              <el-button @click="editType(scope.row.id)" type="text" size="small">故障类型</el-button>
-              <el-button @click="deleteadmin(scope.row.id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteAdmin(scope.row.id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -39,14 +37,14 @@ export default {
     return {
       list: [],
       token: "",
-      adminName: ""
+      cardnum: ""
     };
   },
   methods: {
     async add() {
       let res = await this.$axios.post(
         "/admin",
-        { adminName: this.adminName },
+        { cardnum: this.cardnum },
         { headers: { token: this.token } }
       );
       if (res.data.success) {
