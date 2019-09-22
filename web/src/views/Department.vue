@@ -67,6 +67,12 @@ export default {
         headers: { token: this.token }
       });
       this.load()
+    },
+    editType(id){
+      this.$router.replace(`/type/${this.token}/${id}`)
+    },
+    editStaff(id){
+      this.$router.replace(`/staff/${this.token}/${id}`)
     }
   },
   created() {

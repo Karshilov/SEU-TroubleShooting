@@ -44,9 +44,9 @@ export default new Router({
       component: () => import('./views/Admin.vue')
     },
     {
-      path: '/type/:token',
-      name: 'troubleTypeAdmin',
-      component: () => import('./views/TroubleTypeAdmin.vue')
+      path: '/type/:token/:departmentId',
+      name: 'type',
+      component: () => import('./views/Type.vue')
     },
     {
       path: '/config/:token',

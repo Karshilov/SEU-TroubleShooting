@@ -15,7 +15,7 @@ class DepartmentController extends Controller {
             ctx.paramsError('未指定新建部门名称')
         }
         // 检查部门名称是否重复
-        let departmentNameCount = await ctx.model.Department.countDocuments({ name: departmentName })
+        let departmentNameCount = await ctx.model.Department.countDocuments({ name: departmentName, delete:false })
         if (departmentNameCount !== 0) {
             ctx.error(1, '已存在相同名称的部门，请更换一个新的部门名称')
         }
@@ -116,14 +116,14 @@ class DepartmentController extends Controller {
 
     async listOneDepartment() {
         const { ctx } = this;
-        let id = ctx.request.body.departmentId;
+        let id = ctx.query.departmentId;
         let resOfDepartmentId = await ctx.model.Department.findById(id);
 
         if (!resOfDepartmentId) {
             ctx.error(-4, '没有查询到部门名称');
         }
 
-        return { "departmentName": resOfDepartmentId.name };
+        return resOfDepartmentId.name;
     }
 
 }
