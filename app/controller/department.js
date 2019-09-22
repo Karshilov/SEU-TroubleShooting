@@ -82,13 +82,13 @@ class DepartmentController extends Controller {
     async listStaff() {
         const { ctx } = this;
         let { departmentId } = ctx.query
-        let record = await ctx.model.StaffBind.find({departmentId}, 'departmentId staffCardnum')
-        if(ctx.userInfo.isAdmin){
+        let record = await ctx.model.StaffBind.find({ departmentId }, 'departmentId staffCardnum')
+        if (ctx.userInfo.isAdmin) {
             return record
         } else {
             // 如果不是管理员，判断当前用户是否为本部门员工
-            let count = await ctx.model.StaffBind.countDocuments({departmentId, staffCardnum:ctx.userInfo.cardnum})
-            if(count === 0){
+            let count = await ctx.model.StaffBind.countDocuments({ departmentId, staffCardnum: ctx.userInfo.cardnum })
+            if (count === 0) {
                 ctx.permissionError('无权访问')
             } else {
                 return record
@@ -96,22 +96,34 @@ class DepartmentController extends Controller {
         }
     }
 
-    async deleteDepartment(){
-        const {ctx} = this
-        if(!ctx.userInfo.isAdmin){
+    async deleteDepartment() {
+        const { ctx } = this
+        if (!ctx.userInfo.isAdmin) {
             ctx.permissionError('无权操作')
         }
-        let {departmentId} = ctx.query
-        if(!departmentId){
+        let { departmentId } = ctx.query
+        if (!departmentId) {
             ctx.paramsError('未指定要删除的部门')
         }
         // 将部门标记为删除
-        await ctx.model.Department.updateOne({_id:ctx.helper.ObjectId(departmentId)}, {$set:{delete:true}})
+        await ctx.model.Department.updateOne({ _id: ctx.helper.ObjectId(departmentId) }, { $set: { delete: true } })
         // 解除部门和员工的绑定
-        await ctx.model.StaffBind.deleteMany({departmentId})
+        await ctx.model.StaffBind.deleteMany({ departmentId })
         // 将部门下的故障处理类型标记删除
-        await ctx.model.TroubleType.updateMany({departmentId}, {$set:{delete:true}})
+        await ctx.model.TroubleType.updateMany({ departmentId }, { $set: { delete: true } })
         return '部门删除成功'
+    }
+
+    async listOneDepartment() {
+        const { ctx } = this;
+        let id = ctx.request.body.departmentId;
+        let resOfDepartmentId = await ctx.model.Department.findById({id});
+
+        if (!resOfDepartmentId) {
+            ctx.error(-4, '没有查询到部门名称');
+        }
+
+        return { "departmentName": resOfDepartmentId.name };
     }
 
 }
