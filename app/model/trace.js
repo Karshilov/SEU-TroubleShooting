@@ -5,7 +5,7 @@ module.exports = app => {
     const Schema = mongoose.Schema;
     const trace = new Schema({
         redirectTime: { type: String },
-        troubleId: { type: Number },
+        troubleId: { type: String },
         toWho: { type: String }, //目标用户的ID
     });
 

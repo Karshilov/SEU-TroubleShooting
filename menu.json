@@ -6,17 +6,12 @@
                 {
                     "type": "view",
                     "name": "故障申报",
-                    "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>/wechatOauth&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
+                    "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect"
                 },
                 {
-                    "type": "click",
+                    "type": "view",
                     "name": "处理进度",
-                    "key": "USER_MALFUCNTION_QUERY"
-                },
-                {
-                    "type": "click",
-                    "name": "抠鸡鸡",
-                    "key": "GRH"
+                    "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list#wechat_redirect"
                 }
             ]
         }
