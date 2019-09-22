@@ -2,6 +2,15 @@
 const moment = require('moment')
 const Controller = require('egg').Controller;
 
+const statusDisp = {
+    'PENDING':'处理中',
+    'DONE':'处理完成，等待验收',
+    'ACCEPT':'故障已解决',
+    'REJECT':'故障仍未解决',
+    'CLOSED':'已关闭',
+    'SPAM':'无效信息'
+}
+
 class TroubleController extends Controller {
     async post() {
         // 故障报修
@@ -92,17 +101,57 @@ class TroubleController extends Controller {
     async list() {
         // 查询故障列表
         let {ctx} = this
-        let {statusFilter, role, page=1, pagesize=10} = ctx.request.query
+        let {statusFilter='PENDING', role, page=1, pagesize=10} = ctx.request.query
         page = +page
         pagesize = +pagesize
 
         if(role === 'USER'){
             // 用户查询的逻辑
-
+            let record = await ctx.model.Trouble.find({
+                userCardnum:ctx.userInfo.cardnum,
+                status:statusFilter
+            },['_id','createdTime','typeName'],{
+                skip: pagesize * (page - 1),
+                limit: pagesize,
+                sort: { createdTime: -1 }
+            })
+            return record.map(r => {
+                return {
+                    ...r,
+                    statusDisp:statusDisp[statusFilter]
+                }
+            })
         } else if(role === 'STAFF') {
             // 工作人员查询的逻辑
+            let record = await ctx.model.Trouble.find({
+                staffCardnum:ctx.userInfo.cardnum,
+                status:statusFilter
+            },['_id','createdTime','typeName'],{
+                skip: pagesize * (page - 1),
+                limit: pagesize,
+                sort: { createdTime: -1 }
+            })
+            return record.map(r => {
+                return {
+                    ...r,
+                    statusDisp:statusDisp[statusFilter]
+                }
+            })
         } else if(role === 'ADMIN') {
-
+            // 管理员查询的逻辑
+            let record = await ctx.model.Trouble.find({
+                status:statusFilter
+            },['_id','createdTime','typeName'],{
+                skip: pagesize * (page - 1),
+                limit: pagesize,
+                sort: { createdTime: -1 }
+            })
+            return record.map(r => {
+                return {
+                    ...r,
+                    statusDisp:statusDisp[statusFilter]
+                }
+            })
         } else {
             return []
         }
