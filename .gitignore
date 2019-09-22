@@ -13,3 +13,4 @@ run/
 typings/
 .nyc_output/
 SEU-TroubleShooting.yml
+./frp_0.29.0_windows_amd64
