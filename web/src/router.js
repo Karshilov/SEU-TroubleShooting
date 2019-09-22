@@ -49,6 +49,11 @@ export default new Router({
       component: () => import('./views/Type.vue')
     },
     {
+      path: '/staff/:token/:departmentId',
+      name: 'staff',
+      component: () => import('./views/Staff.vue')
+    },
+    {
       path: '/config/:token',
       name: 'config',
       component: () => import('./views/Config.vue'),

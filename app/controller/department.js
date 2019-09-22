@@ -52,8 +52,13 @@ class DepartmentController extends Controller {
         if (count > 0) {
             ctx.error(2, '该员工已绑定，请勿重复绑定')
         }
+        // 检查一卡通对应的人员是否存在
+        let userRecord = await ctx.model.User.findOne({cardnum:staffCardnum})
+        if(!userRecord){
+            ctx.error(3, '指定的人员不存在')
+        }
         // 绑定新员工
-        let staffBind = new ctx.model.StaffBind({ departmentId, staffCardnum })
+        let staffBind = new ctx.model.StaffBind({ departmentId, staffCardnum, name: userRecord.name})
         await staffBind.save()
         return '绑定成功！'
     }
@@ -64,7 +69,7 @@ class DepartmentController extends Controller {
         if (!ctx.userInfo.isAdmin) {
             ctx.permissionError('只允许管理员操作部门人员')
         }
-        let { staffCardnum, departmentId } = ctx.request.body
+        let { staffCardnum, departmentId } = ctx.query
         if (!staffCardnum || !departmentId) {
             ctx.paramsError()
         }
@@ -82,7 +87,7 @@ class DepartmentController extends Controller {
     async listStaff() {
         const { ctx } = this;
         let { departmentId } = ctx.query
-        let record = await ctx.model.StaffBind.find({ departmentId }, 'departmentId staffCardnum')
+        let record = await ctx.model.StaffBind.find({ departmentId }, 'departmentId staffCardnum name')
         if (ctx.userInfo.isAdmin) {
             return record
         } else {
