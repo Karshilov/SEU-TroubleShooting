@@ -22,7 +22,7 @@
           <el-table-column prop="name" label="姓名"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteAdmin(scope.row.id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteAdmin(scope.row.cardnum)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -43,7 +43,7 @@ export default {
   methods: {
     async add() {
       let res = await this.$axios.post(
-        "/admin",
+        "/user/admin",
         { cardnum: this.cardnum },
         { headers: { token: this.token } }
       );
@@ -55,13 +55,13 @@ export default {
       }
     },
     async load() {
-      let res = await this.$axios.get("/admin", {
+      let res = await this.$axios.get("/user/admin", {
         headers: { token: this.token }
       });
       this.list = res.data.result;
     },
-    async deleteadmin(id) {
-      let res = await this.$axios.delete("/admin?adminId="+id, {
+    async deleteAdmin(cardnum) {
+      let res = await this.$axios.delete("/user/admin?cardnum="+cardnum, {
         headers: { token: this.token }
       });
       this.load()

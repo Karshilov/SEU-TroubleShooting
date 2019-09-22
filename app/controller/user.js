@@ -113,7 +113,10 @@ class userController extends Controller {
     async deleteAdmin() {
         const { ctx } = this;
         if (ctx.userInfo.isAdmin) {
-            let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
+            if(ctx.userInfo.cardnum === ctx.query.cardnum){
+                ctx.error(1, '不能取消自己的管理员资格')
+            }
+            let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.query.cardnum });
             if (!resOfCardnum) {
                 ctx.error(-4, '没有查询结果');
             }
@@ -128,7 +131,7 @@ class userController extends Controller {
     //获取管理员列表
     async adminList() {
         const { ctx } = this;
-        if (!ctx.isAdmin) {
+        if (!ctx.userInfo.isAdmin) {
             ctx.identityError('没有权限查看管理员名单');
         }
 
