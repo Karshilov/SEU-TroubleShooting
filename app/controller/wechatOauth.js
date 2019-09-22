@@ -16,7 +16,7 @@ class loginController extends Controller {
     })
     
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
-    let token =uuid();
+    let token = uuid();
     if (!person) {
       let newPerson = this.ctx.model.User({
         openid: result.data.openid,

@@ -26,7 +26,7 @@ class wechatController extends Controller {
 
     async post() {
         const { ctx } = this;
-        
+        await ctx.service.keywords.process(ctx)
     }
 }
 
