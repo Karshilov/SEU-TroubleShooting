@@ -1,19 +1,19 @@
 {
-    "button": [
+  "button": [
+    {
+      "name": "故障报修",
+      "sub_button": [
         {
-            "name": "故障报修",
-            "sub_button": [
-                {
-                    "type": "view",
-                    "name": "故障申报",
-                    "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect"
-                },
-                {
-                    "type": "view",
-                    "name": "处理进度",
-                    "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list#wechat_redirect"
-                }
-            ]
+          "type": "view",
+          "name": "故障申报",
+          "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect"
+        },
+        {
+          "type": "view",
+          "name": "处理进度",
+          "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list#wechat_redirect"
         }
-    ]
+      ]
+    }
+  ]
 }
