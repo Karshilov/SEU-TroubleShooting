@@ -3,16 +3,15 @@ module.exports = app => {
     const mongoose = app.mongoose;
     const Schema = mongoose.Schema;
     const troubleInfo = new Schema({
-        reportTime: { type: Number }, //申报时间
-        description:{type: String}, //问题描述
-        status:{type: Number}, //故障状态
-        evaluation:{type: String}, //用户评价
-        phonenum:{type: String}, //联系电话
-        qqnum:{type: String}, //qq号
+        createdTime: { type: Number }, //申报时间
+        desc:{type: String}, //问题描述
+        status:{type: String}, //故障状态
+        evaluation:{type: String, default:''}, //用户评价
+        phoneNum:{type: String}, //联系电话
+        address:{type: String, default:''},
         typeId:{type: String}, //故障类型ID
-        workerId:{type: String}, //维修人员ID
-        name:{type: String}, //用户姓名
-        userId:{type: String} //用户ID
+        staffCardnum:{type: String}, //维修人员一卡通号
+        userCardnum:{type: String} //用户一卡通号
     });
 
     return mongoose.model('TroubleInfo', troubleInfo);

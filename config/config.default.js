@@ -41,7 +41,9 @@ module.exports = appInfo => {
     wechat: {
       appID: configYaml.appID,
       appsecret: configYaml.appsecret,
-      token: configYaml.token
+      token: configYaml.token,
+      userTemplateId:configYaml.userTemplateId,
+      staffTemplateId:configYaml.staffTemplateId
     },
     redirectURL: configYaml.redirectURL,
     serverURL: configYaml.serverURL
