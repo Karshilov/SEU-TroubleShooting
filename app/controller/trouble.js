@@ -56,6 +56,7 @@ class TroubleController extends Controller {
             phoneNum,
             address,
             typeId,
+            typeName:troubleType.displayName,
             userCardnum,
             staffCardnum:luckyDog.cardnum
         })
@@ -89,8 +90,22 @@ class TroubleController extends Controller {
     }
 
     async list() {
-        
         // 查询故障列表
+        let {ctx} = this
+        let {statusFilter, role, page=1, pagesize=10} = ctx.request.query
+        page = +page
+        pagesize = +pagesize
+
+        if(role === 'USER'){
+            // 用户查询的逻辑
+
+        } else if(role === 'STAFF') {
+            // 工作人员查询的逻辑
+        } else if(role === 'ADMIN') {
+
+        } else {
+            return []
+        }
     }
 
     async detail() {
