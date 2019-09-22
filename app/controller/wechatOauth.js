@@ -38,9 +38,15 @@ class loginController extends Controller {
       return 
     }
 
-
+    state = state.split('_')
     //用户存在isNewbie为0,否则为1
-    let redirectURL = this.config.redirectURL + `/#/${state}?token=${token}&isNewbie=${person? 0 : 1}`;
+    let redirectURL
+    if(person && person.cardnum){
+      redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
+    } else {
+      redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`
+    }
+    
     //重定向到前端接口
     ctx.redirect(redirectURL);
 

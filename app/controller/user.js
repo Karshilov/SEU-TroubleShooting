@@ -16,14 +16,14 @@ class userController extends Controller {
         //确定改用户是否已经绑定
         if (ctx.userInfo.cardnum !== '') {
             // 每个OpenID只允许一次绑定
-            ctx.error(1, "重复绑定");
+            ctx.error(1, "该微信号已绑定过一卡通，请勿重复绑定");
         }
 
         //确定一卡通号是否存在
         let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
         if (resOfCardnum) {
             // 一卡通号重复
-            ctx.error(2, "一卡通重复绑定，请解绑后重试");
+            ctx.error(2, "该一卡通号已经绑定过其他微信号，请勿重复绑定");
         }
 
         //确定电话号码是否存在
@@ -33,6 +33,7 @@ class userController extends Controller {
             ctx.error(3, "电话号码已占用");
         }
 
+        // TODO: 没加验证，qnmd
         ctx.userInfo.name = ctx.request.body.name;
         ctx.userInfo.cardnum = ctx.request.body.cardnum;
         ctx.userInfo.phonenum = ctx.request.body.phonenum;

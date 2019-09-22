@@ -23,6 +23,7 @@ module.exports = appInfo => {
       csrf: {
         enable: false
       },
+      domainWhiteList: ['*']
     },
     cluster: {
       listen: {

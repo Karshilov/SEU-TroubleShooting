@@ -7,7 +7,7 @@ class pushNotification extends Service {
         let access_token = await this.service.getAccessToken.accessToken();
         let user = await this.ctx.model.User.findOne({ cardnum });
         if (!user) {
-            this.ctx.error(-4, '没有对应的用户信息');
+            return
         }
         let postJson = {
             "touser": user.openid,
@@ -58,7 +58,7 @@ class pushNotification extends Service {
         let access_token = await this.service.getAccessToken.accessToken();
         let user = await this.ctx.model.User.findOne({ cardnum });
         if (!user) {
-            this.ctx.error(-4, '没有对应的工作人员信息');
+            return
         }
         let postJson = {
             "touser": user.openid,
