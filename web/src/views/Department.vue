@@ -69,10 +69,10 @@ export default {
       this.load()
     },
     editType(id){
-      this.$router.replace(`/type/${this.token}/${id}`)
+      this.$router.push(`/type/${this.token}/${id}`)
     },
     editStaff(id){
-      this.$router.replace(`/staff/${this.token}/${id}`)
+      this.$router.push(`/staff/${this.token}/${id}`)
     }
   },
   created() {
