@@ -64,6 +64,7 @@ class TroubleController extends Controller {
             status:'PENDING', // 等待处理
             phoneNum,
             address,
+            departmentId,
             typeId,
             typeName:troubleType.displayName,
             userCardnum,
@@ -159,14 +160,86 @@ class TroubleController extends Controller {
 
     async detail() {
         // 查询故障信息
+        let {ctx} = this
+        let {troubleId} = ctx.query
+        let cardnum = ctx.userInfo.cardnum
+        let record = await ctx.model.Trouble.findById(troubleId)
+        if(!record){
+            ctx.error(1, '故障信息不存在')
+        }
+        // 只允许用户本人、故障处理人、管理员查看故障详细信息
+        if(record.userCardnum !== cardnum && record.staffCardnum !== cardnum && !ctx.userInfo.isAdmin){
+            ctx.permissionError('无权访问')
+        }
+        return {
+            troubleId,
+            typeName:record.typeName,
+            createdTime:record.createdTime,
+            desc:record.desc,
+            image:record.image,
+            statusDisp:statusDisp[record.status],
+            canDeal:record.staffCardnum === cardnum,
+            canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
+            dealTime:record.dealTime,
+            departmentId:record.departmentId
+        }
     }
 
     async deal() {
         // 工作人员标记故障处理完成
+        // 查询故障信息
+        let {ctx} = this
+        let {troubleId} = ctx.request.body
+        let cardnum = ctx.userInfo.cardnum
+        let record = await ctx.model.Trouble.findById(troubleId)
+        if(!record){
+            ctx.error(1, '故障信息不存在')
+        }
+        // 只允许故障处理人将处于PENDING状态的故障标记为完成
+        if(record.status !== 'PENDING' || record.staffCardnum !== cardnum){
+            ctx.permissionError('无权操作')
+        }
+        record.status = 'DONE'
+        record.dealTime = +moment()
+        await record.save()
+        // 向提交故障报修的用户推送处理完成
+        await ctx.service.pushNotification.userNotification(
+            record.userCardnum,
+            '您报告的故障已处理完成',
+            record.address,
+            record.typeName, // type
+            `处理完成`, // status
+            moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
+            '工作人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
+            `${this.config}/#/detail/${trouble._id}` // url - 故障详情页面
+        )
+
     }
 
     async check() {
         // 用户验收故障处理结果
+        // 查询故障信息
+        let {ctx} = this
+        let {troubleId, evaluation='未填写', evaluationLevel=5, accept} = ctx.request.body
+        let cardnum = ctx.userInfo.cardnum
+        let record = await ctx.model.Trouble.findById(troubleId)
+        if(!record){
+            ctx.error(1, '故障信息不存在')
+        }
+        // 只允许故障信息提交者将处于DONE状态
+        if(record.status !== 'DONE' || record.userCardnum !== cardnum){
+            ctx.permissionError('无权操作')
+        }
+        record.status = accept ? 'ACCEPT' : 'REJECT'
+        record.checkTime = +moment()
+        record.evaluation = evaluation
+        record.evaluationLevel = evaluationLevel
+        await record.save()
+        return '评价成功！'
+    }
+
+    async redispatch() {
+
     }
 }
 
