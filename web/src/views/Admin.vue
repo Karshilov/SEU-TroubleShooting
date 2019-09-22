@@ -1,12 +1,12 @@
 <template>
-  <div id="department-view" class="page">
+  <div id="admin-view" class="page">
     <div>
-      <div class="title">添加部门</div>
-      <div class="title-hint">部门是组织人员和故障类型的实体，用户报告的故障信息会被汇聚到部门中，然后自动派发给部门的成员</div>
+      <div class="title">设置管理员</div>
+      <div class="title-hint">管理员具有调整后台设置的权限，请谨慎设置</div>
       <div class="content">
         <el-form label-width="70px">
-          <el-form-item label="部门名称">
-            <el-input v-model="departmentName"></el-input>
+          <el-form-item label="一卡通号">
+            <el-input v-model="adminName"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="add">添加</el-button>
@@ -24,7 +24,7 @@
             <template slot-scope="scope">
               <el-button @click="editStaff(scope.row.id)" type="text" size="small">人员管理</el-button>
               <el-button @click="editType(scope.row.id)" type="text" size="small">故障类型</el-button>
-              <el-button @click="deleteDepartment(scope.row.id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteadmin(scope.row.id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -39,14 +39,14 @@ export default {
     return {
       list: [],
       token: "",
-      departmentName: ""
+      adminName: ""
     };
   },
   methods: {
     async add() {
       let res = await this.$axios.post(
-        "/department",
-        { departmentName: this.departmentName },
+        "/admin",
+        { adminName: this.adminName },
         { headers: { token: this.token } }
       );
       if (res.data.success) {
@@ -57,13 +57,13 @@ export default {
       }
     },
     async load() {
-      let res = await this.$axios.get("/department", {
+      let res = await this.$axios.get("/admin", {
         headers: { token: this.token }
       });
       this.list = res.data.result;
     },
-    async deleteDepartment(id) {
-      let res = await this.$axios.delete("/department?departmentId="+id, {
+    async deleteadmin(id) {
+      let res = await this.$axios.delete("/admin?adminId="+id, {
         headers: { token: this.token }
       });
       this.load()
@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style>
-#department-view {
+#admin-view {
   margin-top: 30px;
 }
 </style>

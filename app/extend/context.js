@@ -3,7 +3,7 @@ module.exports = {
         throw {code, message}
     },
 
-    identityError(message='用户信息未登记'){
+    identityError(message='身份凭证无效，返回公众号重试'){
         throw {code:-1, message}
     },
 
