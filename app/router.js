@@ -5,7 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  //中间键
+  //中间件
   const checkSignature = app.middleware.checkSignature(app.config);
   const interceptorXML2json = app.middleware.interceptorXML2json();
   const identity = app.middleware.identity({});

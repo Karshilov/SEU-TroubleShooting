@@ -45,7 +45,7 @@ class wechatController extends Controller {
         // console.log(result);
 
         //被动回复消息
-        // console.log(ctx.request.body);
+         console.log(ctx.request.body);
         // ctx.response.type = 'application/xml';
         // ctx.response.body =
         // `
