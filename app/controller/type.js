@@ -56,7 +56,7 @@ class TypeController extends Controller {
     async troubleList() {
         const { ctx } = this;
         let departmentId = ctx.query.departmentId;
-        let resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'name']);
+        let resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'displayName']);
         return resOfTrouble;
     }
 

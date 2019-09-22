@@ -19,10 +19,10 @@
       <div class="title-hint">此处列出部门负责的所有故障类型</div>
       <div class="content">
         <el-table :data="list" style="width: 100%">
-          <el-table-column prop="name" label="故障类型名称"></el-table-column>
+          <el-table-column prop="displayName" label="故障类型名称"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteType(scope.row.id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteType(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,7 +56,7 @@ export default {
       }
     },
     async load() {
-      let res = await this.$axios.get("/type", {
+      let res = await this.$axios.get("/type?departmentId="+this.departmentId, {
         headers: { token: this.token }
       });
       this.list = res.data.result;

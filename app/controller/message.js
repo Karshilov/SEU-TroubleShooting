@@ -40,7 +40,7 @@ class MessageController extends Controller {
                 let now = +moment();
                 ctx.service.pushNotification.userNotification(
                     cardnum = userCardnum,
-                    title = '亲爱的用户您好，针对你反馈的问题，维修人员的有了新的回复，请即使查看',
+                    title = '亲爱的用户您好，针对你反馈的问题，维修人员的有了新的回复，请即时查看',
                     address = resOfTroubleId.address,
                     type = resOfTroubleId.typeName,
                     status = '故障处理中',
