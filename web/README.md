@@ -1,4 +1,4 @@
-# troubleshooting-ui
+# web
 
 ## Project setup
 ```
