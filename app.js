@@ -1,6 +1,5 @@
 const moment = require('moment');
-const sprintf = require('sprintf-js').sprintf;
-const menu = require('./menu.json');
+let menu = require('./menu.json');
 
 
 class AppBootHook {
@@ -24,21 +23,22 @@ class AppBootHook {
 
     });
   }
-
-
   async serverDidReady() {
-
+    //url修改
+    menu = JSON.stringify(menu).replace('<APPID>', this.app.config.wechat.appID);
+    menu =  menu.replace('<SERVER_URL>',this.app.config.serverURL).replace('<APPID>', this.app.config.wechat.appID);
+    menu = JSON.parse(menu);
+    console.log(menu.button[0].sub_button[0]);
     //获取access_token
     let access_token;
     let nowTime = moment().unix();  //当前时间
-    //console.log(nowTime);
     let res = await this.app.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } });
-    if (res.length) {
+    if (res.length && false) {
       console.log('使用缓存的access_token');
       access_token = res[0].accessToken;
     } else {
       console.log('重新请求access_token');
-      let url = sprintf('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s', this.app.config.wechat.appID, this.app.config.wechat.appsecret);
+      let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.app.config.wechat.appID}&secret=${this.app.config.wechat.appsecret}`  
       let result = await this.app.curl(url, {
         dataType: 'json'
       })
@@ -53,17 +53,17 @@ class AppBootHook {
       access_token = result.data.access_token;
     }
     //自定义菜单
-    let url = sprintf('https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s',access_token);
-    let result = await this.app.curl(url,{
+    let url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`
+    let result = await this.app.curl(url, {
       method: 'POST',
       contentType: 'json',
-      data: menu ,
+      data: menu,
       dataType: 'json',
     })
 
-    if(result.data.errcode === 0){
+    if (result.data.errcode === 0) {
       console.log('自定义菜单创建成功');
-    }else{
+    } else {
       console.log(result.data);
       console.log('自定义菜单创建失败');
     }

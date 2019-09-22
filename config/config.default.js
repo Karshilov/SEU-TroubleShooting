@@ -17,12 +17,13 @@ module.exports = appInfo => {
 
 
   let configYaml = yaml.parse(fs.readFileSync(path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml'), 'utf8'))
-  
+
   const config = exports = {
     security: {
       csrf: {
         enable: false
       },
+      domainWhiteList: ['*']
     },
     cluster: {
       listen: {
@@ -38,19 +39,22 @@ module.exports = appInfo => {
         plugins: [],
       },
     },
-    wechat:{
-      appID:configYaml.appID,
-      appsecret:configYaml.appsecret,
-      token:configYaml.token
+    wechat: {
+      appID: configYaml.appID,
+      appsecret: configYaml.appsecret,
+      token: configYaml.token,
+      userTemplateId:configYaml.userTemplateId,
+      staffTemplateId:configYaml.staffTemplateId
     },
-    ymlPath:path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml')
+    redirectURL: configYaml.redirectURL,
+    serverURL: configYaml.serverURL
   };
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1567152122001_1182';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = ['responseFormatter', 'identity'];
 
   // add your user config here
   const userConfig = {
