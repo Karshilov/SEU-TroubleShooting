@@ -37,5 +37,7 @@ module.exports = app => {
   router.post('/department/staff',controller.department.bindStaff)
   router.get('/department/staff',controller.department.listStaff)
   router.delete('/department/staff',controller.department.unbindStaff)
+
+  router.get('/test',controller.test.notice);
   
 };
