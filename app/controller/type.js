@@ -9,7 +9,7 @@ class TypeController extends Controller {
         }
 
         let displayName = ctx.request.body.typeName;
-        let resOfDisplayName = await ctx.model.TroubleType.findOne({ displayName, delete:false });
+        let resOfDisplayName = await ctx.model.TroubleType.findOne({ displayName, delete: false });
         if (resOfDisplayName) {
             ctx.error(1, '故障名称重复');
         }
@@ -55,16 +55,9 @@ class TypeController extends Controller {
     //获取故障类型列表
     async troubleList() {
         const { ctx } = this;
-        let resOfTrouble = await ctx.model.TroubleType.find({delete:false});
-        let resOfReturn = [];
-        resOfTrouble.forEach(k =>{
-            resOfReturn.push({
-                "name":k.displayName,
-                "id":k._id
-            })
-        });
-
-        return resOfReturn;
+        let departmentId = ctx.query.departmentId;
+        let resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'name']);
+        return resOfTrouble;
     }
 
 
