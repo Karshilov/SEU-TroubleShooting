@@ -49,6 +49,7 @@ module.exports = app => {
   router.get('/trouble', controller.trouble.detail)
   router.post('/trouble/deal', controller.trouble.deal)
   router.post('/trouble/check', controller.trouble.check)
+  router.post('/trouble/redirect', controller.trouble.redirect)
 
   router.post('/message', controller.message.createMessage)
   router.get('/message', controller.message.listMessage)

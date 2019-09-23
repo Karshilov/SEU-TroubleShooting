@@ -35,7 +35,7 @@ body{
 .subtitle{
   font-size:24px;
   font-weight:bold;
-  margin-top:20px;
+  margin-top:40px;
   margin-left:20px;
 }
 

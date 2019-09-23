@@ -20,10 +20,17 @@
       <div class="subtitle">留言消息</div>
       <div class="content">
         <div class="message" v-for="item in message" :key="item._id">
-          <div class="message-meta">{{item.fromWho === 'staff' ? '工作人员':'用户'}} {{formatTime(item.time)}}</div>
+          <div
+            class="message-meta"
+          >{{item.fromWho === 'staff' ? '工作人员':'用户'}} {{formatTime(item.time)}}</div>
           <div class="message-content">{{item.content}}</div>
         </div>
-        <el-input v-if="detail.canPostMessage" type="textarea" v-model="newMessage" placeholder="您可以发送留言"></el-input>
+        <el-input
+          v-if="detail.canPostMessage"
+          type="textarea"
+          v-model="newMessage"
+          placeholder="您可以发送留言"
+        ></el-input>
         <el-button v-if="detail.canPostMessage" style="margin-top:15px;" @click="postMessage">发送</el-button>
       </div>
     </div>
@@ -31,7 +38,24 @@
       <div class="subtitle">故障处理</div>
       <div class="title-hint">故障处理完成后点击此处，提醒用户验收处理结果</div>
       <div class="content">
-        <el-button @click="deal">处理完成</el-button>
+        <el-button @click="deal" type="primary">处理完成</el-button>
+      </div>
+    </div>
+    <div v-if="detail.canRedirect" class="panel">
+      <div class="subtitle">派发处理</div>
+      <div class="title-hint">将该故障单派发给其他工作人员处理</div>
+      <div class="content">
+        <div>
+        <el-select v-model="redirectTo" placeholder="请选择">
+          <el-option
+            v-for="item in staffList"
+            :key="item._id"
+            :label="`${item.name}(${item.staffCardnum})`"
+            :value="item.staffCardnum"
+          ></el-option>
+        </el-select>
+        </div>
+        <el-button style="margin-top:15px;" @click="redirect">派发</el-button>
       </div>
     </div>
     <div v-if="detail.canCheck || detail.showEvaluation" class="panel">
@@ -81,7 +105,9 @@ export default {
       evaluationLevel: 0,
       evaluation: "",
       newMessage: "",
-      message: []
+      message: [],
+      staffList: [],
+      redirectTo: ""
     };
   },
   methods: {
@@ -93,10 +119,20 @@ export default {
         headers: { token: this.token }
       });
       this.detail = res.data.result;
+      // 获取消息列表
       res = await this.$axios.get("/message?troubleId=" + this.troubleId, {
         headers: { token: this.token }
       });
       this.message = res.data.result;
+      // 获取员工列表
+      if (this.detail.canRedirect) {
+        res = await this.$axios.get(
+          "/department/staff?departmentId=" + this.detail.departmentId,
+          { headers: { token: this.token } }
+        );
+        this.staffList = res.data.result;
+        this.redirectTo = res.data.result[0].staffCardnum
+      }
     },
     async deal() {
       let res = await this.$axios.post(
@@ -134,6 +170,17 @@ export default {
         }
       );
       this.load();
+    },
+    async redirect(){
+      await this.$axios.post(
+        "/trouble/redirect",
+        { troubleId: this.troubleId, staffCardnum:this.redirectTo },
+        {
+          headers: { token: this.token }
+        }
+      );
+      //this.load()
+      wx.closeWindow()
     }
   },
   async created() {
@@ -160,16 +207,17 @@ export default {
   margin-top: 5px;
 }
 
-.message{
+.message {
   margin-bottom: 15px;
+  margin-left: 10px;
 }
 
-.message-meta{
+.message-meta {
   color: #555;
   font-size: 14px;
 }
 
-.message-content{
-  margin-top:10px;
+.message-content {
+  margin-top: 10px;
 }
 </style>

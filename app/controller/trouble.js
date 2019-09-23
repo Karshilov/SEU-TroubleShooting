@@ -146,6 +146,9 @@ class TroubleController extends Controller {
                 return r
             })
         } else if(role === 'ADMIN') {
+            if(!ctx.userInfo.isAdmin){
+                ctx.permissionError('无权访问')
+            }
             // 管理员查询的逻辑
             let record = await ctx.model.Trouble.find({
                 $or:statusFilter
@@ -187,6 +190,7 @@ class TroubleController extends Controller {
             statusDisp:statusDisp[record.status],
             canPostMessage:record.status === 'PENDING',
             canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
+            canRedirect:(record.staffCardnum === cardnum || ctx.userInfo.isAdmin) && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
             showEvaluation:!!record.evaluation,
             dealTime:record.dealTime,
@@ -264,7 +268,7 @@ class TroubleController extends Controller {
         }
         // 只允许转发处于PENDING状态的故障信息
         // 管理员或者当前故障处理人员可以转发
-        if(record.status !== 'PENDING' && !ctx.userInfo.isAdmin && record.staffCardnum !== cardnum){
+        if(!(record.status === 'PENDING' && (ctx.userInfo.isAdmin || record.staffCardnum === cardnum))){
             ctx.permissionError('无权操作')
         }
         // 检查是否符合部门要求
@@ -288,8 +292,8 @@ class TroubleController extends Controller {
             '点击查看', // desc
             record.phonenum,
             moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
-            '请尽快处理！',
-            `${this.config}/#/detail/${trouble._id}`
+            '故障描述：'+record.desc,
+            this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
         )
 
         return '转发成功'
