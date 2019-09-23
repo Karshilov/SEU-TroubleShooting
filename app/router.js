@@ -48,4 +48,5 @@ module.exports = app => {
   router.get('/trouble/list', controller.trouble.list)
   router.get('/trouble', controller.trouble.detail)
   router.post('/trouble/deal', controller.trouble.deal)
+  router.post('/trouble/check', controller.trouble.check)
 };

@@ -3,7 +3,7 @@
     <div>
       <div class="title">故障单详情</div>
       <div class="content">
-        <el-form>
+        <el-form label-width="80px">
         <el-form-item style="margin-bottom:0" label="故障单号">
           {{troubleId.toUpperCase()}}
         </el-form-item>
@@ -35,16 +35,38 @@
         <el-button @click="deal">处理完成</el-button>
       </div>
     </div>
-    <div v-if="detail.canCheck" class="panel">
+    <div v-if="detail.canCheck || detail.showEvaluation" class="panel">
       <div class="subtitle">用户评价</div>
       <div class="content">
-      <el-form label-width="110px">
+      <el-form v-if="detail.canCheck" label-width="110px">
         <el-form-item style="margin-bottom:0;" label="问题是否解决？">
-          <el-radio v-model="checkStatus" label="ACCEPT">是</el-radio>
-          <el-radio v-model="checkStatus" label="REJECT">否</el-radio>
+          <el-radio v-model="checkStatus" :label="true">是</el-radio>
+          <el-radio v-model="checkStatus" :label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="服务评分">
-          <el-rate v-model="checkLevel" style="margin-top:10px;"></el-rate>
+        <el-form-item style="margin-bottom:0;" label="服务评分">
+          <el-rate v-model="evaluationLevel" style="margin-top:10px;"></el-rate>
+        </el-form-item>
+        <el-form-item label="意见建议">
+          <el-input
+            type="textarea"
+            placeholder="请填写您对服务的意见和建议（可选）"
+            v-model="evaluation"
+            :autosize="{ minRows: 3, maxRows: 10}"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="check">评价</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form v-else label-width="80px">
+        <el-form-item style="margin-bottom:0;" label="解决情况">
+          {{detail.statusDisp}}
+        </el-form-item>
+        <el-form-item style="margin-bottom:0;" label="服务评分">
+          <el-rate v-model="detail.evaluationLevel" style="margin-top:10px;" disabled></el-rate>
+        </el-form-item>
+        <el-form-item label="意见建议">
+          {{detail.evaluation}}
         </el-form-item>
       </el-form>
       </div>
@@ -60,8 +82,9 @@ export default {
       token: "",
       troubleId: "",
       detail: "",
-      checkStatus:'ACCEPT',
-      checkLevel:0,
+      checkStatus:true,
+      evaluationLevel:0,
+      evaluation:''
     };
   },
   methods: {
@@ -83,6 +106,15 @@ export default {
       } else {
         this.$message.error(res.data.errmsg)
       }
+    },
+    async check(){
+      await this.$axios.post('/trouble/check',{
+        troubleId:this.troubleId,
+        evaluation:this.evaluation,
+        evaluationLevel:this.evaluationLevel,
+        accept:this.checkStatus
+      },{headers:{token:this.token}})
+      this.load()
     }
   },
   async created() {

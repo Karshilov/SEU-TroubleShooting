@@ -7,7 +7,7 @@ module.exports = app => {
         desc:{type: String}, //问题描述
         status:{type: String}, //故障状态
         evaluation:{type: String, default:''}, //用户评价
-        evalationLevel:{type:Number, default:5}, //用户评级，默认好评
+        evaluationLevel:{type:Number, default:5}, //用户评级，默认好评
         phonenum:{type: String}, //联系电话
         address:{type: String, default:''},
         departmentId:{type: String}, // 故障所属部门ID

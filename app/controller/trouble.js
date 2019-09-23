@@ -187,8 +187,11 @@ class TroubleController extends Controller {
             statusDisp:statusDisp[record.status],
             canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
+            showEvaluation:!!record.evaluation,
             dealTime:record.dealTime,
-            departmentId:record.departmentId
+            departmentId:record.departmentId,
+            evaluationLevel:record.evaluationLevel, // 用户评级
+            evaluation:record.evaluation // 用户评价
         }
     }
 
@@ -227,7 +230,10 @@ class TroubleController extends Controller {
         // 用户验收故障处理结果
         // 查询故障信息
         let {ctx} = this
-        let {troubleId, evaluation='未填写', evaluationLevel=5, accept} = ctx.request.body
+        let {troubleId, evaluation, evaluationLevel=5, accept} = ctx.request.body
+        if(!evaluation){
+            evaluation = '用户未填写意见建议'
+        }
         let cardnum = ctx.userInfo.cardnum
         let record = await ctx.model.Trouble.findById(troubleId)
         if(!record){
