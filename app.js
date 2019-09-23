@@ -26,19 +26,23 @@ class AppBootHook {
   async serverDidReady() {
     //url修改
     menu = JSON.stringify(menu).replace('<APPID>', this.app.config.wechat.appID);
-    menu =  menu.replace('<SERVER_URL>',this.app.config.serverURL).replace('<APPID>', this.app.config.wechat.appID);
+    menu = menu.replace('<SERVER_URL>', this.app.config.serverURL).replace('<APPID>', this.app.config.wechat.appID);
     menu = JSON.parse(menu);
     console.log(menu.button[0].sub_button[0]);
     //获取access_token
     let access_token;
     let nowTime = moment().unix();  //当前时间
-    let res = await this.app.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } });
-    if (res.length && false) {
+    let res = await this.app.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } }, ['accessToken', 'stopTime'],
+      {
+        limit: 1,
+        sort: { stopTime: -1 }
+      });
+    if (res.length) {
       console.log('使用缓存的access_token');
       access_token = res[0].accessToken;
     } else {
       console.log('重新请求access_token');
-      let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.app.config.wechat.appID}&secret=${this.app.config.wechat.appsecret}`  
+      let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.app.config.wechat.appID}&secret=${this.app.config.wechat.appsecret}`
       let result = await this.app.curl(url, {
         dataType: 'json'
       })
@@ -65,7 +69,6 @@ class AppBootHook {
       console.log('自定义菜单创建成功');
     } else {
       console.log(result.data);
-      console.log('自定义菜单创建失败');
     }
 
   }

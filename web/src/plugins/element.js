@@ -19,8 +19,8 @@ import {
 //   CheckboxButton,
 //   CheckboxGroup,
 //   Switch,
-//   Select,
-//   Option,
+  Select,
+  Option,
 //   OptionGroup,
   Button,
   ButtonGroup,
@@ -44,7 +44,7 @@ import {
 //   Icon,
   Row,
   Col,
-//   Upload,
+  Upload,
 //   Progress,
 //   Spinner,
 //   Badge,
@@ -98,8 +98,8 @@ Vue.use(Input);
 // Vue.use(CheckboxButton);
 // Vue.use(CheckboxGroup);
 // Vue.use(Switch);
-// Vue.use(Select);
-// Vue.use(Option);
+Vue.use(Select);
+Vue.use(Option);
 // Vue.use(OptionGroup);
 Vue.use(Button);
 Vue.use(ButtonGroup);
@@ -123,7 +123,7 @@ Vue.use(FormItem);
 // Vue.use(Icon);
 Vue.use(Row);
 Vue.use(Col);
-// Vue.use(Upload);
+Vue.use(Upload);
 // Vue.use(Progress);
 // Vue.use(Spinner);
 // Vue.use(Badge);
