@@ -102,7 +102,8 @@ export default {
       }
       let res = await this.$axios.post('/trouble',this.form,{headers:{token:this.token}})
       if(res.data.success){
-        this.$message({type:'success', message:res.data.result})
+        //this.$message({type:'success', message:res.data.result})
+        this.$router.replace('/success')
       } else {
         this.$message.error(res.data.errmsg)
       }

@@ -6,6 +6,7 @@ class keywordsService extends Service {
     async process(ctx) {
         let dispatch = {
             '初始化管理员': this.initAdmin,
+            '管理后台': this.configUI
         }
         if (dispatch[ctx.request.body.Content]) {
             let res = await dispatch[ctx.request.body.Content](ctx.request.body, ctx)
@@ -45,6 +46,14 @@ class keywordsService extends Service {
             await user.save()
         }
         return '您已成为系统的初始管理员'
+    }
+
+    async configUI(body, ctx){
+        let openid = body.FromUserName
+        let user = await ctx.model.User.findOne({openid})
+        if(user && user.isAdmin){
+            return `<a href="${ctx.helper.oauthUrl(ctx, 'config')}">点击打开后台管理</a>`
+        }
     }
 }
 
