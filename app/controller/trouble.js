@@ -15,9 +15,9 @@ class TroubleController extends Controller {
     async post() {
         // 故障报修
         let { ctx } = this
-        let { typeId, desc, phoneNum, address, image } = ctx.request.body
+        let { typeId, desc, phonenum, address, image } = ctx.request.body
         if (!ctx.userInfo.cardnum) {
-            ctx.identityError('需要先绑定信息才能保修')
+            ctx.identityError('需要先绑定信息才能报修')
         }
         // 判断是否频率过高
         let userCardnum = ctx.userInfo.cardnum
@@ -26,9 +26,13 @@ class TroubleController extends Controller {
             userCardnum,
             createdTime: { $gt: now - 24 * 60 * 60 * 1000 }
         })
-        if (postCount > 5) {
+        if (postCount > 500) {
             // 为了避免恶意骚扰，24小时内故障申报数量不能超过5个
             ctx.error(1, '故障申报频率过高，请稍后重试')
+        }
+        // 验证参数
+        if(!desc){
+            ctx.error(2, '请填写故障描述信息')
         }
         // 根据故障类型查找所属部门
         let troubleType = await ctx.model.TroubleType.findOne({
@@ -49,26 +53,27 @@ class TroubleController extends Controller {
             await ctx.userInfo.save()
         }
 
-        address = ctx.userCardnum.address
+        address = ctx.userInfo.address
 
-        if(phoneNum){
-            ctx.userInfo.phoneNum = phoneNum
+        if(phonenum){
+            ctx.userInfo.phonenum = phonenum
             await ctx.userInfo.save()
         }
 
-        phoneNum = ctx.userInfo.phoneNum
+        phonenum = ctx.userInfo.phonenum
 
         let trouble = new ctx.model.Trouble({
             createdTime:now,
             desc,
             status:'PENDING', // 等待处理
-            phoneNum,
+            phonenum,
             address,
             departmentId,
             typeId,
             typeName:troubleType.displayName,
             userCardnum,
-            staffCardnum:luckyDog.cardnum
+            staffCardnum:luckyDog.cardnum,
+            image
         })
 
         await trouble.save()
@@ -79,22 +84,22 @@ class TroubleController extends Controller {
             '您申报的故障信息已被受理',
             address,
             troubleType.displayName, // type
-            `正在等待工作人员（工号：${staffCardnum}）处理`, // status
+            `正在等待工作人员（工号：${luckyDog.staffCardnum}）处理`, // status
             moment(now).format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
             '工作人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
-            `${this.config}/#/detail/${trouble._id}` // url - 故障详情页面
+            this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
         )
         // 向处理人员推送等待处理
         await ctx.service.pushNotification.staffNotification(
-            luckyDog.cardnum,
+            luckyDog.staffCardnum,
             '有新的故障等待处理', // title
             trouble._id.toString().toUpperCase(), // code
             troubleType.displayName, // type
             '点击查看', // desc
-            phoneNum,
+            phonenum,
             moment(now).format('YYYY-MM-DD HH:mm:ss'),
-            '请尽快处理！',
-            `${this.config}/#/detail/${trouble._id}`
+            '故障描述信息：'+desc,
+            this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
         )
         return '提交成功'
     }
@@ -272,7 +277,7 @@ class TroubleController extends Controller {
             record._id.toString().toUpperCase(), // code
             record.typeName, // type
             '点击查看', // desc
-            record.phoneNum,
+            record.phonenum,
             moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
             '请尽快处理！',
             `${this.config}/#/detail/${trouble._id}`

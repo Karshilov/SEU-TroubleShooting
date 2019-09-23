@@ -43,4 +43,6 @@ module.exports = app => {
   router.get('/test',controller.test.notice);
   
   router.get('/jssdk',controller.jsSdkTicket.index)
+
+  router.post('/trouble', controller.trouble.post)
 };

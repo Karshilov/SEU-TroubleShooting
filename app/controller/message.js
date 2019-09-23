@@ -67,7 +67,7 @@ class MessageController extends Controller {
                     code = resOfTroubleId._id.toUpperCase(),
                     type = resOfTroubleId.typeName,
                     desc = resOfTroubleId.desc,
-                    phoneNum = resOfTroubleId.phoneNum,
+                    phonenum = resOfTroubleId.phonenum,
                     createdTime = resOfTroubleId.createdTime,
                     remark = message,
                     url = ''

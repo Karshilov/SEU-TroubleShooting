@@ -54,7 +54,7 @@ class pushNotification extends Service {
 
     }
 
-    async staffNotification(cardnum, title, code, type, desc, phoneNum, createdTime, remark, url) {
+    async staffNotification(cardnum, title, code, type, desc, phonenum, createdTime, remark, url) {
         let access_token = await this.service.getAccessToken.accessToken();
         let user = await this.ctx.model.User.findOne({ cardnum });
         if (!user) {
@@ -62,7 +62,7 @@ class pushNotification extends Service {
         }
         let postJson = {
             "touser": user.openid,
-            "template_id": this.config.wechat.userTemplateId,
+            "template_id": this.config.wechat.staffTemplateId,
             "url": url,
             "data": {
                 "first": {
@@ -82,10 +82,10 @@ class pushNotification extends Service {
                     "color": "#173177"
                 },
                 "keyword4": {
-                    "value": phoneNum+'\n',
+                    "value": phonenum+'\n',
                     "color": "#173177"
                 },
-                "keyword4": {
+                "keyword5": {
                     "value": createdTime+'\n',
                     "color": "#173177"
                 },

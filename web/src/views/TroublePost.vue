@@ -37,8 +37,11 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="图片附件">
-          <img v-if="form.image" :src="form.image"/>
-          <el-button @click="chooseImage">选择图片</el-button>
+          <img v-if="localImage" :src="localImage" />
+          <el-button @click="chooseImage">{{localImage ? '重新选择':'选择图片'}}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="save" type="primary">提交故障报告</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -62,21 +65,47 @@ export default {
         desc: "",
         address: "",
         image: ""
-      }
+      },
+      localImage: ""
     };
   },
   methods: {
     chooseImage() {
-      let that = this
+      let that = this;
       wx.chooseImage({
         count: 1, // 默认9
         sizeType: ["compressed"], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
         success: function(res) {
           let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          that.form.image = localIds[0]
+          that.localImage = localIds[0];
         }
       });
+    },
+    uploadImage(){
+      let that = this
+      return new Promise((resolve,reject) => {
+        wx.uploadImage({
+        localId: that.localImage, // 需要上传的图片的本地ID，由chooseImage接口获得
+        isShowProgressTips: 1, // 默认为1，显示进度提示
+        success: function(res) {
+          that.form.image = res.serverId; // 返回图片的服务器端ID
+          resolve()
+        }
+      });
+      })
+    },
+    async save() {
+      // 上传图片
+      if(this.localImage){
+        await this.uploadImage();
+      }
+      let res = await this.$axios.post('/trouble',this.form,{headers:{token:this.token}})
+      if(res.data.success){
+        this.$message({type:'success', message:res.data.result})
+      } else {
+        this.$message.error(res.data.errmsg)
+      }
     }
   },
   async created() {
