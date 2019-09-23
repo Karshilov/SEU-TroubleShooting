@@ -102,7 +102,7 @@ export default {
       troubleId: "",
       detail: "",
       checkStatus: true,
-      evaluationLevel: 0,
+      evaluationLevel: 4,
       evaluation: "",
       newMessage: "",
       message: [],
