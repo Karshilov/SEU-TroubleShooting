@@ -22,7 +22,7 @@
             type="textarea"
             placeholder="请详细描述您遇到的问题，这将有助于我们的技术人员确定问题的解决方案"
             v-model="form.desc"
-            :autosize="{ minRows: 6, maxRows: 10}"
+            :autosize="{ minRows: 3, maxRows: 10}"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话">
@@ -39,6 +39,7 @@
         <el-form-item label="图片附件">
           <img v-if="localImage" :src="localImage" />
           <el-button @click="chooseImage">{{localImage ? '重新选择':'选择图片'}}</el-button>
+          <el-button type="danger" v-if="localImage" @click="()=>{this.localImage = ''}">删除图片</el-button>
         </el-form-item>
         <el-form-item>
           <el-button @click="save" type="primary">提交故障报告</el-button>
@@ -110,10 +111,6 @@ export default {
     }
   },
   async created() {
-    // 激活wx-jssdk
-    let wxConfig = await this.$axios.get("/jssdk");
-    wxConfig = wxConfig.data.result;
-    wx.config(wxConfig);
     this.token = this.$route.params.token;
     // 获取故障类型列表
     let res = await this.$axios.get("/type");
