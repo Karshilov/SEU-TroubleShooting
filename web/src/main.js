@@ -20,3 +20,8 @@ new Vue({
 window.$axios.get("/jssdk").then((wxConfig) => {
   wx.config(wxConfig.data.result);
 })
+
+wx.ready(function(){
+  wx.hideAllNonBaseMenuItem();
+});
+

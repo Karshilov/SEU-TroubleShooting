@@ -62,6 +62,8 @@ class TroubleController extends Controller {
 
         phonenum = ctx.userInfo.phonenum
 
+        // 从微信服务器下载图片 
+        image = await this.ctx.service.fetchWechatMedia.image(image)
         let trouble = new ctx.model.Trouble({
             createdTime:now,
             desc,
@@ -72,7 +74,7 @@ class TroubleController extends Controller {
             typeId,
             typeName:troubleType.displayName,
             userCardnum,
-            staffCardnum:luckyDog.cardnum,
+            staffCardnum:luckyDog.staffCardnum,
             image
         })
 
@@ -110,53 +112,51 @@ class TroubleController extends Controller {
         let {statusFilter='PENDING', role, page=1, pagesize=10} = ctx.request.query
         page = +page
         pagesize = +pagesize
-
+        if(statusFilter === 'END'){
+            statusFilter = [{status:'ACCEPT'}, {status:'REJECT'}, {status:'CLOSED'}]
+        } else {
+            statusFilter = [{status:statusFilter}]
+        }
         if(role === 'USER'){
             // 用户查询的逻辑
             let record = await ctx.model.Trouble.find({
                 userCardnum:ctx.userInfo.cardnum,
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else if(role === 'STAFF') {
             // 工作人员查询的逻辑
             let record = await ctx.model.Trouble.find({
                 staffCardnum:ctx.userInfo.cardnum,
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else if(role === 'ADMIN') {
             // 管理员查询的逻辑
             let record = await ctx.model.Trouble.find({
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else {
             return []
@@ -181,9 +181,11 @@ class TroubleController extends Controller {
             typeName:record.typeName,
             createdTime:record.createdTime,
             desc:record.desc,
+            phonenum:record.phonenum,
+            address:record.address,
             image:record.image,
             statusDisp:statusDisp[record.status],
-            canDeal:record.staffCardnum === cardnum,
+            canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
             dealTime:record.dealTime,
             departmentId:record.departmentId
@@ -216,7 +218,7 @@ class TroubleController extends Controller {
             `处理完成`, // status
             moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
             '工作人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
-            `${this.config}/#/detail/${trouble._id}` // url - 故障详情页面
+            this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
         )
 
     }

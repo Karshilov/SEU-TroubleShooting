@@ -26,9 +26,9 @@ class AppBootHook {
   async serverDidReady() {
     //url修改
     menu = JSON.stringify(menu).replace('<APPID>', this.app.config.wechat.appID);
-    menu = menu.replace('<SERVER_URL>', this.app.config.serverURL).replace('<APPID>', this.app.config.wechat.appID);
+    menu = menu.replace(/<SERVER_URL>/g, this.app.config.serverURL).replace(/<APPID>/g, this.app.config.wechat.appID);
     menu = JSON.parse(menu);
-    console.log(menu.button[0].sub_button[0]);
+    console.log(menu.button[0]);
     //获取access_token
     let access_token;
     let nowTime = moment().unix();  //当前时间

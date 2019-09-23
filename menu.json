@@ -11,7 +11,7 @@
         {
           "type": "view",
           "name": "处理进度",
-          "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list#wechat_redirect"
+          "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect"
         }
       ]
     }

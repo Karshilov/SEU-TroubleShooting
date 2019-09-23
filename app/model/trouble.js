@@ -17,7 +17,8 @@ module.exports = app => {
         userCardnum:{type: String}, //用户一卡通号
         dealTime:{type:Number, default:0},
         checkTime:{type:Number, default:0},
-        closedTime:{type:Number, default:0}
+        closedTime:{type:Number, default:0},
+        image:{type:String, default:''}
     });
 
     return mongoose.model('TroubleInfo', troubleInfo);

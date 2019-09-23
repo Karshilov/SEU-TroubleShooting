@@ -29,7 +29,7 @@ export default new Router({
       component: () => import('./views/TroubleDetail.vue')
     },
     {
-      path: '/list/:token',
+      path: '/list/:token/:role',
       name: 'troubleList',
       component: () => import('./views/TroubleList.vue')
     },

@@ -32,6 +32,14 @@ body{
   margin-left:20px;
 }
 
+.subtitle{
+  font-size:24px;
+  font-weight:bold;
+  margin-top:20px;
+  margin-left:20px;
+}
+
+
 .title-hint{
   font-size:14px;
   color:#888;

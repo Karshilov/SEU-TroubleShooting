@@ -12,9 +12,9 @@ import {
 //   MenuItemGroup,
   Input,
 //   InputNumber,
-//   Radio,
-//   RadioGroup,
-//   RadioButton,
+  Radio,
+  RadioGroup,
+  RadioButton,
 //   Checkbox,
 //   CheckboxButton,
 //   CheckboxGroup,
@@ -35,8 +35,8 @@ import {
 //   BreadcrumbItem,
   Form,
   FormItem,
-//   Tabs,
-//   TabPane,
+  Tabs,
+  TabPane,
 //   Tag,
 //   Tree,
 //   Alert,
@@ -49,7 +49,7 @@ import {
 //   Spinner,
 //   Badge,
 //   Card,
-//   Rate,
+  Rate,
 //   Steps,
 //   Step,
 //   Carousel,
@@ -91,9 +91,9 @@ import {
 // Vue.use(MenuItemGroup);
 Vue.use(Input);
 // Vue.use(InputNumber);
-// Vue.use(Radio);
-// Vue.use(RadioGroup);
-// Vue.use(RadioButton);
+Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(RadioButton);
 // Vue.use(Checkbox);
 // Vue.use(CheckboxButton);
 // Vue.use(CheckboxGroup);
@@ -114,8 +114,8 @@ Vue.use(TableColumn);
 // Vue.use(BreadcrumbItem);
 Vue.use(Form);
 Vue.use(FormItem);
-// Vue.use(Tabs);
-// Vue.use(TabPane);
+Vue.use(Tabs);
+Vue.use(TabPane);
 // Vue.use(Tag);
 // Vue.use(Tree);
 // Vue.use(Alert);
@@ -128,7 +128,7 @@ Vue.use(Upload);
 // Vue.use(Spinner);
 // Vue.use(Badge);
 // Vue.use(Card);
-// Vue.use(Rate);
+Vue.use(Rate);
 // Vue.use(Steps);
 // Vue.use(Step);
 // Vue.use(Carousel);

@@ -9,7 +9,7 @@ class JsSdkTicketController extends Controller {
         debug:false,
         ...(await ctx.service.getAccessToken.jsSdkTicket()),
         appId:ctx.app.config.wechat.appID,
-        jsApiList: ['chooseImage','previewImage','uploadImage','hideMenuItems','hideOptionMenu']
+        jsApiList: ['chooseImage','previewImage','uploadImage','hideAllNonBaseMenuItem','hideOptionMenu']
     }
     
   }

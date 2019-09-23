@@ -45,4 +45,7 @@ module.exports = app => {
   router.get('/jssdk',controller.jsSdkTicket.index)
 
   router.post('/trouble', controller.trouble.post)
+  router.get('/trouble/list', controller.trouble.list)
+  router.get('/trouble', controller.trouble.detail)
+  router.post('/trouble/deal', controller.trouble.deal)
 };
