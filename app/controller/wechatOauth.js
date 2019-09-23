@@ -24,7 +24,6 @@ class loginController extends Controller {
         tokenExpireTime: +moment() + 30 * 60 * 1000
       });
       let res = await newPerson.save();
-      console.log(res);
   
     }else{
       person.token = token;

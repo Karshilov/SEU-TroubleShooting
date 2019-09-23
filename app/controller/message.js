@@ -91,11 +91,7 @@ class MessageController extends Controller {
             ctx.identityError('管理员无权查看');
         }
         let troubleId = ctx.query.troubleId;
-        let resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId },
-            ['content','time','fromWho']);
-        resOfTroubleId = resOfTroubleId.sort((m, n) => {
-            return m.time - n.time;
-        })
+        let resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, ['content', 'time', 'fromWho'], { sort: { time: 1 } });
 
         return resOfTroubleId;
 
