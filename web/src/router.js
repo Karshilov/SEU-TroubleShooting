@@ -59,5 +59,11 @@ export default new Router({
       component: () => import('./views/Config.vue'),
       meta: {title: '系统配置'}
     },
+    {
+      path: '/success',
+      name: 'success',
+      component: () => import('./views/Success.vue'),
+      meta: {title: '提交成功'}
+    },
   ]
 })
