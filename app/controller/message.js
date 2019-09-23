@@ -15,9 +15,6 @@ class MessageController extends Controller {
     //创建消息
     async createMessage() {
         const { ctx } = this;
-        if (ctx.userInfo.isAdmin) {
-            ctx.permissionError('管理员无权查看');
-        }
 
         let id = ctx.request.body.troubleId; //故障Id
         let message = ctx.request.body.message; //消息内容
@@ -35,21 +32,21 @@ class MessageController extends Controller {
             let staffCardnum = resOfTroubleId.staffCardnum;
 
             //消息来自维修人员
-            if (ctx.userInfo.isWorker) {
+            if (ctx.userInfo.cardnum === staffCardnum) {
                 // 创建消息的是维修人员
                 let now = +moment();
                 ctx.service.pushNotification.userNotification(
-                    cardnum = userCardnum,
-                    title = '亲爱的用户您好，针对你反馈的问题，维修人员的有了新的回复，请即时查看',
-                    address = resOfTroubleId.address,
-                    type = resOfTroubleId.typeName,
-                    status = '故障处理中',
-                    lastModifiedTime = now,
-                    remark = message,
-                    url = ''
+                    userCardnum,
+                    '亲爱的用户您好，针对你反馈的问题，工作人员的有了新的回复，请即时查看',
+                    resOfTroubleId.address,
+                    resOfTroubleId.typeName,
+                    '故障处理中',
+                    moment(now).format('YYYY-MM-DD HH:mm:ss'),
+                    '消息内容：'+message,
+                    this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id)
                 )
 
-                let newChatInfo = ctx.model.chatInfo({
+                let newChatInfo = ctx.model.ChatInfo({
                     time: now,
                     fromWho: 'staff',
                     troubleId: id,
@@ -58,24 +55,24 @@ class MessageController extends Controller {
                 await newChatInfo.save();
             }
             //消息来自用户
-            else {
+            else if(ctx.userInfo.cardnum === userCardnum) {
                 let now = +moment();
 
                 ctx.service.pushNotification.staffNotification(
-                    cardnum = staffCardnum,
-                    title = `用户${userCardnum}对反馈的问题进行了补充，请做好相关记录`,
-                    code = resOfTroubleId._id.toUpperCase(),
-                    type = resOfTroubleId.typeName,
-                    desc = resOfTroubleId.desc,
-                    phonenum = resOfTroubleId.phonenum,
-                    createdTime = resOfTroubleId.createdTime,
-                    remark = message,
-                    url = ''
+                    staffCardnum,
+                    `用户${userCardnum}对反馈的问题进行了补充，请注意查看`,
+                    resOfTroubleId._id.toString().toUpperCase(),
+                    resOfTroubleId.typeName,
+                    resOfTroubleId.desc,
+                    resOfTroubleId.phonenum,
+                    moment(resOfTroubleId.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+                    '消息内容：'+message,
+                    this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id) // url - 故障详情页面
                 )
 
-                let newChatInfo = ctx.model.chatInfo({
+                let newChatInfo = ctx.model.ChatInfo({
                     time: now,
-                    fromWho: 'staff',
+                    fromWho: 'user',
                     troubleId: id,
                     content: message
                 })
@@ -87,14 +84,9 @@ class MessageController extends Controller {
     //获取消息列表
     async listMessage() {
         const { ctx } = this;
-        if (ctx.userInfo.isAdmin) {
-            ctx.identityError('管理员无权查看');
-        }
         let troubleId = ctx.query.troubleId;
         let resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, ['content', 'time', 'fromWho'], { sort: { time: 1 } });
-
         return resOfTroubleId;
-
     }
 
 }

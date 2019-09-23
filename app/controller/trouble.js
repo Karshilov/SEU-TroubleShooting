@@ -185,6 +185,7 @@ class TroubleController extends Controller {
             address:record.address,
             image:record.image,
             statusDisp:statusDisp[record.status],
+            canPostMessage:record.status === 'PENDING',
             canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
             showEvaluation:!!record.evaluation,
