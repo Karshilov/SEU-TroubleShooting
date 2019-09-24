@@ -15,9 +15,9 @@ class TroubleController extends Controller {
     async post() {
         // 故障报修
         let { ctx } = this
-        let { typeId, desc, phoneNum, address, image } = ctx.request.body
+        let { typeId, desc, phonenum, address, image } = ctx.request.body
         if (!ctx.userInfo.cardnum) {
-            ctx.identityError('需要先绑定信息才能保修')
+            ctx.identityError('需要先绑定信息才能报修')
         }
         // 判断是否频率过高
         let userCardnum = ctx.userInfo.cardnum
@@ -26,9 +26,16 @@ class TroubleController extends Controller {
             userCardnum,
             createdTime: { $gt: now - 24 * 60 * 60 * 1000 }
         })
-        if (postCount > 5) {
+        if (postCount > 500) {
             // 为了避免恶意骚扰，24小时内故障申报数量不能超过5个
             ctx.error(1, '故障申报频率过高，请稍后重试')
+        }
+        if(!typeId){
+            ctx.error(3, '请指定故障申报类型')
+        }
+        // 验证参数
+        if(!desc){
+            ctx.error(2, '请填写故障描述信息')
         }
         // 根据故障类型查找所属部门
         let troubleType = await ctx.model.TroubleType.findOne({
@@ -49,26 +56,29 @@ class TroubleController extends Controller {
             await ctx.userInfo.save()
         }
 
-        address = ctx.userCardnum.address
+        address = ctx.userInfo.address
 
-        if(phoneNum){
-            ctx.userInfo.phoneNum = phoneNum
+        if(phonenum){
+            ctx.userInfo.phonenum = phonenum
             await ctx.userInfo.save()
         }
 
-        phoneNum = ctx.userInfo.phoneNum
+        phonenum = ctx.userInfo.phonenum
 
+        // 从微信服务器下载图片 
+        image = await this.ctx.service.fetchWechatMedia.image(image)
         let trouble = new ctx.model.Trouble({
             createdTime:now,
             desc,
             status:'PENDING', // 等待处理
-            phoneNum,
+            phonenum,
             address,
             departmentId,
             typeId,
             typeName:troubleType.displayName,
             userCardnum,
-            staffCardnum:luckyDog.cardnum
+            staffCardnum:luckyDog.staffCardnum,
+            image
         })
 
         await trouble.save()
@@ -79,22 +89,22 @@ class TroubleController extends Controller {
             '您申报的故障信息已被受理',
             address,
             troubleType.displayName, // type
-            `正在等待工作人员（工号：${staffCardnum}）处理`, // status
+            `正在等待工作人员（工号：${luckyDog.staffCardnum}）处理`, // status
             moment(now).format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
             '工作人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
-            `${this.config}/#/detail/${trouble._id}` // url - 故障详情页面
+            this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
         )
         // 向处理人员推送等待处理
         await ctx.service.pushNotification.staffNotification(
-            luckyDog.cardnum,
+            luckyDog.staffCardnum,
             '有新的故障等待处理', // title
             trouble._id.toString().toUpperCase(), // code
             troubleType.displayName, // type
             '点击查看', // desc
-            phoneNum,
+            phonenum,
             moment(now).format('YYYY-MM-DD HH:mm:ss'),
-            '请尽快处理！',
-            `${this.config}/#/detail/${trouble._id}`
+            '故障描述信息：'+desc,
+            this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
         )
         return '提交成功'
     }
@@ -105,53 +115,54 @@ class TroubleController extends Controller {
         let {statusFilter='PENDING', role, page=1, pagesize=10} = ctx.request.query
         page = +page
         pagesize = +pagesize
-
+        if(statusFilter === 'END'){
+            statusFilter = [{status:'ACCEPT'}, {status:'REJECT'}, {status:'CLOSED'}]
+        } else {
+            statusFilter = [{status:statusFilter}]
+        }
         if(role === 'USER'){
             // 用户查询的逻辑
             let record = await ctx.model.Trouble.find({
                 userCardnum:ctx.userInfo.cardnum,
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else if(role === 'STAFF') {
             // 工作人员查询的逻辑
             let record = await ctx.model.Trouble.find({
                 staffCardnum:ctx.userInfo.cardnum,
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else if(role === 'ADMIN') {
+            if(!ctx.userInfo.isAdmin){
+                ctx.permissionError('无权访问')
+            }
             // 管理员查询的逻辑
             let record = await ctx.model.Trouble.find({
-                status:statusFilter
-            },['_id','createdTime','typeName'],{
+                $or:statusFilter
+            },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,
                 sort: { createdTime: -1 }
             })
             return record.map(r => {
-                return {
-                    ...r,
-                    statusDisp:statusDisp[statusFilter]
-                }
+                r.statusDisp = statusDisp[r.status]
+                return r
             })
         } else {
             return []
@@ -176,12 +187,19 @@ class TroubleController extends Controller {
             typeName:record.typeName,
             createdTime:record.createdTime,
             desc:record.desc,
+            phonenum:record.phonenum,
+            address:record.address,
             image:record.image,
             statusDisp:statusDisp[record.status],
-            canDeal:record.staffCardnum === cardnum,
+            canPostMessage:record.status === 'PENDING',
+            canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
+            canRedirect:(record.staffCardnum === cardnum || ctx.userInfo.isAdmin) && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
+            showEvaluation:!!record.evaluation,
             dealTime:record.dealTime,
-            departmentId:record.departmentId
+            departmentId:record.departmentId,
+            evaluationLevel:record.evaluationLevel, // 用户评级
+            evaluation:record.evaluation // 用户评价
         }
     }
 
@@ -211,7 +229,7 @@ class TroubleController extends Controller {
             `处理完成`, // status
             moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
             '工作人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
-            `${this.config}/#/detail/${trouble._id}` // url - 故障详情页面
+            this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
         )
 
     }
@@ -220,7 +238,10 @@ class TroubleController extends Controller {
         // 用户验收故障处理结果
         // 查询故障信息
         let {ctx} = this
-        let {troubleId, evaluation='未填写', evaluationLevel=5, accept} = ctx.request.body
+        let {troubleId, evaluation, evaluationLevel=5, accept} = ctx.request.body
+        if(!evaluation){
+            evaluation = '用户未填写意见建议'
+        }
         let cardnum = ctx.userInfo.cardnum
         let record = await ctx.model.Trouble.findById(troubleId)
         if(!record){
@@ -250,7 +271,7 @@ class TroubleController extends Controller {
         }
         // 只允许转发处于PENDING状态的故障信息
         // 管理员或者当前故障处理人员可以转发
-        if(record.status !== 'PENDING' && !ctx.userInfo.isAdmin && record.staffCardnum !== cardnum){
+        if(!(record.status === 'PENDING' && (ctx.userInfo.isAdmin || record.staffCardnum === cardnum))){
             ctx.permissionError('无权操作')
         }
         // 检查是否符合部门要求
@@ -272,10 +293,10 @@ class TroubleController extends Controller {
             record._id.toString().toUpperCase(), // code
             record.typeName, // type
             '点击查看', // desc
-            record.phoneNum,
+            record.phonenum,
             moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
-            '请尽快处理！',
-            `${this.config}/#/detail/${trouble._id}`
+            '故障描述：'+record.desc,
+            this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
         )
 
         return '转发成功'

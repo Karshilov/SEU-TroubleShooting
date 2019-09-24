@@ -14,11 +14,15 @@ export default {
 </script>
 
 <style>
+body{
+  background: white;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+
 }
 
 .title{
@@ -27,6 +31,14 @@ export default {
   margin-top:20px;
   margin-left:20px;
 }
+
+.subtitle{
+  font-size:24px;
+  font-weight:bold;
+  margin-top:40px;
+  margin-left:20px;
+}
+
 
 .title-hint{
   font-size:14px;

@@ -25,6 +25,7 @@ module.exports = app => {
   router.get('/user',controller.user.index);
   router.post('/user/admin',controller.user.setAdmin);
   router.delete('/user/admin',controller.user.deleteAdmin);
+  router.get('/user/admin',controller.user.adminList);
 
 
   router.post('/type',controller.type.create);
@@ -37,7 +38,19 @@ module.exports = app => {
   router.post('/department/staff',controller.department.bindStaff);
   router.get('/department/staff',controller.department.listStaff);
   router.delete('/department/staff',controller.department.unbindStaff);
+  router.get('/department/name',controller.department.listOneDepartment);
 
   router.get('/test',controller.test.notice);
   
+  router.get('/jssdk',controller.jsSdkTicket.index)
+
+  router.post('/trouble', controller.trouble.post)
+  router.get('/trouble/list', controller.trouble.list)
+  router.get('/trouble', controller.trouble.detail)
+  router.post('/trouble/deal', controller.trouble.deal)
+  router.post('/trouble/check', controller.trouble.check)
+  router.post('/trouble/redirect', controller.trouble.redirect)
+
+  router.post('/message', controller.message.createMessage)
+  router.get('/message', controller.message.listMessage)
 };

@@ -29,25 +29,41 @@ export default new Router({
       component: () => import('./views/TroubleDetail.vue')
     },
     {
-      path: '/list/:token',
+      path: '/list/:token/:role',
       name: 'troubleList',
       component: () => import('./views/TroubleList.vue')
     },
     {
       path: '/department/:token',
-      name: 'departmentAdmin',
+      name: 'department',
       component: () => import('./views/Department.vue')
     },
     {
-      path: '/type/:token',
-      name: 'troubleTypeAdmin',
-      component: () => import('./views/TroubleTypeAdmin.vue')
+      path: '/admin/:token',
+      name: 'admin',
+      component: () => import('./views/Admin.vue')
+    },
+    {
+      path: '/type/:token/:departmentId',
+      name: 'type',
+      component: () => import('./views/Type.vue')
+    },
+    {
+      path: '/staff/:token/:departmentId',
+      name: 'staff',
+      component: () => import('./views/Staff.vue')
     },
     {
       path: '/config/:token',
       name: 'config',
       component: () => import('./views/Config.vue'),
       meta: {title: '系统配置'}
+    },
+    {
+      path: '/success',
+      name: 'success',
+      component: () => import('./views/Success.vue'),
+      meta: {title: '提交成功'}
     },
   ]
 })

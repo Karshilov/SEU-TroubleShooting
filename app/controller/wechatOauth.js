@@ -16,19 +16,18 @@ class loginController extends Controller {
     })
     
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
-    let token =uuid();
+    let token = uuid();
     if (!person) {
       let newPerson = this.ctx.model.User({
         openid: result.data.openid,
         token: token,
-        tokenExpireTime: +moment() + 1800
+        tokenExpireTime: +moment() + 30 * 60 * 1000
       });
       let res = await newPerson.save();
-      console.log(res);
   
     }else{
       person.token = token;
-      person.tokenExpireTime = +moment() + 1800;
+      person.tokenExpireTime = +moment() + 30 * 60 * 1000;
       await person.save();
     }
 

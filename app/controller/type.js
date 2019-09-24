@@ -9,13 +9,13 @@ class TypeController extends Controller {
         }
 
         let displayName = ctx.request.body.typeName;
-        let resOfDisplayName = await ctx.model.TroubleType.findone({ displayName });
-        if (resOfDisplayName && resOfDisplayName.delete) {
+        let resOfDisplayName = await ctx.model.TroubleType.findOne({ displayName, delete: false });
+        if (resOfDisplayName) {
             ctx.error(1, '故障名称重复');
         }
 
         let id = ctx.request.body.departmentId;
-        let resOfDepartmentId = await ctx.model.department.findById({ id });
+        let resOfDepartmentId = await ctx.model.Department.findById(id);
         if (!resOfDepartmentId) {
             ctx.error(2, '部门ID不存在');
         }
@@ -43,8 +43,8 @@ class TypeController extends Controller {
             ctx.identityError();
         }
 
-        let id = ctx.request.body.typeId;
-        let resOfTroubleId = await ctx.model.TroubleType.findOne({ id });
+        let id = ctx.query.typeId;
+        let resOfTroubleId = await ctx.model.TroubleType.findById(id);
         if (!resOfTroubleId) {
             ctx.error(1, '故障类型不存在');
         }
@@ -55,16 +55,14 @@ class TypeController extends Controller {
     //获取故障类型列表
     async troubleList() {
         const { ctx } = this;
-        let resOfTrouble = await ctx.model.TroubleType.find();
-        let resOfReturn = [];
-        resOfTrouble.forEach(k =>{
-            resOfReturn.push({
-                "name":k.displayName,
-                "id":k._id
-            })
-        });
-
-        return resOfReturn;
+        let departmentId = ctx.query.departmentId;
+        let resOfTrouble
+        if(departmentId){
+            resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'displayName']);
+        } else {
+            resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, ['_id', 'displayName']);
+        }
+        return resOfTrouble;
     }
 
 

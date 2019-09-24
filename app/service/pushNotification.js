@@ -19,23 +19,23 @@ class pushNotification extends Service {
                     "color": "#173177"
                 },
                 "keyword1": {
-                    "value": address+'\n',
+                    "value": address+'\r',
                     "color": "#173177"
                 },
                 "keyword2": {
-                    "value": type+'\n',
+                    "value": type+'\r',
                     "color": "#173177"
                 },
                 "keyword3": {
-                    "value": status+'\n',
+                    "value": status+'\r',
                     "color": "#173177"
                 },
                 "keyword4": {
-                    "value": lastModifiedTime+'\n',
+                    "value": lastModifiedTime+'\r',
                     "color": "#173177"
                 },
                 "remark": {
-                    "value": remark+'\n',
+                    "value": '\n'+remark+'\n',
                     "color": "#173177"
                 }
             }
@@ -54,7 +54,7 @@ class pushNotification extends Service {
 
     }
 
-    async staffNotification(cardnum, title, code, type, desc, phoneNum, createdTime, remark, url) {
+    async staffNotification(cardnum, title, code, type, desc, phonenum, createdTime, remark, url) {
         let access_token = await this.service.getAccessToken.accessToken();
         let user = await this.ctx.model.User.findOne({ cardnum });
         if (!user) {
@@ -62,7 +62,7 @@ class pushNotification extends Service {
         }
         let postJson = {
             "touser": user.openid,
-            "template_id": this.config.wechat.userTemplateId,
+            "template_id": this.config.wechat.staffTemplateId,
             "url": url,
             "data": {
                 "first": {
@@ -70,27 +70,27 @@ class pushNotification extends Service {
                     "color": "#173177"
                 },
                 "keyword1": {
-                    "value": code+'\n',
+                    "value": code+'\r',
                     "color": "#173177"
                 },
                 "keyword2": {
-                    "value": type+'\n',
+                    "value": type+'\r',
                     "color": "#173177"
                 },
                 "keyword3": {
-                    "value": desc+'\n',
+                    "value": desc+'\r',
                     "color": "#173177"
                 },
                 "keyword4": {
-                    "value": phoneNum+'\n',
+                    "value": phonenum+'\r',
                     "color": "#173177"
                 },
-                "keyword4": {
-                    "value": createdTime+'\n',
+                "keyword5": {
+                    "value": createdTime+'\r',
                     "color": "#173177"
                 },
                 "remark": {
-                    "value": remark+'\n',
+                    "value": '\n'+remark+'\n',
                     "color": "#173177"
                 }
             }
