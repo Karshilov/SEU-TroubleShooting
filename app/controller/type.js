@@ -15,6 +15,8 @@ class TypeController extends Controller {
         }
 
         let id = ctx.request.body.departmentId;
+        // let Desc=ctx.request.body.typeDesc;
+        let Desc="这是一个故障描述"
         let resOfDepartmentId = await ctx.model.Department.findById(id);
         if (!resOfDepartmentId) {
             ctx.error(2, '部门ID不存在');
@@ -24,13 +26,15 @@ class TypeController extends Controller {
             //原来存在
             resOfDisplayName.displayName = displayName;
             resOfDisplayName.departmentId = id;
+            resOfDisplayName.typeDesc=Desc;
             resOfDisplayName.delete = false;
             await resOfDisplayName.save();
         } else {
             //原来没有
             let newTrouble = ctx.model.TroubleType({
                 displayName: displayName,
-                departmentId: id
+                departmentId: id,
+                typeDesc:Desc
             });
             await newTrouble.save();
         }
@@ -58,9 +62,9 @@ class TypeController extends Controller {
         let departmentId = ctx.query.departmentId;
         let resOfTrouble
         if(departmentId){
-            resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'displayName']);
+            resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, ['_id', 'displayName','typeDesc']);
         } else {
-            resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, ['_id', 'displayName']);
+            resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, ['_id', 'displayName','typeDesc']);
         }
         return resOfTrouble;
     }
