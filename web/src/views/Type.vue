@@ -8,6 +8,9 @@
           <el-form-item label="故障类型名称">
             <el-input v-model="typeName" placeholder="该名称将显示给用户"></el-input>
           </el-form-item>
+          <el-form-item label="故障类型描述">
+            <el-input v-model="typeDesc" type="textarea" placeholder="该描述将显示给用户"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="add">添加</el-button>
           </el-form-item>
@@ -38,14 +41,15 @@ export default {
       departmentName:'...',
       list: [],
       token: "",
-      typeName: ""
+      typeName: "",
+      typeDesc:""
     };
   },
   methods: {
     async add() {
       let res = await this.$axios.post(
         "/type",
-        { typeName: this.typeName, departmentId: this.departmentId },
+        { typeName: this.typeName, departmentId: this.departmentId ,typeDesc:this.typeDesc},
         { headers: { token: this.token } }
       );
       if (res.data.success) {

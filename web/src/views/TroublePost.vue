@@ -17,6 +17,11 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="故障类型描述">
+          <el-card class="box-card">
+            <div class="text item">{{typeList}}</div>
+          </el-card>
+        </el-form-item>
         <el-form-item label="故障描述">
           <el-input
             type="textarea"
@@ -54,12 +59,8 @@ export default {
   data() {
     return {
       token: "",
-      typeList: [
-        {
-          id: "null",
-          name: "正在加载"
-        }
-      ],
+      typeList: [],
+      typeDesc:"",
       form: {
         typeId: "",
         phonenum: "",
@@ -68,8 +69,15 @@ export default {
         image: ""
       },
       localImage: "",
-      loading:false
+      loading: false
     };
+  },
+  watch: {
+    form(val){
+      this.typeDesc=typeList.arr.filter(i=>{
+        return val.typeId===this.form.typeId;
+      })[0]
+    }
   },
   methods: {
     chooseImage() {
@@ -84,32 +92,34 @@ export default {
         }
       });
     },
-    uploadImage(){
-      let that = this
-      return new Promise((resolve,reject) => {
+    uploadImage() {
+      let that = this;
+      return new Promise((resolve, reject) => {
         wx.uploadImage({
-        localId: that.localImage, // 需要上传的图片的本地ID，由chooseImage接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
-        success: function(res) {
-          that.form.image = res.serverId; // 返回图片的服务器端ID
-          resolve()
-        }
+          localId: that.localImage, // 需要上传的图片的本地ID，由chooseImage接口获得
+          isShowProgressTips: 1, // 默认为1，显示进度提示
+          success: function(res) {
+            that.form.image = res.serverId; // 返回图片的服务器端ID
+            resolve();
+          }
+        });
       });
-      })
     },
     async save() {
       // 上传图片
-      this.loading = true
-      if(this.localImage){
+      this.loading = true;
+      if (this.localImage) {
         await this.uploadImage();
       }
-      let res = await this.$axios.post('/trouble',this.form,{headers:{token:this.token}})
-      if(res.data.success){
+      let res = await this.$axios.post("/trouble", this.form, {
+        headers: { token: this.token }
+      });
+      if (res.data.success) {
         //this.$message({type:'success', message:res.data.result})
-        this.$router.replace('/success')
+        this.$router.replace("/success");
       } else {
-        this.$message.error(res.data.errmsg)
-        this.loading = false
+        this.$message.error(res.data.errmsg);
+        this.loading = false;
       }
     }
   },

@@ -6,7 +6,7 @@ import axios from './axios'
 import './plugins/element.js'
 
 Vue.config.productionTip = false
-window.baseURL = 'https://myseu.cn/grh/'
+window.baseURL = 'https://myseu.cn/hkh/'
 
 Vue.use(axios)
 
