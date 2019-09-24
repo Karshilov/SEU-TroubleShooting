@@ -114,16 +114,19 @@ export default {
     formatTime(time) {
       return moment(time).format("YYYY-MM-DD HH:mm:ss");
     },
+    async loadMessage() {
+      // 获取消息列表
+      let res = await this.$axios.get("/message?troubleId=" + this.troubleId, {
+        headers: { token: this.token }
+      });
+      this.message = res.data.result;
+    },
     async load() {
       let res = await this.$axios.get("/trouble?troubleId=" + this.troubleId, {
         headers: { token: this.token }
       });
       this.detail = res.data.result;
-      // 获取消息列表
-      res = await this.$axios.get("/message?troubleId=" + this.troubleId, {
-        headers: { token: this.token }
-      });
-      this.message = res.data.result;
+      this.loadMessage()
       // 获取员工列表
       if (this.detail.canRedirect) {
         res = await this.$axios.get(
@@ -169,7 +172,8 @@ export default {
           headers: { token: this.token }
         }
       );
-      this.load();
+      this.newMessage = ''
+      this.loadMessage();
     },
     async redirect(){
       await this.$axios.post(
