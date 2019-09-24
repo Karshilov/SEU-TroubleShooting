@@ -10,6 +10,7 @@
           <el-form-item style="margin-bottom:0" label="故障描述">{{detail.desc}}</el-form-item>
           <el-form-item style="margin-bottom:0" label="联系电话">{{detail.phonenum}}</el-form-item>
           <el-form-item style="margin-bottom:0" label="报修地点">{{detail.address}}</el-form-item>
+          <el-form-item style="margin-bottom:0" label="负责工号">{{detail.staffCardnum}}</el-form-item>
           <el-form-item v-if="detail.image" style="margin-bottom:0" label="图片附件">
             <img :src="detail.image" style="width:100%;border-radius:8px;" />
           </el-form-item>

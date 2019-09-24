@@ -199,7 +199,8 @@ class TroubleController extends Controller {
             dealTime:record.dealTime,
             departmentId:record.departmentId,
             evaluationLevel:record.evaluationLevel, // 用户评级
-            evaluation:record.evaluation // 用户评价
+            evaluation:record.evaluation, // 用户评价
+            staffCardnum:record.staffCardnum
         }
     }
 
