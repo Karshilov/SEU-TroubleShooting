@@ -6,7 +6,7 @@
       请您准确详实的反馈遇到的问题，我们的工作人员将会尽其所能为您提供帮助。
     </div>
     <div style="margin-top: 30px;margin-right: 20px;margin-left: 10px;">
-      <el-form :model="form" label-width="80px">
+      <el-form :model="form" label-width="80px" v-loading="loading">
         <el-form-item label="故障类型">
           <el-select v-model="form.typeId" placeholder="请选择">
             <el-option
@@ -67,7 +67,8 @@ export default {
         address: "",
         image: ""
       },
-      localImage: ""
+      localImage: "",
+      loading:false
     };
   },
   methods: {
@@ -98,6 +99,7 @@ export default {
     },
     async save() {
       // 上传图片
+      this.loading = true
       if(this.localImage){
         await this.uploadImage();
       }
@@ -107,6 +109,7 @@ export default {
         this.$router.replace('/success')
       } else {
         this.$message.error(res.data.errmsg)
+        this.loading = false
       }
     }
   },

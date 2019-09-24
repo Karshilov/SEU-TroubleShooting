@@ -30,6 +30,9 @@ class TroubleController extends Controller {
             // 为了避免恶意骚扰，24小时内故障申报数量不能超过5个
             ctx.error(1, '故障申报频率过高，请稍后重试')
         }
+        if(!typeId){
+            ctx.error(3, '请指定故障申报类型')
+        }
         // 验证参数
         if(!desc){
             ctx.error(2, '请填写故障描述信息')
