@@ -19,19 +19,19 @@ class pushNotification extends Service {
                     "color": "#173177"
                 },
                 "keyword1": {
-                    "value": address+'\r',
+                    "value": address+'\n',
                     "color": "#173177"
                 },
                 "keyword2": {
-                    "value": type+'\r',
+                    "value": type+'\n',
                     "color": "#173177"
                 },
                 "keyword3": {
-                    "value": status+'\r',
+                    "value": status+'\n',
                     "color": "#173177"
                 },
                 "keyword4": {
-                    "value": lastModifiedTime+'\r',
+                    "value": lastModifiedTime+'\n',
                     "color": "#173177"
                 },
                 "remark": {
@@ -70,23 +70,23 @@ class pushNotification extends Service {
                     "color": "#173177"
                 },
                 "keyword1": {
-                    "value": code+'\r',
+                    "value": code+'\n',
                     "color": "#173177"
                 },
                 "keyword2": {
-                    "value": type+'\r',
+                    "value": type+'\n',
                     "color": "#173177"
                 },
                 "keyword3": {
-                    "value": desc+'\r',
+                    "value": desc+'\n',
                     "color": "#173177"
                 },
                 "keyword4": {
-                    "value": phonenum+'\r',
+                    "value": phonenum+'\n',
                     "color": "#173177"
                 },
                 "keyword5": {
-                    "value": createdTime+'\r',
+                    "value": createdTime+'\n',
                     "color": "#173177"
                 },
                 "remark": {

@@ -26,7 +26,7 @@ class PushPending extends Subscription {
         Element.typeName, // type
         `点击查看`, // desc
         Element.phonenum,
-        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // now
+        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // createdTime
         '故障描述信息：'+Element.desc,
         this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
       )
@@ -36,19 +36,19 @@ class PushPending extends Subscription {
       status: "PENDING", createdTime: { $lt: now - 30 * 60 * 1000 }
     }
     );
-    let adminList = ctx.model.User.find({
+    let adminList = await ctx.model.User.find({
       isAdmin:true
     })
     record.forEach(async Element => {
       let luckyDog = ctx.helper.randomFromArray(adminList)
       await ctx.service.pushNotification.staffNotification(
         luckyDog.cardnum,
-        '有超过30分钟未处理的故障信息！',
+        `派发给${Element.staffCardnum}的故障已经超过30分钟仍未处理`,
         Element._id.toString().toUpperCase(), // code
         Element.typeName, // type
         `点击查看`, // desc
         Element.phonenum,
-        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // now
+        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // createdTime
         '故障描述信息：'+Element.desc,
         this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
       )
