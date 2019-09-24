@@ -51,6 +51,7 @@ export default {
       );
       if (res.data.success) {
         this.$message({ type: "success", message: "添加成功" });
+        this.departmentName="";
         this.load();
       } else {
         this.$message.error(res.data.errmsg);

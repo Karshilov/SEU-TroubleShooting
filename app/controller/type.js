@@ -15,8 +15,8 @@ class TypeController extends Controller {
         }
 
         let id = ctx.request.body.departmentId;
-        // let Desc=ctx.request.body.typeDesc;
-        let Desc="这是一个故障描述"
+         let Desc=ctx.request.body.typeDesc;
+        //let Desc="这是一个故障描述"
         let resOfDepartmentId = await ctx.model.Department.findById(id);
         if (!resOfDepartmentId) {
             ctx.error(2, '部门ID不存在');

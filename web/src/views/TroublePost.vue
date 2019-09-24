@@ -8,7 +8,7 @@
     <div style="margin-top: 30px;margin-right: 20px;margin-left: 10px;">
       <el-form :model="form" label-width="80px" v-loading="loading">
         <el-form-item label="故障类型">
-          <el-select v-model="form.typeId" placeholder="请选择">
+          <el-select @change="typeSelect" v-model="form.typeId" placeholder="请选择">
             <el-option
               v-for="item in typeList"
               :key="item._id"
@@ -17,10 +17,8 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="故障类型描述">
-          <el-card class="box-card">
-            <div class="text item">{{typeList}}</div>
-          </el-card>
+        <el-form-item v-if="typeDesc" label="类型描述">
+            <div style="margin-left:5px" class="text item">{{typeDesc}}</div>
         </el-form-item>
         <el-form-item label="故障描述">
           <el-input
@@ -72,14 +70,16 @@ export default {
       loading: false
     };
   },
-  watch: {
-    form(val){
-      this.typeDesc=typeList.arr.filter(i=>{
-        return val.typeId===this.form.typeId;
-      })[0]
-    }
-  },
+
+
+
   methods: {
+    typeSelect(val){
+      console.log(val);
+      this.typeDesc=this.typeList.filter(i=>{
+        return val===i._id;
+      })[0].typeDesc
+    },
     chooseImage() {
       let that = this;
       wx.chooseImage({
