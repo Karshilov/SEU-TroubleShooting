@@ -34,8 +34,7 @@ class PushPending extends Subscription {
     
     record = await ctx.model.Trouble.find({
       status: "PENDING", createdTime: { $lt: now - 30 * 60 * 1000 }
-    },
-      ['staffCardnum', 'typeName', 'address','_id']
+    }
     );
     let adminList = ctx.model.User.find({
       isAdmin:true
@@ -49,7 +48,7 @@ class PushPending extends Subscription {
         Element.typeName, // type
         `点击查看`, // desc
         Element.phonenum,
-        moment().format('YYYY-MM-DD HH:mm:ss'), // now
+        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // now
         '故障描述信息：'+Element.desc,
         this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
       )
