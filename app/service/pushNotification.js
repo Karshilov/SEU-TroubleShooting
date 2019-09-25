@@ -48,7 +48,7 @@ class pushNotification extends Service {
         })
         
         if(result.data.errcode){
-            console.log('故障单处理进度通知发送失败')
+            console.log(`故障单处理进度通知发送失败 错误码：${result.data.errcode}`)
         }
 
 
@@ -103,7 +103,8 @@ class pushNotification extends Service {
         })
         
         if(result.data.errcode){
-            console.log('故障报修通知发送失败')
+            console.log(`故障报修通知发送失败   错误码：${result.data.errcode}`)
+
         }
 
     }
