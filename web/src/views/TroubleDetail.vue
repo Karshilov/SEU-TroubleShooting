@@ -131,7 +131,7 @@ export default {
       // 获取员工列表
       if (this.detail.canRedirect) {
         res = await this.$axios.get(
-          "/department/staff?departmentId=" + this.detail.departmentId,
+          "/department/staff",
           { headers: { token: this.token } }
         );
         this.staffList = res.data.result;
