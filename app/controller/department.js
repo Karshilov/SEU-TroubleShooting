@@ -43,7 +43,7 @@ class DepartmentController extends Controller {
             ctx.paramsError()
         }
         // 检查department是否存在
-        let department = await ctx.model.Department.find({ _id: ctx.helper.ObjectId(departmentId), delete: false })
+        let department = await ctx.model.Department.findOne({ _id: ctx.helper.ObjectId(departmentId), delete: false })
         if (!department) {
             ctx.error(1, '指定的部门不存在')
         }
