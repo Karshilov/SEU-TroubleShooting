@@ -15,7 +15,7 @@ class DepartmentController extends Controller {
             ctx.paramsError('未指定新建部门名称')
         }
         // 检查部门名称是否重复
-        let departmentNameCount = await ctx.model.Department.countDocuments({ name: departmentName, delete:false })
+        let departmentNameCount = await ctx.model.Department.countDocuments({ name: departmentName, delete: false })
         if (departmentNameCount !== 0) {
             ctx.error(1, '已存在相同名称的部门，请更换一个新的部门名称')
         }
@@ -53,12 +53,12 @@ class DepartmentController extends Controller {
             ctx.error(2, '该员工已绑定，请勿重复绑定')
         }
         // 检查一卡通对应的人员是否存在
-        let userRecord = await ctx.model.User.findOne({cardnum:staffCardnum})
-        if(!userRecord){
+        let userRecord = await ctx.model.User.findOne({ cardnum: staffCardnum })
+        if (!userRecord) {
             ctx.error(3, '指定的人员不存在')
         }
         // 绑定新员工
-        let staffBind = new ctx.model.StaffBind({ departmentId, staffCardnum, name: userRecord.name})
+        let staffBind = new ctx.model.StaffBind({ departmentName: department.name, departmentId, staffCardnum, name: userRecord.name })
         await staffBind.save()
         return '绑定成功！'
     }
@@ -87,18 +87,21 @@ class DepartmentController extends Controller {
     async listStaff() {
         const { ctx } = this;
         let { departmentId } = ctx.query
-        let record = await ctx.model.StaffBind.find({ departmentId }, 'departmentId staffCardnum name')
-        if (ctx.userInfo.isAdmin) {
-            return record
-        } else {
-            // 如果不是管理员，判断当前用户是否为本部门员工
-            let count = await ctx.model.StaffBind.countDocuments({ departmentId, staffCardnum: ctx.userInfo.cardnum })
-            if (count === 0) {
-                ctx.permissionError('无权访问')
-            } else {
-                return record
-            }
+        let isStaff = await ctx.model.StaffBind.countDocuments({ staffCardnum: ctx.userInfo.cardnum })
+        if (!ctx.userInfo.isAdmin && !isStaff) {
+            ctx.permissionError('无权访问')
         }
+        let record
+        if (departmentId) {
+            record = await ctx.model.StaffBind.find({ departmentId }, 'departmentName departmentId staffCardnum name')
+        } else {
+            record = await ctx.model.StaffBind.find({}, 'departmentName departmentId staffCardnum name')
+            record = record.map(r => {
+                r.name = `${r.name}(${r.departmentName})`
+                return r
+            })
+        }
+        return record
     }
 
     async deleteDepartment() {

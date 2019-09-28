@@ -278,7 +278,7 @@ class TroubleController extends Controller {
         // 检查是否符合部门要求
         let staffBind = ctx.model.StaffBind.findOne({
             staffCardnum,
-            departmentId:record.departmentId
+            //departmentId:record.departmentId
         })
         if(!staffBind){
             ctx.error(2,'指定的员工不属于故障类型所属部门')
