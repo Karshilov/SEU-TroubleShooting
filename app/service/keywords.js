@@ -7,7 +7,7 @@ class keywordsService extends Service {
         let dispatch = {
             '初始化管理员': this.initAdmin,
             '管理后台': this.configUI,
-            '拉清单': this.todolList,
+            '任务清单': this.todolList,
         }
         if (dispatch[ctx.request.body.Content]) {
             let res = await dispatch[ctx.request.body.Content](ctx.request.body, ctx)
