@@ -12,13 +12,13 @@
     "egg-cors": "^2.2.0",
     "egg-mongoose": "^3.2.0",
     "egg-scripts": "^2.11.0",
+    "fast-xml-parser": "^3.12.20",
     "js-md5": "^0.7.3",
     "moment": "^2.24.0",
     "raw-body": "^2.4.1",
     "sha1": "^1.1.1",
     "uuid": "^3.3.3",
     "weixin-js-sdk": "^1.4.0-test",
-    "xml2json": "^0.11.2",
     "yaml": "^1.6.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 'use strict'
 const getRawBody = require("raw-body");
-const xmlparser = require('xml2json');
+const xmlparser = require('fast-xml-parser');
 
 
 module.exports = options => {
@@ -11,7 +11,7 @@ module.exports = options => {
 			//把xml转成json
 			if(ctx.request.header["content-type"] === 'text/xml'){
 				let buff = await getRawBody(ctx.request.req);
-				let resultjson = JSON.parse(xmlparser.toJson(buff)).xml;
+				let resultjson = xmlparser.parse(buff.toString()).xml;
 				ctx.request.body = resultjson;
 			} else {
 				//入参处理
