@@ -9,7 +9,8 @@ class userController extends Controller {
         const { ctx } = this;
         if (ctx.userInfo.isAdmin || ctx.userInfo.isWorker) {
             // 身份类型不是普通用户
-            ctx.permissionError();
+            // 迷惑行为
+            // ctx.permissionError();
         }
 
 
