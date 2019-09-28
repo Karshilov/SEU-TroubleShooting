@@ -17,7 +17,7 @@
         </el-form>
       </div>
     </div>
-    <div>
+    <div v-if="message.length > 0">
       <div class="subtitle">留言消息</div>
       <div class="content">
         <div class="message" v-for="item in message" :key="item._id">

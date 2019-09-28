@@ -1,7 +1,7 @@
 {
   "name": "seu-nic-trouble-shooting",
   "version": "1.0.0",
-  "description": "东南大学网络故障报修",
+  "description": "东南大学网络报障报修",
   "private": true,
   "egg": {
     "declarations": true
