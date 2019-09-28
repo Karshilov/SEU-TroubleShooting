@@ -6,8 +6,6 @@ module.exports = options => {
 
         let token = ctx.request.headers.token
         let record = token ? await ctx.model.User.findOne({ token }) : false
-        console.log(record)
-        console.log(+moment())
         if (record && record.tokenExpireTime > +moment()) {
             ctx.userInfo = record
         } else {

@@ -103,6 +103,7 @@ class userController extends Controller {
             }
             else {
                 resOfCardnum.isAdmin = true;
+                resOfCardnum.adminLevel = ctx.userInfo.adminLevel+1;
                 await resOfCardnum.save();
             }
         } else {
@@ -119,6 +120,10 @@ class userController extends Controller {
             let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.query.cardnum });
             if (!resOfCardnum) {
                 ctx.error(-4, '没有查询结果');
+            }
+            else if(ctx.userInfo.adminLevel>=resOfCardnum.adminLevel)
+            {
+                ctx.error(-3,'不能取消同权限或高权限的管理员资格');
             }
             else {
                 resOfCardnum.isAdmin = false;

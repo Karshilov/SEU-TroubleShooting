@@ -15,7 +15,7 @@ class PushPending extends Subscription {
     let now = +moment()
     let record = await ctx.model.Trouble.find({
       // status: "PENDING", createdTime: { $lt: now - 15 * 60 * 1000 }
-      status: "PENDING", createdTime: { $lt: now - 1 * 60 * 1000 }
+      status: "PENDING", createdTime: { $lt: now - 1 * 60 * 15000 }
     }
     );
     record.forEach(async Element =>{

@@ -11,6 +11,7 @@ module.exports = app => {
         tokenExpireTime: { type: Number, default: 0 },
         phonenum: { type: String, default: '' },
         isAdmin: { type: Boolean, default: false },
+        adminLevel: { type: Number, default: 0},
         isWorker: { type: Boolean, default: false },
         address: { type: String, default: '' }
     });
