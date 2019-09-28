@@ -14,7 +14,9 @@ class loginController extends Controller {
     let result = await this.ctx.curl(url, {
       dataType: 'json'
     })
-    
+    if(!result || !result.data || !result.data.openid){
+      ctx.permissionError('微信认证出现错误，请重试')
+    }
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
     let token = uuid();
     if (!person) {
