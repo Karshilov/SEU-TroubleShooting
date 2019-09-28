@@ -1,0 +1,19 @@
+# 服务器监听设置
+hostname: 127.0.0.1
+port: 3000
+
+# 服务器URL（以/结尾）
+serverURL: https://myseu.cn/grh/
+# wx-oauth重定向网址（不以/结尾）
+redirectURL: 'http://10.203.180.105:8080'
+
+# MongoDB 配置
+# mongodbURL: 'mongodb://username:password@host:port/dbname?authMechanism=DEFAULT'
+mongodbURL: 'mongodb://127.0.0.1:27017/Trouble'
+
+# wechat设置
+appID : 'wx12345679'
+appsecret : '1234566789'
+token : 'zzj'
+userTemplateId: 'YDpJMjuLpl5cO1YjccV785H-ZfILsxGncIB-aqNhXk0'
+staffTemplateId: 'Ch_O3_EmPPyxrKee0FHCXCJIGEa6fgXecNgddyvJav8'
