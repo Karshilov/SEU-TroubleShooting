@@ -136,9 +136,10 @@ class TroubleController extends Controller {
             })
         } else if(role === 'STAFF') {
             // 工作人员查询的逻辑
+            // 根据需求，工作人员能看到所有待处理的任务并进行处理
             let record = await ctx.model.Trouble.find({
                 staffCardnum:ctx.userInfo.cardnum,
-                $or:statusFilter
+                $or:statusFilter // END 状态对应 ACCEPT 、 REJECT 和 CLOSED
             },['_id','createdTime','typeName','status'],{
                 skip: pagesize * (page - 1),
                 limit: pagesize,

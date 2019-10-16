@@ -6,10 +6,13 @@ import axios from './axios'
 import './plugins/element.js'
 
 Vue.config.productionTip = false
-window.baseURL = 'https://seicwxbz.seu.edu.cn/api/'
+window.baseURL = 'https://myseu.cn/grh/'
 
 Vue.use(axios)
-
+router.afterEach(() => {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+})
 new Vue({
   router,
   store,
