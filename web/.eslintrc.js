@@ -14,5 +14,5 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint'
   },
-  globals:{wx : true}
+  globals:{ wx : true}
 }
