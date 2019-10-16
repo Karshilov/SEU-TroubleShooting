@@ -6,7 +6,7 @@ import axios from './axios'
 import './plugins/element.js'
 
 Vue.config.productionTip = false
-window.baseURL = 'https://seicwxbz.seu.edu.cn/api/'
+window.baseURL = 'http://47.106.227.224/zzj-wechat'
 
 Vue.use(axios)
 

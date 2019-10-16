@@ -135,15 +135,24 @@ class TroubleController extends Controller {
                 return r
             })
         } else if(role === 'STAFF') {
-            // 工作人员查询的逻辑
-            let record = await ctx.model.Trouble.find({
-                staffCardnum:ctx.userInfo.cardnum,
-                $or:statusFilter
-            },['_id','createdTime','typeName','status'],{
-                skip: pagesize * (page - 1),
-                limit: pagesize,
-                sort: { createdTime: -1 }
+            // 工作人员可以查询到本部门所有的故障信息
+            let department = await ctx.model.StaffBind.find({staffCardnum:ctx.userInfo.cardnum})
+            // 查询该部门下面的所有故障信息,根据部门id进行寻找
+            let record =[]
+            department.forEach(async(k)=>{
+                let temp = await ctx.model.Trouble.find({
+                    departmentId:k.departmentId,
+                    $or:statusFilter
+                },['_id','createdTime','typeName','status'],{
+                    skip: pagesize * (page - 1),
+                    limit: pagesize,
+                    sort: { createdTime: -1 }
+                })
+                temp.forEach(k=>{
+                    record.push(k)
+                })
             })
+            
             return record.map(r => {
                 r.statusDisp = statusDisp[r.status]
                 return r
