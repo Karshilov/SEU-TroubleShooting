@@ -9,7 +9,10 @@ Vue.config.productionTip = false
 window.baseURL = 'http://47.106.227.224/zzj-wechat'
 
 Vue.use(axios)
-
+router.afterEach(() => {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+})
 new Vue({
   router,
   store,

@@ -25,8 +25,19 @@ class wechatController extends Controller {
     }
 
     async post() {
-        const { ctx } = this;
-        await ctx.service.keywords.process(ctx)
+        // 处理微信服务器推送消息
+        let signature = this.ctx.request.query.signature;
+        let timestamp = this.ctx.request.query.timestamp;
+        let nonce = this.ctx.request.query.nonce;
+        let token = this.config.wechat.token;
+        let array = [token, nonce, timestamp].sort();
+
+        if (signature === sha1(array[0] + array[1] + array[2])) {
+            await this.ctx.service.keywords.process(this.ctx)
+        }
+        else {
+            this.ctx.response.body = 'qnmd';
+        }
     }
 }
 

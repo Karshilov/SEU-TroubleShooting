@@ -65,7 +65,7 @@ class accessTokenService extends Service {
         console.log(noncestr)
         let timestamp = moment().unix()
         console.log(timestamp)
-        let string1 = `jsapi_ticket=${ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${this.config.redirectURL}/`
+        let string1 = `jsapi_ticket=${ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${this.config.redirectURL}`
         console.log(this.config.redirectURL)
         console.log(string1)
         let signature = sha1(string1)

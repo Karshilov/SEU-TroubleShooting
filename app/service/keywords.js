@@ -12,13 +12,17 @@ class keywordsService extends Service {
         if (dispatch[ctx.request.body.Content]) {
             let res = await dispatch[ctx.request.body.Content](ctx.request.body, ctx)
             ctx.status = 200
-            ctx.body = `<xml>
-                <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                <CreateTime>${+moment()}</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[${res}]]></Content>
-            </xml>`
+            if(!res){
+                ctx.body = 'success'
+            } else {
+                ctx.body = `<xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[${res}]]></Content>
+                </xml>`
+            }
         } else {
             ctx.body = 'success'
         }
@@ -54,6 +58,8 @@ class keywordsService extends Service {
         let user = await ctx.model.User.findOne({openid})
         if(user && user.isAdmin){
             return `<a href="${ctx.helper.oauthUrl(ctx, 'config')}">点击打开后台管理</a>`
+        } else {
+
         }
     }
 

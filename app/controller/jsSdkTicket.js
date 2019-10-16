@@ -6,7 +6,7 @@ class JsSdkTicketController extends Controller {
   async index() {
     const { ctx } = this;
     return {
-        debug:false,
+        debug:true,
         ...(await ctx.service.getAccessToken.jsSdkTicket()),
         appId:ctx.app.config.wechat.appID,
         jsApiList: ['chooseImage','previewImage','uploadImage','hideAllNonBaseMenuItem','hideOptionMenu']
