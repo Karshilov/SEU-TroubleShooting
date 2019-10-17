@@ -10,8 +10,14 @@ class WechatMenuController extends Controller {
         if (!ctx.userInfo.isAdmin) {
             ctx.permissionError('无权操作')
         }
-        let menuRecord = await this.ctx.model.Menu.find()
-        let res = {}
+        let menuRecord = await this.ctx.model.Menu.find({})
+        console.log(menuRecord)
+        let res = {
+            LEFT:{title:'',sub:[]},
+            CENTER:{title:'',sub:[]},
+            RIGHT:{title:'',sub:[]}
+
+        }
         // 获取一级按钮
         menuRecord.forEach(r => {
             if (r.level === 1) {

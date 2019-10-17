@@ -53,9 +53,9 @@ module.exports = app => {
   router.post('/message', controller.message.createMessage)
   router.get('/message', controller.message.listMessage)
 
-  router.get('/wechat-menu', controller.wechatMenu.get)
-  router.post('/wechat-menu', controller.wechatMenu.add)
-  router.post('/wechat-menu/exchange', controller.wechatMenu.exchange)
-  router.delete('/wechat-menu', controller.wechatMenu.delete)
-  router.post('/wechat-menu/push',controller.wechatMenu.push)
+  router.get('/menu', controller.wechatMenu.get)
+  router.post('/menu', controller.wechatMenu.add)
+  router.post('/menu/exchange', controller.wechatMenu.exchange)
+  router.delete('/menu', controller.wechatMenu.delete)
+  router.post('/menu/push',controller.wechatMenu.push)
 };
