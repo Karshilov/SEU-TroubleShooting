@@ -10,8 +10,14 @@ class WechatMenuController extends Controller {
         if(!ctx.userInfo.isAdmin){
             ctx.permissionError('无权操作')
         }
-        let menuRecord = await this.ctx.model.Menu.find()
-        let res = {}
+        let menuRecord = await this.ctx.model.Menu.find({})
+        console.log(menuRecord)
+        let res = {
+            LEFT:{title:'',sub:[]},
+            CENTER:{title:'',sub:[]},
+            RIGHT:{title:'',sub:[]}
+
+        }
         // 获取一级按钮
         menuRecord.forEach(r => {
             if(r.level === 1){
@@ -44,8 +50,10 @@ class WechatMenuController extends Controller {
         }
         let { level, position, title, url } = ctx.request.body
         // 如果是一级菜单
+        console.log(ctx.request.body)
         if(level === 1){
             let currentRecord = await ctx.model.Menu.findOne({ level, position })
+            console.log(currentRecord)
             if(currentRecord){
                 // 如果存在该菜单则修改其标题
                 currentRecord.title = title
@@ -53,6 +61,7 @@ class WechatMenuController extends Controller {
             } else {
                 // 不存在则创建
                 // 创建之前检查 position 取值是否合法
+                console.log('create')
                 if(['LEFT', 'CENTER','RIGHT'].indexOf(position) === -1){
                     ctx.error(1, '菜单位置不合法')
                 }
