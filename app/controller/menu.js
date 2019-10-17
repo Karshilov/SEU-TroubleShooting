@@ -127,4 +127,4 @@ class MenuController extends Controller {
     }
 }
 
-module.exports = TestController;
+module.exports = MenuController;

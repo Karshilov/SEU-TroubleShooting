@@ -188,6 +188,7 @@ class TroubleController extends Controller {
             ctx.error(1, '故障信息不存在')
         }
         // 只允许用户本人、故障处理人、管理员查看故障详细信息
+        // TODO：允许相同部门工作人员查看故障信息
         if(record.userCardnum !== cardnum && record.staffCardnum !== cardnum && !ctx.userInfo.isAdmin){
             ctx.permissionError('无权访问')
         }
@@ -201,7 +202,7 @@ class TroubleController extends Controller {
             image:record.image,
             statusDisp:statusDisp[record.status],
             canPostMessage:record.status === 'PENDING',
-            canDeal:record.staffCardnum === cardnum && record.status === 'PENDING',
+            canDeal:record.staffCardnum === cardnum && record.status === 'PENDING', // TODO: 允许相同部门的人员处理
             canRedirect:(record.staffCardnum === cardnum || ctx.userInfo.isAdmin) && record.status === 'PENDING',
             canCheck:record.status === 'DONE' && record.userCardnum === cardnum,
             showEvaluation:!!record.evaluation,
@@ -224,6 +225,7 @@ class TroubleController extends Controller {
             ctx.error(1, '故障信息不存在')
         }
         // 只允许故障处理人将处于PENDING状态的故障标记为完成
+        // TODO：允许相同部门的故障处理人处理故障
         if(record.status !== 'PENDING' || record.staffCardnum !== cardnum){
             ctx.permissionError('无权操作')
         }

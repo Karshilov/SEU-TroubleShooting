@@ -15,7 +15,7 @@ class MessageController extends Controller {
     //创建消息
     async createMessage() {
         const { ctx } = this;
-
+        // TODO：允许相同部门工作人员留言
         let id = ctx.request.body.troubleId; //故障Id
         let message = ctx.request.body.message; //消息内容
 
