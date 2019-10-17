@@ -54,6 +54,11 @@ export default new Router({
       component: () => import('./views/Staff.vue')
     },
     {
+      path: '/wechat-menu/:token',
+      name: 'wechat-menu',
+      component: () => import('./views/WechatMenu.vue')
+    },
+    {
       path: '/config/:token',
       name: 'config',
       component: () => import('./views/Config.vue'),
