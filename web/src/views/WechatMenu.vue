@@ -157,7 +157,10 @@ export default {
     };
   },
   methods: {
-    async push() {},
+    async push() {
+      let res = await this.$axios.post("/menu/push");
+      this.load();
+    },
     async setMenu1Name() {
       let res = await this.$axios.post(
         "/menu",

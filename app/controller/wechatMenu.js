@@ -140,8 +140,12 @@ class WechatMenuController extends Controller {
         let { ctx } = this
         let rawMenu = [[], [], []]
         let menu = []
+        let menuData = []
         let menuRecord = await this.ctx.model.Menu.find()
-        let access_token = ctx.service.getAccessToken()
+        let access_token = await ctx.service.getAccessToken.accessToken()
+        
+
+
         // 替换链接并且分类
         menuRecord.forEach(k => {
             if (k.title === "故障申报" && k.level === 2) {
@@ -155,33 +159,39 @@ class WechatMenuController extends Controller {
                 k.url = url
             }
 
-            if (k.position === "LEFT") {
-                rawMenu[0].psuh(k)
-                if (k.level = 1) {
+            if (k.position === "LEFT") {     
+                if (k.level === 1) {
                     menu.push({
                         "name": k.title,
                         "sub_button": []
                     })
+                }else{
+                    rawMenu[0].push(k)
                 }
             } else if (k.position === "CENTER") {
-                rawMenu[1].push(k)
-                if (k.level = 1) {
+                if (k.level === 1) {
                     menu.push({
                         "name": k.title,
                         "sub_button": []
                     })
+                }else{
+                    rawMenu[1].push(k)
                 }
             } else if (k.position === "RIGHT") {
-                rawMenu[2].push(k)
-                if (k.level = 1) {
+                
+                if (k.level === 1) {
                     menu.push({
                         "name": k.title,
                         "sub_button": []
                     })
+                }else{
+                    rawMenu[2].push(k)
                 }
             }
-
+            k.url = k.url ? k.url:"http://www.seu.edu.cn"
         })
+
+        
 
         // 子菜单进行排序并导入
         rawMenu.forEach(k => {
@@ -192,21 +202,21 @@ class WechatMenuController extends Controller {
                 if (subMenu.position === "LEFT") {
                     menu[0].sub_button.push({
                         "type": "view",
-                        "name": subMenu.name,
+                        "name": subMenu.title,
                         "url": subMenu.url
                     })
                 }
                 if (subMenu.position === "CENTER") {
                     menu[1].sub_button.push({
                         "type": "view",
-                        "name": subMenu.name,
+                        "name": subMenu.title,
                         "url": subMenu.url
                     })
                 }
                 if (subMenu.position === "RIGHT") {
                     menu[2].sub_button.push({
                         "type": "view",
-                        "name": subMenu.name,
+                        "name": subMenu.title,
                         "url": subMenu.url
                     })
                 }
@@ -214,9 +224,9 @@ class WechatMenuController extends Controller {
         })
 
         // 删除子菜单为空的主菜单
-        menu = menu.map(sub => {
+        menu.forEach(sub => {
             if (sub.sub_button.length !== 0) {
-                return sub
+                menuData.push(sub)
             }
         })
 
@@ -224,11 +234,11 @@ class WechatMenuController extends Controller {
         let result = await this.app.curl(url, {
             method: 'POST',
             contentType: 'json',
-            data: { "button": menu },
+            data: { "button": menuData },
             dataType: 'json',
         })
-        console.log(result)
-        console.log(ctx.app.config.serverURL)
+        console.log(result.data)
+        
 
     }
 }
