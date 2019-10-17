@@ -11,6 +11,9 @@
       <div class="btn-box">
       <el-button type="primary" @click="gotoAdmin">管理员设置</el-button>
       </div>
+      <div class="btn-box">
+      <el-button type="primary" @click="gotoMenu">微信菜单设置</el-button>
+      </div>
   </div>
 </template>
 
@@ -30,6 +33,9 @@ export default {
     },
     gotoAdmin(){
       this.$router.push(`/admin/${this.token}`)
+    },
+    gotoMenu(){
+      this.$router.push(`/wechat-menu/${this.token}`)
     }
   },
   created(){

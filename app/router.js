@@ -9,7 +9,6 @@ module.exports = app => {
   const checkSignature = app.middleware.checkSignature(app.config);
   const interceptorXML2json = app.middleware.interceptorXML2json();
 
-  
   router.post('/', controller.home.index);
   router.get('/people/create', controller.test.create);
   router.get('/people/find', controller.test.find);
@@ -18,7 +17,7 @@ module.exports = app => {
   router.get('/wechat', controller.wechat.checkSignature);
   router.post('/wechat', interceptorXML2json, checkSignature, controller.wechat.post);
 
-  router.get('/wechatOauth',controller.wechatOauth.index);
+  router.get('/wechatOauth',controller.wechatOAuth.index);
 
   router.post('/user/bind',controller.user.bind);
   router.delete('/user/bind',controller.user.unbind);
@@ -53,4 +52,10 @@ module.exports = app => {
 
   router.post('/message', controller.message.createMessage)
   router.get('/message', controller.message.listMessage)
+
+  router.get('/wechat-menu', controller.wechatMenu.get)
+  router.post('/wechat-menu', controller.wechatMenu.add)
+  router.post('/wechat-menu/exchange', controller.wechatMenu.exchange)
+  router.delete('/wechat-menu', controller.wechatMenu.delete)
+  router.post('/wechat-menu/push',controller.wechatMenu.push)
 };

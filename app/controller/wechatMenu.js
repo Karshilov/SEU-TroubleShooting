@@ -3,7 +3,7 @@
 const Controller = require('egg').Controller;
 
 // 微信菜单配置页面
-class MenuController extends Controller {
+class WechatMenuController extends Controller {
     async get() {
         // 获取当前菜单结构
         const { ctx } = this;
@@ -120,11 +120,19 @@ class MenuController extends Controller {
 
     async delete(){
         // 删除条目
+        let { ctx } = this
+        if(!ctx.userInfo.isAdmin){
+            ctx.permissionError('无权操作')
+        }
+        let { id } = ctx.query
+        await ctx.model.Menu.findByIdAndDelete(id)
+        return 'success'
     }
 
-    async set(){
+    async push(){
         // 向微信服务器推送菜单设置
+        
     }
 }
 
-module.exports = MenuController;
+module.exports = WechatMenuController;
