@@ -18,7 +18,7 @@ class MessageController extends Controller {
         // TODO：允许相同部门工作人员留言
         let id = ctx.request.body.troubleId; //故障Id
         let message = ctx.request.body.message; //消息内容
-
+        let isSameDepartment = false
         let resOfTroubleId = await ctx.model.Trouble.findById(id);
         if (!resOfTroubleId) {
             ctx.error(-4, '没有查询到相关故障信息');
@@ -27,12 +27,19 @@ class MessageController extends Controller {
         if (resOfTroubleId.status === 'PENDING') {
             //向双方推送消息
 
-            //用户和工作人员的一卡通号
             let userCardnum = resOfTroubleId.userCardnum;
-            let staffCardnum = resOfTroubleId.staffCardnum;
+            let staffCardnum = resOfTroubleId.staffCardnum;  //负责该故障的维修人员
+
+            let resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum })
+            if (resOfStaffBind.length !== 0) {
+                resOfStaffBind.forEach(k => {
+                    if (resOfTroubleId.departmentId !== k.departmentId) isSameDepartment = true
+                })
+            }
+
 
             //消息来自维修人员
-            if (ctx.userInfo.cardnum === staffCardnum) {
+            if (isSameDepartment) {
                 // 创建消息的是维修人员
                 let now = +moment();
                 ctx.service.pushNotification.userNotification(
@@ -42,7 +49,7 @@ class MessageController extends Controller {
                     resOfTroubleId.typeName,
                     '故障处理中',
                     moment(now).format('YYYY-MM-DD HH:mm:ss'),
-                    '消息内容：'+message,
+                    '消息内容：' + message,
                     this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id)
                 )
 
@@ -55,7 +62,7 @@ class MessageController extends Controller {
                 await newChatInfo.save();
             }
             //消息来自用户
-            else if(ctx.userInfo.cardnum === userCardnum) {
+            else if (ctx.userInfo.cardnum === userCardnum) {
                 let now = +moment();
 
                 ctx.service.pushNotification.staffNotification(
@@ -66,7 +73,7 @@ class MessageController extends Controller {
                     resOfTroubleId.desc,
                     resOfTroubleId.phonenum,
                     moment(resOfTroubleId.createdTime).format('YYYY-MM-DD HH:mm:ss'),
-                    '消息内容：'+message,
+                    '消息内容：' + message,
                     this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id) // url - 故障详情页面
                 )
 

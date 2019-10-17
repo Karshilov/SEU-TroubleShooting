@@ -34,10 +34,25 @@ class userController extends Controller {
             ctx.error(3, "电话号码已占用");
         }
 
-        // TODO: 没加验证，qnmd
-        ctx.userInfo.name = ctx.request.body.name;
-        ctx.userInfo.cardnum = ctx.request.body.cardnum;
-        ctx.userInfo.phonenum = ctx.request.body.phonenum;
+        //验证人员信息格式是否正确
+        if (!/\d{9}/.test(ctx.request.body.cardnum)) {
+            ctx.error(4, "一卡通错误")
+        } else {
+            ctx.userInfo.cardnum = ctx.request.body.cardnum;
+        }
+
+        if (!ctx.request.body.name) {
+            ctx.error(4, "姓名错误")
+        } else {
+            ctx.userInfo.name = ctx.request.body.name
+        }
+
+        if(!ctx.request.body.phonenum){
+            ctx.error(4,"电话号码错误")
+        }else{
+            ctx.userInfo.phonenum = ctx.request.body.phonenum
+        }
+        
         ctx.userInfo.address = ctx.request.body.address ? ctx.request.body.address : '';
 
         await ctx.userInfo.save();
@@ -104,7 +119,7 @@ class userController extends Controller {
             }
             else {
                 resOfCardnum.isAdmin = true;
-                resOfCardnum.adminLevel = ctx.userInfo.adminLevel+1;
+                resOfCardnum.adminLevel = ctx.userInfo.adminLevel + 1;
                 await resOfCardnum.save();
             }
         } else {
@@ -115,16 +130,15 @@ class userController extends Controller {
     async deleteAdmin() {
         const { ctx } = this;
         if (ctx.userInfo.isAdmin) {
-            if(ctx.userInfo.cardnum === ctx.query.cardnum){
+            if (ctx.userInfo.cardnum === ctx.query.cardnum) {
                 ctx.error(1, '不能取消自己的管理员资格')
             }
             let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.query.cardnum });
             if (!resOfCardnum) {
                 ctx.error(-4, '没有查询结果');
             }
-            else if(ctx.userInfo.adminLevel>=resOfCardnum.adminLevel)
-            {
-                ctx.error(-3,'不能取消同权限或高权限的管理员资格');
+            else if (ctx.userInfo.adminLevel >= resOfCardnum.adminLevel) {
+                ctx.error(-3, '不能取消同权限或高权限的管理员资格');
             }
             else {
                 resOfCardnum.isAdmin = false;
@@ -142,7 +156,7 @@ class userController extends Controller {
         }
 
         let resOfAdmin = await ctx.model.User.find({ isAdmin: true }, ['cardnum', 'name']);
-        
+
         return resOfAdmin;
     }
 }
