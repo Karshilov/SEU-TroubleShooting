@@ -14,7 +14,7 @@ class loginController extends Controller {
     let result = await this.ctx.curl(url, {
       dataType: 'json'
     })
-    if(!result || !result.data || !result.data.openid){
+    if (!result || !result.data || !result.data.openid) {
       ctx.permissionError('微信认证出现错误，请重试')
     }
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
@@ -26,28 +26,28 @@ class loginController extends Controller {
         tokenExpireTime: +moment() + 30 * 60 * 1000
       });
       let res = await newPerson.save();
-  
-    }else{
+
+    } else {
       person.token = token;
       person.tokenExpireTime = +moment() + 30 * 60 * 1000;
       await person.save();
     }
 
 
-    if(state === 'debug'){
+    if (state === 'debug') {
       ctx.body = token;
-      return 
+      return
     }
 
     state = state.split('_')
     //用户存在isNewbie为0,否则为1
     let redirectURL
-    if(person && person.cardnum){
+    if (person && person.cardnum) {
       redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
     } else {
       redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`
     }
-    
+
     //重定向到前端接口
     ctx.redirect(redirectURL);
 
