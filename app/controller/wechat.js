@@ -33,6 +33,12 @@ class wechatController extends Controller {
         let array = [token, nonce, timestamp].sort();
 
         if (signature === sha1(array[0] + array[1] + array[2])) {
+            /**
+             * TODO 对接统一身份认证
+             * 判断事件类型
+             * 如果是 CLICK 事件 - ？
+             * 如果是 KEYWORD 事件
+             */
             await this.ctx.service.keywords.process(this.ctx)
         }
         else {

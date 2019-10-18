@@ -14,7 +14,7 @@ class userController extends Controller {
         }
 
 
-        //确定改用户是否已经绑定
+        //确定该用户是否已经绑定
         if (ctx.userInfo.cardnum !== '') {
             // 每个OpenID只允许一次绑定
             ctx.error(1, "该微信号已绑定过一卡通，请勿重复绑定");

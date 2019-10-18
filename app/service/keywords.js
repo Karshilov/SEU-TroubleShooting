@@ -58,8 +58,6 @@ class keywordsService extends Service {
         let user = await ctx.model.User.findOne({openid})
         if(user && user.isAdmin){
             return `<a href="${ctx.helper.oauthUrl(ctx, 'config')}">点击打开后台管理</a>`
-        } else {
-
         }
     }
 
