@@ -17,7 +17,7 @@ module.exports = app => {
   router.get('/wechat', controller.wechat.checkSignature);
   router.post('/wechat', interceptorXML2json, checkSignature, controller.wechat.post);
 
-  router.get('/wechatOauth',controller.wechatOauth.index);
+  router.get('/wechatOauth',controller.wechatOAuth.index);
 
   router.post('/user/bind',controller.user.bind);
   router.delete('/user/bind',controller.user.unbind);
