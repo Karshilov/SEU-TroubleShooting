@@ -58,4 +58,6 @@ module.exports = app => {
   router.post('/menu/exchange', controller.wechatMenu.exchange)
   router.delete('/menu', controller.wechatMenu.delete)
   router.post('/menu/push',controller.wechatMenu.push)
+
+  router.post('/callback',controller.callbackUrl.callback)
 };

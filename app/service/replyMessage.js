@@ -16,7 +16,6 @@ class replyMessageService extends Service {
         }
         let res = await axios.post(url, replyData)
         console.log(res.data)
-        
     }
 }
 

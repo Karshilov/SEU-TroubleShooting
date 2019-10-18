@@ -43,11 +43,12 @@ module.exports = appInfo => {
       appID: configYaml.appID,
       appsecret: configYaml.appsecret,
       token: configYaml.token,
-      userTemplateId:configYaml.userTemplateId,
-      staffTemplateId:configYaml.staffTemplateId
+      userTemplateId: configYaml.userTemplateId,
+      staffTemplateId: configYaml.staffTemplateId
     },
     redirectURL: configYaml.redirectURL,
-    serverURL: configYaml.serverURL
+    serverURL: configYaml.serverURL,
+    secret: configYaml.secret
   };
 
   // use for cookie sign key, should change to your own and keep security
