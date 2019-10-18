@@ -39,7 +39,7 @@ class wechatController extends Controller {
              * 如果是 CLICK 事件 - ？
              * 如果是 KEYWORD 事件
              */
-            await this.ctx.service.keywords.process(this.ctx)
+            await this.ctx.service.wechatAction.process(this.ctx)
         }
         else {
             this.ctx.response.body = 'qnmd';

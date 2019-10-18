@@ -4,13 +4,17 @@ const moment = require('moment')
 
 class keywordsService extends Service {
     async process(ctx) {
-        let dispatch = {
+        let dispatchKeywords = {
             '初始化管理员': this.initAdmin,
             '管理后台': this.configUI,
             '任务清单': this.todolList,
         }
-        if (dispatch[ctx.request.body.Content]) {
-            let res = await dispatch[ctx.request.body.Content](ctx.request.body, ctx)
+        let dispatchClickEvent = {
+            
+        }
+        console.log(ctx.request.body)
+        if (dispatchKeywords[ctx.request.body.Content]) {
+            let res = await dispatchKeywords[ctx.request.body.Content](ctx.request.body, ctx)
             ctx.status = 200
             if(!res){
                 ctx.body = 'success'
