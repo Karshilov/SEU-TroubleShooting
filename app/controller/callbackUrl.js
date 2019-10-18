@@ -32,7 +32,7 @@ class callbackController extends Controller {
         // 向用户推送redirectURL
         let state = resOfidsSession.target.split('_')
         let redirectURL = ctx.app.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
-        let content = `点击链接继续<a href=${redirectURL}`
+        let content = `点击链接继续<a href=${redirectURL}>`
         await ctx.service.replyMessage.reply(resOfidsSession.openId, content)
 
     }
