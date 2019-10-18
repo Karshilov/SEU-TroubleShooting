@@ -7,14 +7,15 @@ class replyMessageService extends Service {
         let accessToken = await this.ctx.service.getAccessToken.accessToken()
         let url = `https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=${accessToken}`
         let replyData={
-            "touser":"OPENID",
-    "msgtype":"text",
-    "text":
-    {
-         "content":"Hello World"
-    }
+            "touser":openid,
+            "msgtype":"text",
+            "text":
+            {
+                "content":content
+            }
         }
-        let res = await axios.get(url, {responseType: 'arraybuffer'})
+        let res = await axios.post(url, replyData)
+        console.log(res.data)
         
     }
 }
