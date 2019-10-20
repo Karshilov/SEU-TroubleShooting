@@ -59,5 +59,5 @@ module.exports = app => {
   router.delete('/menu', controller.wechatMenu.delete)
   router.post('/menu/push',controller.wechatMenu.push)
 
-  router.post('/callback',controller.callbackUrl.callback)
+  router.post('/callback',controller.idsCallback.callback)
 };
