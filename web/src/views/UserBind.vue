@@ -5,10 +5,10 @@
     <div id="form">
       <el-form ref="form" :model="form" label-width="80px" :rules="rules">
         <el-form-item label="一卡通号" prop="cardnum">
-          <el-input v-model="form.cardnum" :disabled="true" placeholder="一卡通号将作为唯一的身份凭据"></el-input>
+          <el-input v-model="form.cardnum" :readonly="true" placeholder="一卡通号将作为唯一的身份凭据"></el-input>
         </el-form-item>
         <el-form-item label="真实姓名" prop="name">
-          <el-input v-model="form.name" :disabled="true" placeholder="请填写真实姓名"></el-input>
+          <el-input v-model="form.name" :readonly="true" placeholder="请填写真实姓名"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" prop="phonenum">
           <el-input v-model="form.phonenum" placeholder="请填写保持畅通的联系电话"></el-input>

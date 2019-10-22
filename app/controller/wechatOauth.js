@@ -44,7 +44,8 @@ class loginController extends Controller {
     state = state.split('_')
     //用户存在isNewbie为0,否则为1
     let redirectURL
-    if (person.phonenum && person.isAdmin) {
+    console.log(person)
+    if (person.phonenum && person.address) {
       redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
     } else {
       redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`
