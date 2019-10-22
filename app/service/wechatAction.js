@@ -36,9 +36,8 @@ class keywordsService extends Service {
             let resOfOpenid = await ctx.model.User.findOne({ openid: ctx.request.body.FromUserName })
             if (resOfOpenid) {
                 // 用户已经绑定
-                let token = uuid()
-                let state = dispatchClickEvent[ctx.request.body.EventKey].split('_')
-                let redirectURL = ctx.app.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
+                let state = dispatchClickEvent[ctx.request.body.EventKey]
+                let redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`
                 let content = `<a href="${redirectURL}">点击继续</a>`
                 ctx.body = `<xml>
                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>

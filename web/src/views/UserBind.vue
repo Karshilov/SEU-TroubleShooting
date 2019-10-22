@@ -5,10 +5,10 @@
     <div id="form">
       <el-form ref="form" :model="form" label-width="80px" :rules="rules">
         <el-form-item label="一卡通号" prop="cardnum">
-          <el-input v-model="form.cardnum" placeholder="一卡通号将作为唯一的身份凭据"></el-input>
+          <el-input v-model="form.cardnum" :disabled="true" placeholder="一卡通号将作为唯一的身份凭据"></el-input>
         </el-form-item>
         <el-form-item label="真实姓名" prop="name">
-          <el-input v-model="form.name" placeholder="请填写真实姓名"></el-input>
+          <el-input v-model="form.name" :disabled="true" placeholder="请填写真实姓名"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" prop="phonenum">
           <el-input v-model="form.phonenum" placeholder="请填写保持畅通的联系电话"></el-input>
@@ -56,28 +56,27 @@ export default {
       if (!/\d{9}/.test(value)) {
         callback(new Error("请输入正确的一卡通号"));
       } else {
-        callback()
+        callback();
       }
     },
     validateName(rule, value, callback) {
       if (!value) {
         callback(new Error("请输入真实姓名"));
       } else {
-        callback()
+        callback();
       }
     },
     validatePhonenum(rule, value, callback) {
       if (!value) {
         callback(new Error("请输入正确的电话号码"));
       } else {
-        callback()
+        callback();
       }
     },
     save() {
       this.$refs["form"].validate(async valid => {
-        console.log(valid)
+        console.log(valid);
         if (valid) {
-
           this.loading = true;
           let res = await this.$axios.post("/user/bind", this.form, {
             headers: { token: this.token }
@@ -99,12 +98,18 @@ export default {
       this.form.phonenum = "";
     }
   },
-  created() {
+  async created() {
     this.token = this.$route.params.token;
     this.after = this.$route.params.after;
     this.afterArgs = this.$route.params.afterArgs
       ? "/" + this.$route.params.afterArgs
       : "";
+    let res = await this.$axios.get("/user", {
+      headers: { token: this.$route.params.token }
+    });
+    this.form.cardnum = res.data.result.cardnum;
+    this.form.name = res.data.result.name
+    console.log(res);
   }
 };
 </script>

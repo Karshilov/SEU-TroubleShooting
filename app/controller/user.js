@@ -12,20 +12,18 @@ class userController extends Controller {
             // 迷惑行为
             // ctx.permissionError();
         }
-
-
         //确定该用户是否已经绑定
-        if (ctx.userInfo.cardnum !== '') {
-            // 每个OpenID只允许一次绑定
-            ctx.error(1, "该微信号已绑定过一卡通，请勿重复绑定");
-        }
+        // if (ctx.userInfo.cardnum !== '') {
+        //     // 每个OpenID只允许一次绑定
+        //     ctx.error(1, "该微信号已绑定过一卡通，请勿重复绑定");
+        // }
 
-        //确定一卡通号是否存在
-        let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
-        if (resOfCardnum) {
-            // 一卡通号重复
-            ctx.error(2, "该一卡通号已经绑定过其他微信号，请勿重复绑定");
-        }
+        // 确定一卡通号是否存在
+        // let resOfCardnum = await ctx.model.User.findOne({ cardnum: ctx.request.body.cardnum });
+        // if (resOfCardnum) {
+        //     // 一卡通号重复
+        //     ctx.error(2, "该一卡通号已经绑定过其他微信号，请勿重复绑定");
+        // }
 
         //确定电话号码是否存在
         let resOfPhonenum = await ctx.model.User.findOne({ phonenum: ctx.request.body.phonenum });
@@ -34,18 +32,20 @@ class userController extends Controller {
             ctx.error(3, "电话号码已占用");
         }
 
-        //验证人员信息格式是否正确
-        if (!/\d{9}/.test(ctx.request.body.cardnum)) {
-            ctx.error(4, "一卡通错误")
-        } else {
-            ctx.userInfo.cardnum = ctx.request.body.cardnum;
-        }
+        // 验证人员信息格式是否正确
+        // 不检查一卡通和姓名，不更新一卡通和姓名
 
-        if (!ctx.request.body.name) {
-            ctx.error(4, "姓名错误")
-        } else {
-            ctx.userInfo.name = ctx.request.body.name
-        }
+        // if (!/\d{9}/.test(ctx.request.body.cardnum)) {
+        //     ctx.error(4, "一卡通错误")
+        // } else {
+        //     ctx.userInfo.cardnum = ctx.request.body.cardnum;
+        // }
+
+        // if (!ctx.request.body.name) {
+        //     ctx.error(4, "姓名错误")
+        // } else {
+        //     ctx.userInfo.name = ctx.request.body.name
+        // }
 
         if(!ctx.request.body.phonenum){
             ctx.error(4,"电话号码错误")
@@ -72,7 +72,7 @@ class userController extends Controller {
 
         return {
             "cardnum": ctx.userInfo.cardnum,
-            "name": ctx.userInfo.cardnum,
+            "name": ctx.userInfo.name,
             "address": ctx.userInfo.address,
             "phonenum": ctx.userInfo.phonenum
         }
