@@ -7,7 +7,7 @@ const uuid = require('uuid/v4');
 
 class loginController extends Controller {
   async index() {
-    console.log("wechatOAuth")
+
     const { ctx } = this;
     let code = ctx.request.query.code;
     let state = ctx.request.query.state;
@@ -19,7 +19,7 @@ class loginController extends Controller {
       ctx.permissionError('微信认证出现错误，请重试')
     }
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
-    console.log(person)
+  
     let token = uuid();
     if (!person) {
       let newPerson = this.ctx.model.User({
@@ -44,7 +44,7 @@ class loginController extends Controller {
     state = state.split('_')
     //用户存在isNewbie为0,否则为1
     let redirectURL
-    console.log(person)
+    
     if (person.phonenum && person.address) {
       redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
     } else {
