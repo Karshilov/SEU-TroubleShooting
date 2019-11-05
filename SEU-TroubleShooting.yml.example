@@ -17,3 +17,9 @@ appsecret : '1234566789'
 token : 'zzj'
 userTemplateId: 'YDpJMjuLpl5cO1YjccV785H-ZfILsxGncIB-aqNhXk0'
 staffTemplateId: 'Ch_O3_EmPPyxrKee0FHCXCJIGEa6fgXecNgddyvJav8'
+
+#ids小程序签名
+idsSecret: 'xxxxxx'
+
+# CAS认证
+casURL: https://cas.xxx.edu.cn/authserver/login

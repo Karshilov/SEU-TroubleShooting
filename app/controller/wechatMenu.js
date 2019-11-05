@@ -148,16 +148,16 @@ class WechatMenuController extends Controller {
 
         // 替换链接并且分类
         menuRecord.forEach(k => {
-            // if (k.title === "故障申报" && k.level === 2) {
-            //     let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect"
-            //     url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID)
-            //     k.url = url
-            // }
-            // if (k.title === "处理进度" && k.level === 2) {
-            //     let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect"
-            //     url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID)
-            //     k.url = url
-            // }
+            if (k.title === "故障申报" && k.level === 2) {
+                let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect"
+                url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID)
+                k.url = url
+            }
+            if (k.title === "处理进度" && k.level === 2) {
+                let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect"
+                url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID)
+                k.url = url
+            }
 
             if (k.position === "LEFT") {     
                 if (k.level === 1) {
@@ -203,13 +203,13 @@ class WechatMenuController extends Controller {
                 if (subMenu.position === "LEFT") {
                     if(subMenu.title === "故障申报"){
                         menu[0].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "故障申报"
                         })
                     }else if(subMenu.title === "处理进度"){
                         menu[0].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "处理进度"
                         })
@@ -224,13 +224,13 @@ class WechatMenuController extends Controller {
                 if (subMenu.position === "CENTER") {
                     if(subMenu.title === "故障申报"){
                         menu[1].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "故障申报"
                         })
                     }else if(subMenu.title === "处理进度"){
                         menu[1].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "处理进度"
                         })
@@ -245,13 +245,13 @@ class WechatMenuController extends Controller {
                 if (subMenu.position === "RIGHT") {
                     if(subMenu.title === "故障申报"){
                         menu[2].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "故障申报"
                         })
                     }else if(subMenu.title === "处理进度"){
                         menu[2].sub_button.push({
-                            "type": "click",
+                            "type": "view",
                             "name": subMenu.title,
                             "key": "处理进度"
                         })

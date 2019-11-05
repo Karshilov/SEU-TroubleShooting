@@ -48,7 +48,8 @@ module.exports = appInfo => {
     },
     redirectURL: configYaml.redirectURL,
     serverURL: configYaml.serverURL,
-    idsSecret: configYaml.idsSecret
+    idsSecret: configYaml.idsSecret,
+    casURL: configYaml.casURL
   };
 
   // use for cookie sign key, should change to your own and keep security

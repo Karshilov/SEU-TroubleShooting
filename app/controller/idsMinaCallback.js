@@ -28,7 +28,7 @@ class callbackController extends Controller {
         let res = await newPerson.save();
         //console.log(res)
         // 向用户推送redirectURL,
-        
+        // 只在wehcatOAuth发放token
         let redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${resOfidsSession.target}#wechat_redirect`
         let content = `<a href="${redirectURL}">点击链接继续</a>`
         await ctx.service.replyMessage.reply(resOfidsSession.openId, content)

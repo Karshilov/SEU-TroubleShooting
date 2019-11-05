@@ -19,17 +19,34 @@ class loginController extends Controller {
       ctx.permissionError('微信认证出现错误，请重试')
     }
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
-  
+
     let token = uuid();
-    if (!person) {
-      let newPerson = this.ctx.model.User({
-        openid: result.data.openid,
-        token: token,
-        tokenExpireTime: +moment() + 30 * 60 * 1000
-      });
-      let res = await newPerson.save();
+    
+    if (!(person && person.cardnum && person.name)) {
+      // 用户信息不存在，跳转到学校的ids认证，获取用户的信息
+      // let newPerson = this.ctx.model.User({
+      //   openid: result.data.openid,
+      //   token: token,
+      //   tokenExpireTime: +moment() + 30 * 60 * 1000
+      // });
+      // let res = await newPerson.save();
+      let idsSession = token
+      let newIds = new this.ctx.model.Ids({
+        idsSession: idsSession,
+        openId: result.data.openid,
+        target: state
+      })
+      await newIds.save()
+      // 回调函数
+      //let serviceURL = `${this.ctx.app.config.casURL}idsCallback?idsSession=${idsSession}`
+      // 测试用
+      let serviceURL = `http://auth.myseu.cn/idsCallback/${idsSession}`
+      let casURL = `${this.ctx.app.config.casURL}authserver/login?goto=${serviceURL}`
+      console.log(casURL)
+      ctx.redirect(casURL);
 
     } else {
+
       person.token = token;
       person.tokenExpireTime = +moment() + 30 * 60 * 1000;
       await person.save();
@@ -44,7 +61,7 @@ class loginController extends Controller {
     state = state.split('_')
     //用户存在isNewbie为0,否则为1
     let redirectURL
-    
+
     if (person.phonenum && person.address) {
       redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
     } else {
