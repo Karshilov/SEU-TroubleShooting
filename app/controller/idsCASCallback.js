@@ -38,7 +38,7 @@ class callbackController extends Controller {
       // 向用户推送redirectURL,
       // 只在wehcatOAuth发放token
       console.log('继续跳转wechatOAuth')
-      let redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${idsList.target}#wechat_redirect`
+      let redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${idsRecord.target}#wechat_redirect`
       ctx.redirect(redirectURL)
 
 
