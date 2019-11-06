@@ -66,7 +66,7 @@ class loginController extends Controller {
     }
    
     //重定向到前端接口
-    console.log(redirectURL)
+    console.log('重定向'+redirectURL)
     ctx.redirect(redirectURL);
 
   }
