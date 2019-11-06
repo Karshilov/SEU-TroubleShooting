@@ -22,7 +22,7 @@ class loginController extends Controller {
 
     let token = uuid();
     let casURL = ''
-    if (!(person && person.cardnum && person.name)) {
+    if (!person) {
       // 用户信息不存在，跳转到学校的ids认证，获取用户的信息
       let idsSession = token
       let newIds = new ctx.model.Ids({
