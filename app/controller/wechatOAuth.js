@@ -31,7 +31,7 @@ class loginController extends Controller {
         target: state
       })
       await newIds.save()
-      let serviceURL = `${this.ctx.app.config.serverURL}idsCallback?idsSession=${idsSession}`
+      let serviceURL = `${this.ctx.app.config.serverURL}idsCallback/${idsSession}`
       
       // 测试用
       //let serviceURL = `https://seicwxbz.seu.edu.cn/idsCallback/${idsSession}`
