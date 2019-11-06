@@ -34,7 +34,9 @@ module.exports = appInfo => {
     mongoose: {
       client: {
         url: configYaml.mongodbURL,
-        options: {},
+        options: {
+          useUnifiedTopology:true
+        },
         // mongoose global plugins, expected a function or an array of function and options
         plugins: [],
       },
