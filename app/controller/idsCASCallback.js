@@ -23,9 +23,9 @@ class callbackController extends Controller {
       let res = await axios.get(serviceValidateURL)
       console.log(xmlparser.parse(res.data)['cas:serviceResponse'])
       let data = xmlparser.parse(res.data)['cas:serviceResponse']['cas:authenticationSuccess']['cas:attributes']
-      let idsList = await ctx.model.Ids.findOne({ idsSession: ids_session })
+      let idsRecord = await ctx.model.Ids.findOne({ idsSession: ids_session })
       let newPerson = new ctx.model.User({
-        openid: idsList.idsSession,
+        openid: idsRecord.openId,
         
         //假的
         name:'qnmd产品经理',

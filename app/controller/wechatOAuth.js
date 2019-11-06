@@ -21,7 +21,7 @@ class loginController extends Controller {
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
 
     let token = uuid();
-    let casURL =''
+    let casURL = ''
     if (!(person && person.cardnum && person.name)) {
       // 用户信息不存在，跳转到学校的ids认证，获取用户的信息
       let idsSession = token
