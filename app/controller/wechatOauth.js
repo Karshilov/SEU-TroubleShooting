@@ -21,7 +21,7 @@ class loginController extends Controller {
     let person = await this.ctx.model.User.findOne({ openid: result.data.openid });
 
     let token = uuid();
-    
+    let casURL =''
     if (!(person && person.cardnum && person.name)) {
       // 用户信息不存在，跳转到学校的ids认证，获取用户的信息
       let idsSession = token
@@ -31,14 +31,13 @@ class loginController extends Controller {
         target: state
       })
       await newIds.save()
-      //let serviceURL = `${this.ctx.app.config.casURL}idsCallback?idsSession=${idsSession}`
+      let serviceURL = `${this.ctx.app.config.casURL}idsCallback?idsSession=${idsSession}`
       
       // 测试用
-      let serviceURL = `http://auth.myseu.cn/idsCallback/${idsSession}`
+      //let serviceURL = `https://seicwxbz.seu.edu.cn/idsCallback/${idsSession}`
       
-      let casURL = `${this.ctx.app.config.casURL}authserver/login?goto=${serviceURL}`
-      console.log(casURL)
-      ctx.redirect(casURL);
+      casURL = `${this.ctx.app.config.casURL}authserver/login?goto=${serviceURL}`
+    
 
     } else {
 
@@ -56,12 +55,16 @@ class loginController extends Controller {
     state = state.split('_')
     //用户存在isNewbie为0,否则为1
     let redirectURL
-
-    if (person.phonenum && person.address) {
-      redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
-    } else {
-      redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`
+    if(casURL === ''){
+      if (person.phonenum && person.address) {
+        redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`
+      } else {
+        redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`
+      }
+    }else{
+      redirectURL = casURL
     }
+   
     //重定向到前端接口
     console.log(redirectURL)
     ctx.redirect(redirectURL);
