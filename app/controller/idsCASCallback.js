@@ -15,7 +15,7 @@ class callbackController extends Controller {
       let ticket = ctx.request.query.ticket
       //console.log(ticket)
       //console.log(ids_session)
-      let serviceValidateURL = `${this.ctx.app.config.casURL}authserver/serviceValidate?service=${this.ctx.app.config.serverURL}idsCallback?idsSession=${ids_session}&ticket=${ticket}`
+      let serviceValidateURL = `${this.ctx.app.config.casURL}authserver/serviceValidate?service=${this.ctx.app.config.serverURL}idsCallback/${ids_session}&ticket=${ticket}`
 
       //测试用
       //let serviceValidateURL = `${ctx.app.config.casURL}authserver/serviceValidate?service=https://seicwxbz.seu.edu.cn/idsCallback/${ids_session}&ticket=${ticket}`
