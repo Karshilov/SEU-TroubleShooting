@@ -21,12 +21,15 @@ class callbackController extends Controller {
       console.log(xmlparser.parse(res.data)['cas:serviceResponse']);
       const data = xmlparser.parse(res.data)['cas:serviceResponse']['cas:authenticationSuccess']['cas:attributes'];
       const idsRecord = await ctx.model.Ids.findOne({ idsSession: ids_session });
-      const newPerson = new ctx.model.User({
-        openid: idsRecord.openId,
-        name: data['cas:cn'],
-        cardnum: data['cas:uid'],
-      });
-      console.log(newPerson);
+      // 此处应该先查找是否有记录，如果有记录应该更新记录而不是创建新的
+      let newPerson = await ctx.model.User.findOne({ openid: idsRecord.openId });
+      if (!newPerson) {
+        newPerson = new ctx.model.User({
+          openid: idsRecord.openId,
+          name: data['cas:cn'],
+          cardnum: data['cas:uid'],
+        });
+      }
       await newPerson.save();
       // 向用户推送redirectURL,
       // 只在wehcatOAuth发放token
