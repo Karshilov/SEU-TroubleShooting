@@ -15,9 +15,10 @@ class keywordsService extends Service {
       处理进度: 'list_USER',
     };
     console.log(ctx.request.body);
-    if (dispatchKeywords[ctx.request.body.Content]) {
+    const keyword = ctx.request.body.Content.split(' ')[0];
+    if (dispatchKeywords[keyword]) {
       // 响应关键字
-      const res = await dispatchKeywords[ctx.request.body.Content](ctx.request.body, ctx);
+      const res = await dispatchKeywords[keyword](ctx.request.body, ctx);
       console.log(res);
       ctx.status = 200;
       if (!res) {

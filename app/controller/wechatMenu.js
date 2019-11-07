@@ -59,7 +59,7 @@ class WechatMenuController extends Controller {
       } else {
         // 不存在则创建
         // 创建之前检查 position 取值是否合法
-        if (['LEFT', 'CENTER', 'RIGHT'].indexOf(position) === -1) {
+        if ([ 'LEFT', 'CENTER', 'RIGHT' ].indexOf(position) === -1) {
           ctx.error(1, '菜单位置不合法');
         }
         const newRecord = new ctx.model.Menu({
@@ -86,7 +86,7 @@ class WechatMenuController extends Controller {
         ctx.error(3, '最多设置五个二级菜单');
       }
       // 获取目前已有菜单的 order
-      let currentOrder = await ctx.model.Menu.find({}, ['order'], {
+      let currentOrder = await ctx.model.Menu.find({}, [ 'order' ], {
         limit: 1,
         sort: { order: -1 },
       });
