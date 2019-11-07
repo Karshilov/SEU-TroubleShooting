@@ -25,6 +25,9 @@ class callbackController extends Controller {
           name: data['cas:cn'],
           cardnum: data['cas:uid'],
         });
+      } else {
+        newPerson.name = data['cas:cn'];
+        newPerson.cardnum = data['cas:uid'];
       }
       await newPerson.save();
       // 向用户推送redirectURL,
