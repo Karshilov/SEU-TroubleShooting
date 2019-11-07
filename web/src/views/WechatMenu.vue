@@ -159,6 +159,17 @@ export default {
   methods: {
     async push() {
       let res = await this.$axios.post("/menu/push");
+      if(res.data.success){
+        this.$message({
+          message: '推送成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '出现错误：',
+          type: 'error'
+        })
+      }
       this.load();
     },
     async setMenu1Name() {
@@ -173,6 +184,17 @@ export default {
           headers: { token: this.token }
         }
       );
+      if(res.data.success){
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '请重试',
+          type: 'error'
+        })
+      }
       this.load();
     },
     async setMenu2Name() {
@@ -187,6 +209,17 @@ export default {
           headers: { token: this.token }
         }
       );
+      if(res.data.success){
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '请重试',
+          type: 'error'
+        })
+      }
       this.load();
     },
     async setMenu3Name() {
@@ -201,6 +234,17 @@ export default {
           headers: { token: this.token }
         }
       );
+      if(res.data.success){
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '请重试',
+          type: 'error'
+        })
+      }
       this.load();
     },
     async addMenu1Sub() {
