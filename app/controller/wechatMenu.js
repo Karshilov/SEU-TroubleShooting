@@ -275,7 +275,7 @@ class WechatMenuController extends Controller {
         });
       }
     });
-    console.log(menuData[0]);
+    console.log(menuData);
     const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
     const result = await this.app.curl(url, {
       method: 'POST',
