@@ -28,14 +28,11 @@ class callbackController extends Controller {
       });
       console.log(newPerson);
       await newPerson.save();
-
       // 向用户推送redirectURL,
       // 只在wehcatOAuth发放token
       console.log('继续跳转wechatOAuth');
       const redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${idsRecord.target}#wechat_redirect`;
       ctx.redirect(redirectURL);
-
-
     } catch (e) {
       console.log(e);
       throw ('统一身份认证又崩啦');
