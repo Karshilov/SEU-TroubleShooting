@@ -9,7 +9,7 @@ class keywordsService extends Service {
       初始化管理员: this.initAdmin,
       管理后台: this.configUI,
       任务清单: this.todolList,
-      权限转让: this.changeAdmin,
+      初始管理员转让: this.changeAdmin,
     };
     const dispatchClickEvent = {
       故障申报: 'post',
