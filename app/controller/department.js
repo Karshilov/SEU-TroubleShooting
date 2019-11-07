@@ -32,6 +32,51 @@ class DepartmentController extends Controller {
     return departmentList.map(k => { return { id: k._id, name: k.name }; });
   }
 
+  async setDepartmentAdmin() {
+    const { ctx } = this;
+    const { departmentId, cardnum } = ctx.request.body;
+    if (!ctx.userInfo.isAdmin) {
+      ctx.permissionError('只允许管理员操作');
+    }
+
+    const resOfCardnum = await ctx.model.User.findOne({ cardnum });
+    if (!resOfCardnum) {
+      ctx.permissionError('目标用户不存在');
+    }
+
+    // eslint-disable-next-line prefer-const
+    let resOfDepartmentId = await ctx.model.DepartmentAdminBind.findOne({ departmentId });
+    if (!resOfDepartmentId) {
+      // 该部门没有绑定管理员
+      const newDepartmentAdmin = new ctx.model.DepartmentAdminBind({
+        departmentId,
+        adminCardnum: resOfCardnum.cardnum,
+        name: resOfCardnum.name,
+      });
+      await newDepartmentAdmin.save();
+    } else {
+      // 该部门已经绑定管理员，更新管理员信息
+      resOfDepartmentId.adminCardnum = resOfCardnum.cardnum;
+      resOfDepartmentId.name = resOfCardnum.name;
+      await resOfDepartmentId.save();
+    }
+    return '设置部门管理员成功';
+  }
+
+  async deleteDepartmentAdmin() {
+    const { ctx } = this;
+    const { departmentId } = ctx.query;
+    if (!ctx.userInfo.isAdmin) {
+      ctx.permissionError('只允许管理员操作');
+    }
+    if (!departmentId) {
+      ctx.paramsError('未指定删除管理员的部门');
+    }
+    await ctx.model.DepartmentAdminBind.deleteOne({ departmentId });
+
+    return '删除部门管理员成功';
+  }
+
   async bindStaff() {
     const { ctx } = this;
     // 验证权限
