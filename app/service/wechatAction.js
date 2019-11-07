@@ -9,6 +9,7 @@ class keywordsService extends Service {
       初始化管理员: this.initAdmin,
       管理后台: this.configUI,
       任务清单: this.todolList,
+      权限转让: this.changeAdmin
     };
     const dispatchClickEvent = {
       故障申报: 'post',
@@ -107,6 +108,29 @@ class keywordsService extends Service {
     return `<a href="${ctx.helper.oauthUrl(ctx, 'list', 'STAFF')}">点击查看任务清单</a>`;
   }
 
+  async changeAdmin(body,ctx){
+    const openid = body.FromUserName
+    const targetCardnum = body.Content.split(' ')[1]
+    //管理员身份确定
+    let recordOfAdmin = await ctx.model.User.findOne({openid})
+    if(!(recordOfAdmin && recordOfAdmin.isAdmin)){
+      return "非管理员，禁止操作"
+    }
+    //查找目标人员
+    let recordOfCardnum = await ctx.model.User.findOne({cardnum:targetCardnum})
+    if(!recordOfCardnum){
+      return "转让目标不存在"
+    }
+    
+    recordOfAdmin.isAdmin = false
+    recordOfCardnum.isAdmin = true
+
+    await recordOfAdmin.save()
+    await recordOfCardnum.save()
+
+    return '管理员转让成功'
+
+  }
 }
 
 module.exports = keywordsService;
