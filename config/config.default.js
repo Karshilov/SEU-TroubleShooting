@@ -2,9 +2,9 @@
 
 'use strict';
 
-const yaml = require('yaml')
-const fs = require('fs')
-const path = require('path')
+const yaml = require('yaml');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * @param {Egg.EggAppInfo} appInfo app info
@@ -16,26 +16,26 @@ module.exports = appInfo => {
    **/
 
 
-  let configYaml = yaml.parse(fs.readFileSync(path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml'), 'utf8'))
+  const configYaml = yaml.parse(fs.readFileSync(path.join(appInfo.baseDir, 'SEU-TroubleShooting.yml'), 'utf8'));
 
   const config = exports = {
     security: {
       csrf: {
-        enable: false
+        enable: false,
       },
-      domainWhiteList: ['*']
+      domainWhiteList: [ '*' ],
     },
     cluster: {
       listen: {
         port: configYaml.port ? +configYaml.port : 7942,
-        hostname: configYaml.hostname
-      }
+        hostname: configYaml.hostname,
+      },
     },
     mongoose: {
       client: {
         url: configYaml.mongodbURL,
         options: {
-          useUnifiedTopology:true
+          useUnifiedTopology: true,
         },
         // mongoose global plugins, expected a function or an array of function and options
         plugins: [],
@@ -46,19 +46,20 @@ module.exports = appInfo => {
       appsecret: configYaml.appsecret,
       token: configYaml.token,
       userTemplateId: configYaml.userTemplateId,
-      staffTemplateId: configYaml.staffTemplateId
+      staffTemplateId: configYaml.staffTemplateId,
     },
     redirectURL: configYaml.redirectURL,
     serverURL: configYaml.serverURL,
     idsSecret: configYaml.idsSecret,
-    casURL: configYaml.casURL
+    casLoginURL: configYaml.casLoginURL,
+    casServiceValidateURL: configYaml.casServiceValidateURL,
   };
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1567152122001_1182';
 
   // add your middleware config here
-  config.middleware = ['responseFormatter', 'identity'];
+  config.middleware = [ 'responseFormatter', 'identity' ];
 
   // add your user config here
   const userConfig = {

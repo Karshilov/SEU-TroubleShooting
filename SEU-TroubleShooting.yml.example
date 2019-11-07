@@ -4,8 +4,8 @@ port: 3000
 
 # 服务器URL（以/结尾）
 serverURL: https://myseu.cn/grh/
-# wx-oauth重定向网址（不以/结尾）
-redirectURL: 'http://10.203.180.105:8080'
+# wx-oauth重定向网址（以/结尾）
+redirectURL: 'http://10.203.180.105:8080/'
 
 # MongoDB 配置
 # mongodbURL: 'mongodb://username:password@host:port/dbname?authMechanism=DEFAULT'
@@ -21,5 +21,6 @@ staffTemplateId: 'Ch_O3_EmPPyxrKee0FHCXCJIGEa6fgXecNgddyvJav8'
 #ids小程序签名
 idsSecret: 'xxxxxx'
 
-# CAS认证
-casURL: https://cas.xxx.edu.cn/authserver/login
+# CAS认证(不以/结尾)
+casLoginURL: https://newids.seu.edu.cn/authserver/login
+casServiceValidateURL: https://newids.seu.edu.cn/authserver/serviceValidate

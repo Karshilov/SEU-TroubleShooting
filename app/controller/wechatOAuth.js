@@ -34,13 +34,7 @@ class loginController extends Controller {
       });
       await newIds.save();
       const serviceURL = `${this.ctx.app.config.serverURL}idsCallback/${idsSession}`;
-
-      // 测试用
-      // let serviceURL = `https://seicwxbz.seu.edu.cn/idsCallback/${idsSession}`
-
-      casURL = `${this.ctx.app.config.casURL}authserver/login?goto=${serviceURL}`;
-
-
+      casURL = `${this.ctx.app.config.casLoginURL}?goto=${serviceURL}`;
     } else {
       person.token = token;
       person.tokenExpireTime = +moment() + 30 * 60 * 1000;

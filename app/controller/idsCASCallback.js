@@ -12,11 +12,7 @@ class callbackController extends Controller {
       const ticket = ctx.request.query.ticket;
       // console.log(ticket)
       // console.log(ids_session)
-      const serviceValidateURL = `${this.ctx.app.config.casURL}authserver/serviceValidate?service=${this.ctx.app.config.serverURL}idsCallback/${ids_session}&ticket=${ticket}`;
-
-      // 测试用
-      // let serviceValidateURL = `${ctx.app.config.casURL}authserver/serviceValidate?service=https://seicwxbz.seu.edu.cn/idsCallback/${ids_session}&ticket=${ticket}`
-
+      const serviceValidateURL = `${this.ctx.app.config.casServiceValidateURL}?service=${this.ctx.app.config.serverURL}idsCallback/${ids_session}&ticket=${ticket}`;
       const res = await axios.get(serviceValidateURL);
       console.log(xmlparser.parse(res.data)['cas:serviceResponse']);
       const data = xmlparser.parse(res.data)['cas:serviceResponse']['cas:authenticationSuccess']['cas:attributes'];
