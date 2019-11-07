@@ -23,7 +23,7 @@ class loginController extends Controller {
     const token = uuid();
     let casURL = '';
     console.log(person);
-    console.log(!person);
+    console.log('!person || (!person.cardnum && !person.name):', !person || (!person.cardnum && !person.name));
     if (!person || (!person.cardnum && !person.name)) {
       // 用户信息不存在，跳转到学校的ids认证，获取用户的信息
       const idsSession = token;
