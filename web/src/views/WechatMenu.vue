@@ -4,7 +4,7 @@
       <div class="title">微信菜单设置</div>
       <div class="title-hint">
         配置微信公众号底部菜单
-        <br />⚠️名称为“故障申报”和“进度查询”的二级菜单会被自动替换成对应的功能链接，您可以自由组合菜单排布。
+        <br />⚠️名称为“故障申报”和“处理进度”的二级菜单会被自动替换成对应的功能链接，您可以自由组合菜单排布。
         <br />⚠️不包含二级菜单的一级菜单将不会显示
       </div>
       <div class="content">
@@ -166,7 +166,7 @@ export default {
         })
       } else {
         this.$message({
-          message: '出现错误',
+          message: '出现错误：'+res.data.errmsg,
           type: 'error'
         })
       }
