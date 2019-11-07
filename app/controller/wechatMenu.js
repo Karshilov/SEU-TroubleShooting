@@ -156,7 +156,6 @@ class WechatMenuController extends Controller {
         url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID);
         k.url = url;
       }
-
       if (k.position === 'LEFT') {
         if (k.level === 1) {
           menu.push({
@@ -197,67 +196,25 @@ class WechatMenuController extends Controller {
       });
       k.forEach(subMenu => {
         if (subMenu.position === 'LEFT') {
-          if (subMenu.title === '故障申报') {
-            menu[0].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '故障申报',
-            });
-          } else if (subMenu.title === '处理进度') {
-            menu[0].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '处理进度',
-            });
-          } else {
-            menu[0].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              url: subMenu.url,
-            });
-          }
+          menu[0].sub_button.push({
+            type: 'view',
+            name: subMenu.title,
+            url: subMenu.url,
+          });
         }
         if (subMenu.position === 'CENTER') {
-          if (subMenu.title === '故障申报') {
-            menu[1].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '故障申报',
-            });
-          } else if (subMenu.title === '处理进度') {
-            menu[1].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '处理进度',
-            });
-          } else {
-            menu[1].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              url: subMenu.url,
-            });
-          }
+          menu[1].sub_button.push({
+            type: 'view',
+            name: subMenu.title,
+            url: subMenu.url,
+          });
         }
         if (subMenu.position === 'RIGHT') {
-          if (subMenu.title === '故障申报') {
-            menu[2].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '故障申报',
-            });
-          } else if (subMenu.title === '处理进度') {
-            menu[2].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              key: '处理进度',
-            });
-          } else {
-            menu[2].sub_button.push({
-              type: 'view',
-              name: subMenu.title,
-              url: subMenu.url,
-            });
-          }
+          menu[2].sub_button.push({
+            type: 'view',
+            name: subMenu.title,
+            url: subMenu.url,
+          });
         }
       });
     });
@@ -265,9 +222,9 @@ class WechatMenuController extends Controller {
     // 删除子菜单为空的主菜单
     // 如果只有一个子菜单则成为主菜单
     menu.forEach(sub => {
-      if (sub.sub_button.length !== 0) {
+      if (sub.sub_button.length > 1) {
         menuData.push(sub);
-      } else if (sub.sub_button.length !== 1) {
+      } else if (sub.sub_button.length === 1) {
         menuData.push({
           type: 'view',
           name: sub.sub_button[0].name,

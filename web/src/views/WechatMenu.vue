@@ -166,7 +166,7 @@ export default {
         })
       } else {
         this.$message({
-          message: '出现错误：',
+          message: '出现错误',
           type: 'error'
         })
       }
