@@ -1,5 +1,4 @@
-const moment = require('moment');
-let menu = require('./menu.json');
+'use strict';
 
 
 class AppBootHook {
@@ -7,11 +6,11 @@ class AppBootHook {
     this.app = app;
 
 
-    app.once('server', server => {
+    app.once('server', () => {
       // websocket
 
     });
-    app.on('error', (err, ctx) => {
+    app.on('error', () => {
       // report error
     });
     app.on('request', ctx => {
@@ -19,12 +18,12 @@ class AppBootHook {
       // 打印请求日志
       ctx.logger.info();
     });
-    app.on('response', ctx => {
+    app.on('response', () => {
 
     });
   }
   async serverDidReady() {
-    //不在启动的时候生成菜单，自定义菜单
+    // 不在启动的时候生成菜单，自定义菜单
     // //url修改
     // menu = JSON.stringify(menu).replace('<APPID>', this.app.config.wechat.appID);
     // menu = menu.replace(/<SERVER_URL>/g, this.app.config.serverURL).replace(/<APPID>/g, this.app.config.wechat.appID);
@@ -73,8 +72,6 @@ class AppBootHook {
     // }
 
   }
-
-
 
 }
 
