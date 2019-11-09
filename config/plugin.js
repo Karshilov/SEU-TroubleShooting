@@ -10,8 +10,8 @@ module.exports = {
     enable: true,
     package: 'egg-mongoose',
   },
-  cors:{
+  cors: {
     enable: true,
-    package: 'egg-cors'
-  }
+    package: 'egg-cors',
+  },
 };

@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 // window.baseURL = 'https://seicwxbz.seu.edu.cn/api/'
 
 // dev模式下使用
-window.baseURL = 'http://192.168.1.186:8080/'
+window.baseURL = 'http://47.106.227.224/zzj-wechat/'
 
 Vue.use(axios)
 router.afterEach(() => {

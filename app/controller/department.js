@@ -38,7 +38,7 @@ class DepartmentController extends Controller {
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
-
+    console.log({ departmentId, adminCardnum });
     const resOfCardnum = await ctx.model.User.findOne({ cardnum: adminCardnum });
     if (!resOfCardnum) {
       ctx.permissionError('目标用户不存在');

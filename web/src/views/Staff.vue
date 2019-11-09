@@ -9,14 +9,14 @@
             <el-input v-model="cardnum" placeholder="员工的一卡通号"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="add">添加</el-button>
-            <el-button type="primary" @click="setAdmin">设置部门管理员</el-button>
+            <el-button type="primary" @click="add">添加员工</el-button>
+            <el-button type="primary" @click="setAdmin">设置管理员</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div style="margin-top:40px;">
-      <div class="title">设置部门管理员</div>
+      <div class="title">部门管理员</div>
       <div class="title-hint">此处列出该部门的管理员，每个部门仅设置一名管理员</div>
       <div class="content">
         <el-table :data="adminList" style="width: 100%">
@@ -77,7 +77,7 @@ export default {
     async setAdmin() {
       let res = await this.$axios.post(
         "/department/admin",
-        { departmentId: this.departmentId, adminCardnum: this.cardnumm },
+        { departmentId: this.departmentId, adminCardnum: this.cardnum },
         { headers: { token: this.token } }
       );
       if (res.data.success) {
@@ -100,7 +100,10 @@ export default {
       );
       this.departmentName = res.data.result;
       res = await this.$axios.get(
-        "/department/admin?departmentId=" + this.departmentId
+        "/department/admin?departmentId=" + this.departmentId,
+        {
+          headers: { token: this.token }
+        }
       );
       this.adminList = res.data.result;
     },
