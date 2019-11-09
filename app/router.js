@@ -38,6 +38,7 @@ module.exports = app => {
   router.get('/department/staff', controller.department.listStaff);
   router.delete('/department/staff', controller.department.unbindStaff);
   router.post('/department/admin', controller.department.setDepartmentAdmin);
+  router.get('/department/admin', controller.department.getDepartmentAdmin);
   router.delete('/department/admin', controller.department.deleteDepartmentAdmin);
   router.get('/department/name', controller.department.listOneDepartment);
 

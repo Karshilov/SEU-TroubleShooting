@@ -6,7 +6,10 @@ import axios from './axios'
 import './plugins/element.js'
 
 Vue.config.productionTip = false
-window.baseURL = 'https://seicwxbz.seu.edu.cn/api/'
+// window.baseURL = 'https://seicwxbz.seu.edu.cn/api/'
+
+// dev模式下使用
+window.baseURL = 'http://192.168.1.186:8080/'
 
 Vue.use(axios)
 router.afterEach(() => {

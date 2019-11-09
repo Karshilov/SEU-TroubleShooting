@@ -34,12 +34,12 @@ class DepartmentController extends Controller {
 
   async setDepartmentAdmin() {
     const { ctx } = this;
-    const { departmentId, cardnum } = ctx.request.body;
+    const { departmentId, adminCardnum } = ctx.request.body;
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
 
-    const resOfCardnum = await ctx.model.User.findOne({ cardnum });
+    const resOfCardnum = await ctx.model.User.findOne({ cardnum: adminCardnum });
     if (!resOfCardnum) {
       ctx.permissionError('目标用户不存在');
     }
@@ -75,6 +75,19 @@ class DepartmentController extends Controller {
     await ctx.model.DepartmentAdminBind.deleteOne({ departmentId });
 
     return '删除部门管理员成功';
+  }
+
+  async getDepartmentAdmin() {
+    const { ctx } = this;
+    const { departmentId } = ctx.query;
+    if (!ctx.userInfo.isAdmin) {
+      ctx.permissionError('只允许管理员操作');
+    }
+    if (!departmentId) {
+      ctx.paramsError('未指定查询部门');
+    }
+    return ctx.model.DepartmentAdminBind.find({ departmentId });
+
   }
 
   async bindStaff() {
