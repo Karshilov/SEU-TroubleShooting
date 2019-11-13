@@ -158,9 +158,13 @@ export default {
   },
   methods: {
     async push() {
-      let res = await this.$axios.post("/menu/push", {
-        headers: { token: this.token }
-      });
+      let res = await this.$axios.post(
+        "/menu/push",
+        {},
+        {
+          headers: { token: this.token }
+        }
+      );
       if (res.data.success) {
         this.$message({
           message: "推送成功",
