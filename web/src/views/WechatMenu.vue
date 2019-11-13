@@ -158,17 +158,19 @@ export default {
   },
   methods: {
     async push() {
-      let res = await this.$axios.post("/menu/push");
-      if(res.data.success){
+      let res = await this.$axios.post("/menu/push", {
+        headers: { token: this.token }
+      });
+      if (res.data.success) {
         this.$message({
-          message: '推送成功',
-          type: 'success'
-        })
+          message: "推送成功",
+          type: "success"
+        });
       } else {
         this.$message({
-          message: '出现错误：'+res.data.errmsg,
-          type: 'error'
-        })
+          message: "出现错误：" + res.data.errmsg,
+          type: "error"
+        });
       }
       this.load();
     },
@@ -184,16 +186,16 @@ export default {
           headers: { token: this.token }
         }
       );
-      if(res.data.success){
+      if (res.data.success) {
         this.$message({
-          message: '保存成功',
-          type: 'success'
-        })
+          message: "保存成功",
+          type: "success"
+        });
       } else {
         this.$message({
-          message: '请重试',
-          type: 'error'
-        })
+          message: "请重试",
+          type: "error"
+        });
       }
       this.load();
     },
@@ -209,16 +211,16 @@ export default {
           headers: { token: this.token }
         }
       );
-      if(res.data.success){
+      if (res.data.success) {
         this.$message({
-          message: '保存成功',
-          type: 'success'
-        })
+          message: "保存成功",
+          type: "success"
+        });
       } else {
         this.$message({
-          message: '请重试',
-          type: 'error'
-        })
+          message: "请重试",
+          type: "error"
+        });
       }
       this.load();
     },
@@ -234,16 +236,16 @@ export default {
           headers: { token: this.token }
         }
       );
-      if(res.data.success){
+      if (res.data.success) {
         this.$message({
-          message: '保存成功',
-          type: 'success'
-        })
+          message: "保存成功",
+          type: "success"
+        });
       } else {
         this.$message({
-          message: '请重试',
-          type: 'error'
-        })
+          message: "请重试",
+          type: "error"
+        });
       }
       this.load();
     },
@@ -296,25 +298,28 @@ export default {
       this.load();
     },
     async addMenu3Sub() {
-      if(this.menu3NewSub.title.length > 7){
-        this.$message.error('标题不能超过7个字符');
-        return
+      if (this.menu3NewSub.title.length > 7) {
+        this.$message.error("标题不能超过7个字符");
+        return;
       }
-      let res = await this.$axios.post("/menu",
-      {
-        level:2,
-        position:'RIGHT',
-        title:this.menu3NewSub.title,
-        url:this.menu3NewSub.url,
-      },{
-        headers: { token: this.token }
-      });
-      if(!res.data.success){
+      let res = await this.$axios.post(
+        "/menu",
+        {
+          level: 2,
+          position: "RIGHT",
+          title: this.menu3NewSub.title,
+          url: this.menu3NewSub.url
+        },
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (!res.data.success) {
         this.$message.error(res.data.errmsg);
       }
-      this.menu3NewSub.title = ''
-      this.menu3NewSub.url = ''
-      this.load()
+      this.menu3NewSub.title = "";
+      this.menu3NewSub.url = "";
+      this.load();
     },
     async move(scope, direction, list) {
       let index = scope.$index;
