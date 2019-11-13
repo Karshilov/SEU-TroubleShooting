@@ -42,8 +42,6 @@ class MessageController extends Controller {
       if (isSameDepartment) {
         // 创建消息的是维修人员
         const now = +moment();
-        console.log(userCardnum);
-        console.log(message);
         ctx.service.pushNotification.userNotification(
           userCardnum,
           '亲爱的用户您好，针对你反馈的问题，工作人员的有了新的回复，请即时查看',
