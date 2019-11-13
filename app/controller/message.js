@@ -33,7 +33,7 @@ class MessageController extends Controller {
       const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
       if (resOfStaffBind.length !== 0) {
         resOfStaffBind.forEach(k => {
-          if (resOfTroubleId.departmentId !== k.departmentId) isSameDepartment = true;
+          if (resOfTroubleId.departmentId === k.departmentId) isSameDepartment = true;
         });
       }
 
