@@ -199,7 +199,14 @@ class TroubleController extends Controller {
       });
     }
     // 允许部门管理员转发消息
-    const resOfDepartmentAdminBind = await ctx.model.DepartmentAdminBind.findOne({ adminCardnum: cardnum });
+    let isDepartmentAdmin = false;
+    const resOfDepartmentAdminBind = await ctx.model.DepartmentAdminBind.find({ adminCardnum: cardnum });
+    if (resOfDepartmentAdminBind.length !== 0) {
+      resOfDepartmentAdminBind.forEach(k => {
+        isDepartmentAdmin = (k.departmentId === record.departmentId);
+      });
+    }
+
 
     if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin) {
       ctx.permissionError('无权访问');
@@ -215,7 +222,7 @@ class TroubleController extends Controller {
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
       canDeal: isSameDepartment && record.status === 'PENDING', // TODO: 允许相同部门的人员处理
-      canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || resOfDepartmentAdminBind) && record.status === 'PENDING',
+      canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && record.status === 'PENDING',
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       showEvaluation: !!record.evaluation,
       dealTime: record.dealTime,
