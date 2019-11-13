@@ -138,6 +138,9 @@ class WechatMenuController extends Controller {
   async push() {
     // 向微信服务器推送菜单设置
     const { ctx } = this;
+    if (!ctx.userInfo.isAdmin) {
+      ctx.permissionError('无权操作');
+    }
     const rawMenu = [[], [], []];
     const menu = [];
     const menuData = [];
