@@ -26,7 +26,7 @@ class TroubleController extends Controller {
       userCardnum,
       createdTime: { $gt: now - 24 * 60 * 60 * 1000 },
     });
-    if (postCount > 500) {
+    if (postCount > 5) {
       // 为了避免恶意骚扰，24小时内故障申报数量不能超过5个
       ctx.error(1, '故障申报频率过高，请稍后重试');
     }
@@ -48,6 +48,8 @@ class TroubleController extends Controller {
     const departmentId = troubleType.departmentId;
     // 获取部门员工列表
     const staffList = await ctx.model.StaffBind.find({ departmentId });
+    // 获取部门管理员列表
+    // TODO
     // 随机抽取一个幸运儿，把这个任务派给他
     const luckyDog = ctx.helper.randomFromArray(staffList);
 

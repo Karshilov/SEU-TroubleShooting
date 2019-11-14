@@ -11,7 +11,7 @@ class keywordsService extends Service {
       任务清单: this.todolList,
       初始管理员转让: this.changeAdmin,
       // 微信签到功能
-      签到: this.checkIn
+      签到: this.checkIn,
     };
     const dispatchClickEvent = {
       故障申报: 'post',
