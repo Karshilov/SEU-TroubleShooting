@@ -33,7 +33,7 @@ class wechatController extends Controller {
 
     if (signature === sha1(array[0] + array[1] + array[2])) {
       /**
-             * TODO 对接统一身份认证
+             * 对接统一身份认证
              * 判断事件类型
              * 如果是 CLICK 事件 - ？
              * 如果是 KEYWORD 事件

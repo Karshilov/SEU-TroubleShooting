@@ -42,30 +42,48 @@ class PushPending extends Subscription {
       isAdmin: true,
     });
 
-    // 推送给管理员
+    // // 推送给管理员
+    // record.forEach(async Element => {
+    //   const luckyDog = ctx.helper.randomFromArray(adminList);
+    //   const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
+    //   await ctx.service.pushNotification.staffNotification(
+    //     luckyDog.cardnum,
+    //     `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
+    //     Element._id.toString().toUpperCase(), // code
+    //     Element.typeName, // type
+    //     '点击查看', // desc
+    //     Element.phonenum,
+    //     moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // createdTime
+    //     '故障描述信息：' + Element.desc,
+    //     this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
+    //   );
+    // });
+
+    // 推送给部门管理员,在部门管理员没有设置的情况下推送给大管理员
     record.forEach(async Element => {
-      const luckyDog = ctx.helper.randomFromArray(adminList);
+      const departmentAdmin = await ctx.model.DepartmentAdminBind.find({ departmentId: Element.departmentId });
       const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
-      await ctx.service.pushNotification.staffNotification(
-        luckyDog.cardnum,
-        `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
-        Element._id.toString().toUpperCase(), // code
-        Element.typeName, // type
-        '点击查看', // desc
-        Element.phonenum,
-        moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // createdTime
-        '故障描述信息：' + Element.desc,
-        this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
-      );
-    });
-    // 推送给部门管理员
-    // TODO 
-    record.forEach(async Element => {
-      const departmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ departmentId: Element.departmentId });
-      const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
-      if (departmentAdmin) {
+      if (departmentAdmin.length !== 0) {
+        // 有部门管理员，推送给部门管理员
+        departmentAdmin.forEach(async admin => {
+          await ctx.service.pushNotification.staffNotification(
+            admin.adminCardnum,
+            `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
+            Element._id.toString().toUpperCase(), // code
+            Element.typeName, // type
+            '点击查看', // desc
+            Element.phonenum,
+            moment(Element.createdTime).format('YYYY-MM-DD HH:mm:ss'), // createdTime
+            '故障描述信息：' + Element.desc,
+            this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
+          );
+        });
+      } else {
+        // 没有部门管理员推送大管理员
+        const luckyDog = ctx.helper.randomFromArray(adminList);
+        const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
         await ctx.service.pushNotification.staffNotification(
-          departmentAdmin.cardnum,
+          luckyDog.cardnum,
           `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
           Element._id.toString().toUpperCase(), // code
           Element.typeName, // type

@@ -49,9 +49,20 @@ class TroubleController extends Controller {
     // 获取部门员工列表
     const staffList = await ctx.model.StaffBind.find({ departmentId });
     // 获取部门管理员列表
-    // TODO
+    const adminList = await ctx.model.DepartmentAdminBind.find({ departmentId });
+
+    // 故障提交，首次推送给部门员工，不推送给部门管理员
+
+    const list = staffList.filter(staff => {
+      let isadmin = false;
+      adminList.forEach(admin => {
+        isadmin = (admin.adminCardnum === staff.staffCardnum);
+      });
+      return !isadmin;
+    });
+
     // 随机抽取一个幸运儿，把这个任务派给他
-    const luckyDog = ctx.helper.randomFromArray(staffList);
+    const luckyDog = ctx.helper.randomFromArray(list);
 
     if (address) {
       ctx.userInfo.address = address;
@@ -197,7 +208,7 @@ class TroubleController extends Controller {
       ctx.error(1, '故障信息不存在');
     }
     // 只允许用户本人、相同部门的故障处理人、管理员查看故障详细信息
-    // TODO：允许相同部门工作人员查看故障信息
+    // 允许相同部门工作人员查看故障信息
     const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: cardnum });
     if (resOfStaffBind.length !== 0) {
       resOfStaffBind.forEach(k => {
@@ -254,7 +265,7 @@ class TroubleController extends Controller {
       ctx.error(1, '故障信息不存在');
     }
     // 只允许故障处理人将处于PENDING状态的故障标记为完成
-    // TODO：允许相同部门的故障处理人处理故障
+    // 允许相同部门的故障处理人处理故障
     const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: cardnum });
     if (resOfStaffBind.length !== 0) {
       resOfStaffBind.forEach(k => {
