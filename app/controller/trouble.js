@@ -198,7 +198,6 @@ class TroubleController extends Controller {
     }
     // 只允许用户本人、相同部门的故障处理人、管理员查看故障详细信息
     // TODO：允许相同部门工作人员查看故障信息
-
     const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: cardnum });
     if (resOfStaffBind.length !== 0) {
       resOfStaffBind.forEach(k => {
@@ -218,6 +217,8 @@ class TroubleController extends Controller {
     if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin) {
       ctx.permissionError('无权访问');
     }
+
+    const staffInfo = await ctx.model.StaffBind.findOne({ staffCardnum: record.staffCardnum });
     return {
       troubleId,
       typeName: record.typeName,
@@ -237,7 +238,7 @@ class TroubleController extends Controller {
       evaluationLevel: record.evaluationLevel, // 用户评级
       evaluation: record.evaluation, // 用户评价
       staffCardnum: record.staffCardnum,
-      staffName: resOfStaffBind[0].name,
+      staffName: staffInfo.name,
     };
   }
 
