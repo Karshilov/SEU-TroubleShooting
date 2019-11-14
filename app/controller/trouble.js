@@ -213,7 +213,7 @@ class TroubleController extends Controller {
       ctx.permissionError('无权访问');
     }
 
-    const staffInfo = await ctx.model.StaffBind.find({ staffCardnum: record.staffCardnum });
+    const staffInfo = await ctx.model.StaffBind.findOne({ staffCardnum: record.staffCardnum });
     return {
       troubleId,
       typeName: record.typeName,
