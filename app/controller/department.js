@@ -44,7 +44,7 @@ class DepartmentController extends Controller {
       ctx.permissionError('目标用户不存在');
     }
 
-    const resOfDepartmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ cardnum: adminCardnum });
+    const resOfDepartmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ adminCardnum });
     if (!resOfDepartmentAdmin) {
       ctx.permissionError('该管理员已存在');
     }
