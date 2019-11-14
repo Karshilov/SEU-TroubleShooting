@@ -152,20 +152,24 @@ class TroubleController extends Controller {
       const staffDepartments = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
       // 部门管理员可以看到本部门的故障信息
       const adminDepartments = await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum });
-
       const departments = staffDepartments.concat(adminDepartments);
-
+      let departmentIds = {};
+      departments.forEach(d => {
+        departmentIds[d.departmentId] = true;
+      });
+      departmentIds = Object.keys(departmentIds);
       // 查询该部门下面的所有故障信息,根据部门id进行寻找
       const record = [];
-      for (const department of departments) {
+      for (const departmentId of departmentIds) {
         const temp = await ctx.model.Trouble.find({
-          departmentId: department.departmentId,
+          departmentId,
           $or: statusFilter,
         }, [ '_id', 'createdTime', 'typeName', 'status' ], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
         });
+
         temp.forEach(k => {
           record.push(k);
         });
@@ -240,7 +244,7 @@ class TroubleController extends Controller {
       image: record.image,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
-      canDeal: isSameDepartment && record.status === 'PENDING', // TODO: 允许相同部门的人员处理
+      canDeal: isSameDepartment && record.status === 'PENDING', // 允许相同部门的人员处理
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && record.status === 'PENDING',
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       showEvaluation: !!record.evaluation,

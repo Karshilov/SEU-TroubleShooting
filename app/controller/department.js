@@ -73,7 +73,7 @@ class DepartmentController extends Controller {
     if (count === 0) {
       ctx.error(1, '未绑定该部门管理员');
     }
-    await ctx.model.StaffBind.deleteMany({ departmentId, adminCardnum });
+    await ctx.model.DepartmentAdminBind.deleteMany({ departmentId, adminCardnum });
     return '删除部门管理员成功';
   }
 
