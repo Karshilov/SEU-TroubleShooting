@@ -138,7 +138,12 @@ class TroubleController extends Controller {
       });
     } else if (role === 'STAFF') {
       // 工作人员可以查询到本部门所有的故障信息
-      const departments = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
+      const staffDepartments = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
+      // 部门管理员可以看到本部门的故障信息
+      const adminDepartments = await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum });
+
+      const departments = staffDepartments.concat(adminDepartments);
+
       // 查询该部门下面的所有故障信息,根据部门id进行寻找
       const record = [];
       for (const department of departments) {
