@@ -59,6 +59,7 @@ class PushPending extends Subscription {
       );
     });
     // 推送给部门管理员
+    // TODO 
     record.forEach(async Element => {
       const departmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ departmentId: Element.departmentId });
       const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息

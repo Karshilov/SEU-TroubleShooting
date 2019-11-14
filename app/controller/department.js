@@ -44,22 +44,15 @@ class DepartmentController extends Controller {
       ctx.permissionError('目标用户不存在');
     }
 
-    // eslint-disable-next-line prefer-const
-    let resOfDepartmentId = await ctx.model.DepartmentAdminBind.findOne({ departmentId });
-    if (!resOfDepartmentId) {
-      // 该部门没有绑定管理员
-      const newDepartmentAdmin = new ctx.model.DepartmentAdminBind({
-        departmentId,
-        adminCardnum: resOfCardnum.cardnum,
-        name: resOfCardnum.name,
-      });
-      await newDepartmentAdmin.save();
-    } else {
-      // 该部门已经绑定管理员，更新管理员信息
-      resOfDepartmentId.adminCardnum = resOfCardnum.cardnum;
-      resOfDepartmentId.name = resOfCardnum.name;
-      await resOfDepartmentId.save();
-    }
+
+    // 绑定部门管理员
+    const newDepartmentAdmin = new ctx.model.DepartmentAdminBind({
+      departmentId,
+      adminCardnum: resOfCardnum.cardnum,
+      name: resOfCardnum.name,
+    });
+    await newDepartmentAdmin.save();
+
     return '设置部门管理员成功';
   }
 
