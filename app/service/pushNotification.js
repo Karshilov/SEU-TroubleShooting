@@ -81,10 +81,6 @@ class pushNotification extends Service {
           color: '#173177',
         },
         keyword4: {
-          value: phonenum,
-          color: '#173177',
-        },
-        keyword5: {
           value: createdTime,
           color: '#173177',
         },
