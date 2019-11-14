@@ -17,14 +17,14 @@
     </div>
     <div style="margin-top:40px;">
       <div class="title">部门管理员</div>
-      <div class="title-hint">此处列出该部门的管理员，每个部门仅设置一名管理员</div>
+      <div class="title-hint">此处列出该部门的管理员，部门管理员可以转发该部门所有的故障申报信息</div>
       <div class="content">
         <el-table :data="adminList" style="width: 100%">
           <el-table-column prop="name" label="姓名"></el-table-column>
           <el-table-column prop="adminCardnum" label="一卡通号"></el-table-column>
           <el-table-column label="操作" width="60">
-            <template >
-              <el-button @click="deleteAdmin()" type="text" size="small">删除</el-button>
+            <template slot-scope="scope">
+              <el-button @click="deleteAdmin(scope.row.adminCardnum)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -119,10 +119,10 @@ export default {
       );
       this.load();
     },
-    async deleteAdmin() {
+    async deleteAdmin(adminCardnum) {
       await this.$axios.delete(
         "/department/admin?adminCardnum=" +
-          '213162317'+
+          adminCardnum+
           "&departmentId=" +
           this.departmentId,
         {
