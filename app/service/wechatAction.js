@@ -10,6 +10,8 @@ class keywordsService extends Service {
       管理后台: this.configUI,
       任务清单: this.todolList,
       初始管理员转让: this.changeAdmin,
+      // 微信签到功能
+      签到: this.checkIn
     };
     const dispatchClickEvent = {
       故障申报: 'post',
@@ -134,6 +136,10 @@ class keywordsService extends Service {
 
     return '管理员转让成功';
 
+  }
+
+  async checkIn() {
+    return '<a href="https://seicwxbz.seu.edu.cn/checkin">点击进入快捷签到</a>';
   }
 }
 

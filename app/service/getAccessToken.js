@@ -58,14 +58,14 @@ class accessTokenService extends Service {
 
   }
 
-  async jsSdkTicket() {
+  async jsSdkTicket(extraUrl = null) {
     const ticket = await this.jsApiTicket();
     console.log(ticket);
     const noncestr = uuid().split('-').join('');
     console.log(noncestr);
     const timestamp = moment().unix();
     console.log(timestamp);
-    const string1 = `jsapi_ticket=${ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${this.config.redirectURL}`;
+    const string1 = `jsapi_ticket=${ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${extraUrl ? extraUrl : this.config.redirectURL}`;
     console.log(this.config.redirectURL);
     console.log(string1);
     const signature = sha1(string1);
