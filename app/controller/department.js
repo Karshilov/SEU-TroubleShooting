@@ -45,7 +45,7 @@ class DepartmentController extends Controller {
     }
 
     const resOfDepartmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ adminCardnum });
-    if (!resOfDepartmentAdmin) {
+    if (resOfDepartmentAdmin) {
       ctx.permissionError('该管理员已存在');
     }
 
@@ -66,10 +66,12 @@ class DepartmentController extends Controller {
     if (!departmentId || !adminCardnum) {
       ctx.paramsError();
     }
+    console.log({ departmentId, adminCardnum });
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
     const count = await ctx.model.DepartmentAdminBind.countDocuments({ departmentId, adminCardnum });
+    console.log('count:' + count);
     if (count === 0) {
       ctx.error(1, '未绑定该部门管理员');
     }
