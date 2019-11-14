@@ -6,7 +6,7 @@
       <el-button type="primary" @click="gotoList">故障信息总览</el-button>
       </div>
       <div class="btn-box">
-      <el-button type="primary" @click="gotoDepartment">部门、错误类型、人员管理设置</el-button>
+      <el-button type="primary" @click="gotoDepartment">部门、故障类型、人员管理设置</el-button>
       </div>
       <div class="btn-box">
       <el-button type="primary" @click="gotoAdmin">管理员设置</el-button>
