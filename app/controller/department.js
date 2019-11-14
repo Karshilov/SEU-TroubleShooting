@@ -62,15 +62,18 @@ class DepartmentController extends Controller {
 
   async deleteDepartmentAdmin() {
     const { ctx } = this;
-    const { departmentId } = ctx.query;
+    const { departmentId, adminCardnum } = ctx.query;
+    if (!departmentId || !adminCardnum) {
+      ctx.paramsError();
+    }
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
-    if (!departmentId) {
-      ctx.paramsError('未指定删除管理员的部门');
+    const count = await ctx.model.DepartmentAdminBind.countDocuments({ departmentId, adminCardnum });
+    if (count === 0) {
+      ctx.error(1, '未绑定该部门管理员');
     }
-    await ctx.model.DepartmentAdminBind.deleteOne({ departmentId });
-
+    await ctx.model.StaffBind.deleteMany({ departmentId, adminCardnum });
     return '删除部门管理员成功';
   }
 
