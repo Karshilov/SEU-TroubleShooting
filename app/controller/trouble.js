@@ -61,7 +61,7 @@ class TroubleController extends Controller {
     });
 
     // 如果做差之后为 0，那么就都推送
-    list = [ ...staffList, ...adminList ];
+    list = staffList;
     // 随机抽取一个幸运儿，把这个任务派给他
     const luckyDog = ctx.helper.randomFromArray(list);
 
