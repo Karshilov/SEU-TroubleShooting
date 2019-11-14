@@ -52,8 +52,7 @@ class TroubleController extends Controller {
     const adminList = await ctx.model.DepartmentAdminBind.find({ departmentId });
 
     // 故障提交，首次推送给部门员工，不推送给部门管理员
-
-    const list = staffList.filter(staff => {
+    let list = staffList.filter(staff => {
       let isadmin = false;
       adminList.forEach(admin => {
         isadmin = (admin.adminCardnum === staff.staffCardnum);
@@ -61,6 +60,8 @@ class TroubleController extends Controller {
       return !isadmin;
     });
 
+    // 如果做差之后为 0，那么就都推送
+    list = [ ...staffList, ...adminList ];
     // 随机抽取一个幸运儿，把这个任务派给他
     const luckyDog = ctx.helper.randomFromArray(list);
 
