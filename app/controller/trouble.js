@@ -91,9 +91,9 @@ class TroubleController extends Controller {
       '您申报的故障信息已被受理',
       address,
       troubleType.displayName, // type
-      `正在等待工作人员（工号：${luckyDog.staffCardnum}）处理`, // status
+      `正在等待运维人员${luckyDog.name}（一卡通号：${luckyDog.staffCardnum}）处理`, // status
       moment(now).format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
-      '工作人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
+      '运维人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
       this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
     );
     // 向处理人员推送等待处理
@@ -232,6 +232,7 @@ class TroubleController extends Controller {
       evaluationLevel: record.evaluationLevel, // 用户评级
       evaluation: record.evaluation, // 用户评价
       staffCardnum: record.staffCardnum,
+      staffName: resOfStaffBind[0].name,
     };
   }
 

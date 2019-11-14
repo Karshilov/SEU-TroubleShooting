@@ -44,7 +44,7 @@ class MessageController extends Controller {
         const now = +moment();
         ctx.service.pushNotification.userNotification(
           userCardnum,
-          '亲爱的用户您好，针对你反馈的问题，工作人员的有了新的回复，请即时查看',
+          '亲爱的用户您好，针对你反馈的问题，运维人员的有了新的回复，请即时查看',
           resOfTroubleId.address,
           resOfTroubleId.typeName,
           '故障处理中',
