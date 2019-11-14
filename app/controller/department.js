@@ -38,12 +38,16 @@ class DepartmentController extends Controller {
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
-    console.log({ departmentId, adminCardnum });
+
     const resOfCardnum = await ctx.model.User.findOne({ cardnum: adminCardnum });
     if (!resOfCardnum) {
       ctx.permissionError('目标用户不存在');
     }
 
+    const resOfDepartmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ cardnum: adminCardnum });
+    if (!resOfDepartmentAdmin) {
+      ctx.permissionError('该管理员已存在');
+    }
 
     // 绑定部门管理员
     const newDepartmentAdmin = new ctx.model.DepartmentAdminBind({
