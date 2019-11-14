@@ -24,7 +24,7 @@
           <el-table-column prop="adminCardnum" label="一卡通号"></el-table-column>
           <el-table-column label="操作" width="60">
             <template >
-              <el-button @click="deleteAdmin(scope.row.adminCardnum)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteAdmin()" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -119,10 +119,10 @@ export default {
       );
       this.load();
     },
-    async deleteAdmin(adminCardnum) {
+    async deleteAdmin() {
       await this.$axios.delete(
         "/department/admin?adminCardnum=" +
-          adminCardnum +
+          '213162317'+
           "&departmentId=" +
           this.departmentId,
         {

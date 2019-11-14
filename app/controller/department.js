@@ -88,7 +88,7 @@ class DepartmentController extends Controller {
     if (!departmentId) {
       ctx.paramsError('未指定查询部门');
     }
-    return ctx.model.DepartmentAdminBind.find({ departmentId });
+    return await ctx.model.DepartmentAdminBind.find({ departmentId });
 
   }
 
