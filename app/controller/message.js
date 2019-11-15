@@ -37,9 +37,11 @@ class MessageController extends Controller {
         });
       }
 
+      const isDepartmentAdmin = !!await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum });
 
-      // 消息来自维修人员
-      if (isSameDepartment) {
+
+      // 消息来自维修人员或者是部门管理员
+      if (isSameDepartment || isDepartmentAdmin) {
         // 创建消息的是维修人员
         const now = +moment();
         ctx.service.pushNotification.userNotification(
