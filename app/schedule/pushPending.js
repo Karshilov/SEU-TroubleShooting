@@ -35,7 +35,7 @@ class PushPending extends Subscription {
     }); // 向15分钟仍未处理完成的故障的负责工作人员发出信息
 
     record = await ctx.model.Trouble.find({
-      status: 'PENDING', createdTime: { $lt: now - 30 * 60 * 1000 },
+      status: 'WAITING', createdTime: { $lt: now - 30 * 60 * 1000 },
     }
     );
     const adminList = await ctx.model.User.find({

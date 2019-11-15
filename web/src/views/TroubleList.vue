@@ -29,11 +29,12 @@ export default {
     return {
       token:'',
       role:'USER',
-      statusFilter:'PENDING',
+      statusFilter:'WAITING',
       page:1,
       pagesize:10,
       list:[],
       statusDisp:{
+        'WAITING':'待受理',
         'PENDING':'处理中',
         'DONE':'待评价',
         'ACCEPT':'已解决',
