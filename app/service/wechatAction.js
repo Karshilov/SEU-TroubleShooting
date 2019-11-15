@@ -1,7 +1,7 @@
 'use strict';
 const Service = require('egg').Service;
 const moment = require('moment');
-const uuid = require('uuid/v4');
+// const uuid = require('uuid/v4');
 
 class keywordsService extends Service {
   async process(ctx) {

@@ -231,7 +231,7 @@ class TroubleController extends Controller {
     }
 
 
-    if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin) {
+    if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin && !isDepartmentAdmin) {
       ctx.permissionError('无权访问');
     }
 
@@ -246,8 +246,8 @@ class TroubleController extends Controller {
       image: record.image,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
-      canAccept: isSameDepartment && record.status === 'WAITING', // 允许受理
-      canDeal: isSameDepartment && record.status === 'PENDING', // 允许相同部门的人员处理
+      canAccept: (isSameDepartment || isDepartmentAdmin) && record.status === 'WAITING', // 允许受理
+      canDeal: (isSameDepartment || isDepartmentAdmin) && record.status === 'PENDING', // 允许相同部门的人员处理
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       showEvaluation: !!record.evaluation,
