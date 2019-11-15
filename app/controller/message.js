@@ -37,9 +37,11 @@ class MessageController extends Controller {
         });
       }
 
+      const isDepartmentAdmin = !!await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum });
 
-      // 消息来自维修人员
-      if (isSameDepartment) {
+
+      // 消息来自维修人员或者是部门管理员
+      if (isSameDepartment || isDepartmentAdmin) {
         // 创建消息的是维修人员
         const now = +moment();
         ctx.service.pushNotification.userNotification(
@@ -91,7 +93,7 @@ class MessageController extends Controller {
   async listMessage() {
     const { ctx } = this;
     const troubleId = ctx.query.troubleId;
-    const resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, [ 'content', 'time', 'fromWho' ], { sort: { time: 1 } });
+    const resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, ['content', 'time', 'fromWho'], { sort: { time: 1 } });
     return resOfTroubleId;
   }
 
