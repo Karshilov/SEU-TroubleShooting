@@ -369,7 +369,7 @@ class TroubleController extends Controller {
     // 转发故障任务信息
     // 查询故障信息
     const { ctx } = this;
-    const { troubleId, staffCardnum } = ctx.request.body;
+    const { troubleId, staffBindId } = ctx.request.body;
     const cardnum = ctx.userInfo.cardnum;
     const record = await ctx.model.Trouble.findById(troubleId);
     if (!record) {
@@ -382,19 +382,18 @@ class TroubleController extends Controller {
       ctx.permissionError('无权操作');
     }
     // 检查指定用户是否为系统内的运维人员
-    const staffBind = ctx.model.StaffBind.findOne({
-      staffCardnum,
-    });
+    const staffBind = ctx.model.StaffBind.findById(staffBindId);
     if (!staffBind) {
       ctx.error(2, '指定的员工不属于故障类型所属部门');
     }
     // 更新故障记录信息
-    record.staffCardnum = staffCardnum;
+    record.staffCardnum = staffBind.staffCardnum;
+    record.departmentId = staffBind.departmentId;
     await record.save();
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
-      staffCardnum,
+      staffBind.staffCardnum,
       '有新的故障报修等待处理', // title
       record._id.toString().toUpperCase(), // code
       record.typeName, // type

@@ -153,9 +153,9 @@ class DepartmentController extends Controller {
     }
     let record;
     if (departmentId) {
-      record = await ctx.model.StaffBind.find({ departmentId }, 'departmentName departmentId staffCardnum name');
+      record = await ctx.model.StaffBind.find({ departmentId }, '_id departmentName departmentId staffCardnum name');
     } else {
-      record = await ctx.model.StaffBind.find({}, 'departmentName departmentId staffCardnum name');
+      record = await ctx.model.StaffBind.find({}, '_id departmentName departmentId staffCardnum name');
       record = record.map(r => {
         r.name = `${r.name}(${r.departmentName})`;
         return r;

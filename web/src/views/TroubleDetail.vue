@@ -59,7 +59,7 @@
             v-for="item in staffList"
             :key="item._id"
             :label="`${item.name}(${item.staffCardnum})`"
-            :value="item.staffCardnum"
+            :value="item._id"
           ></el-option>
         </el-select>
         </div>
@@ -147,7 +147,7 @@ export default {
           headers: { token: this.token }
         });
         this.staffList = res.data.result;
-        this.redirectTo = res.data.result[0].staffCardnum;
+        this.redirectTo = res.data.result[0]._id;
       }
     },
     async accept() {
@@ -205,7 +205,7 @@ export default {
     async redirect() {
       await this.$axios.post(
         "/trouble/redirect",
-        { troubleId: this.troubleId, staffCardnum: this.redirectTo },
+        { troubleId: this.troubleId, staffBindId: this.redirectTo },
         {
           headers: { token: this.token }
         }
