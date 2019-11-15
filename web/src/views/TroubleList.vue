@@ -110,13 +110,13 @@ export default {
 
 .item-desc{
   font-size: 14px;
-  margin-top:10px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .item-type{
-  font-size: 20px;
-  font-weight: bold;
-  margin-top:10px;
+  font-size: 18px;
+  margin-top: 10px;
 }
 
 .item-time{
