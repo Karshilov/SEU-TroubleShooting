@@ -147,7 +147,8 @@ class DepartmentController extends Controller {
     const { ctx } = this;
     const { departmentId } = ctx.query;
     const isStaff = await ctx.model.StaffBind.countDocuments({ staffCardnum: ctx.userInfo.cardnum });
-    if (!ctx.userInfo.isAdmin && !isStaff) {
+    const isDepartmentAdmin = await ctx.model.DepartmentAdminBind.countDocuments({ adminCardnum: ctx.userInfo.cardnum });
+    if (!ctx.userInfo.isAdmin && !isStaff && !isDepartmentAdmin) {
       ctx.permissionError('无权访问');
     }
     let record;
