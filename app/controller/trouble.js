@@ -140,7 +140,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -166,7 +166,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -189,7 +189,7 @@ class TroubleController extends Controller {
       // 管理员查询的逻辑
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -370,6 +370,8 @@ class TroubleController extends Controller {
     // 查询故障信息
     const { ctx } = this;
     const { troubleId, staffBindId } = ctx.request.body;
+    console.log('转发路由参数');
+    console.log({ troubleId, staffBindId });
     const cardnum = ctx.userInfo.cardnum;
     const record = await ctx.model.Trouble.findById(troubleId);
     if (!record) {
@@ -389,6 +391,8 @@ class TroubleController extends Controller {
     // 更新故障记录信息
     record.staffCardnum = staffBind.staffCardnum;
     record.departmentId = staffBind.departmentId;
+    console.log('转发后更新故障信息');
+    console.log(record);
     await record.save();
 
     // 向处理人员推送等待处理
