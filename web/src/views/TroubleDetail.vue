@@ -23,7 +23,7 @@
         <div class="message" v-for="item in message" :key="item._id">
           <div
             class="message-meta"
-          >{{item.fromWho === 'staff' ? '工作人员':'用户'}} {{formatTime(item.time)}}</div>
+          >{{item.fromWho === 'staff' ? '运维人员':'用户'}} {{formatTime(item.time)}}</div>
           <div class="message-content">{{item.content}}</div>
         </div>
         <el-input
@@ -35,6 +35,13 @@
         <el-button v-if="detail.canPostMessage" style="margin-top:15px;" @click="postMessage">发送</el-button>
       </div>
     </div>
+    <div v-if="detail.canAccept" class="panel">
+      <div class="subtitle">故障受理</div>
+      <div class="title-hint">该故障等待受理，请尽快接单</div>
+      <div class="content">
+        <el-button @click="accept" type="primary">受理</el-button>
+      </div>
+    </div>
     <div v-if="detail.canDeal" class="panel">
       <div class="subtitle">故障处理</div>
       <div class="title-hint">故障处理完成后点击此处，提醒用户验收处理结果</div>
@@ -44,7 +51,7 @@
     </div>
     <div v-if="detail.canRedirect" class="panel">
       <div class="subtitle">派发处理</div>
-      <div class="title-hint">将该故障单派发给其他工作人员处理</div>
+      <div class="title-hint">将该故障单派发给其他运维人员处理</div>
       <div class="content">
         <div>
         <el-select v-model="redirectTo" placeholder="请选择">
@@ -138,6 +145,20 @@ export default {
         this.redirectTo = res.data.result[0].staffCardnum
       }
     },
+    async accept() {
+      let res = await this.$axios.post(
+        "/trouble/accept",
+        { troubleId: this.troubleId },
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (res.data.success) {
+        this.load();
+      } else {
+        this.$message.error(res.data.errmsg);
+      }
+    },
     async deal() {
       let res = await this.$axios.post(
         "/trouble/deal",
@@ -184,7 +205,6 @@ export default {
           headers: { token: this.token }
         }
       );
-      //this.load()
       wx.closeWindow()
     }
   },

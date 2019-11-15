@@ -17,13 +17,13 @@ class PushPending extends Subscription {
     const now = +moment();
     let record = await ctx.model.Trouble.find({
       // status: "PENDING", createdTime: { $lt: now - 15 * 60 * 1000 }
-      status: 'PENDING', createdTime: { $lt: now - 1 * 60 * 15000 },
+      status: 'WAITING', createdTime: { $lt: now - 1 * 60 * 15000 },
     }
     );
     record.forEach(async Element => {
       await ctx.service.pushNotification.staffNotification(
         Element.staffCardnum,
-        '有超过15分钟未处理的故障信息！',
+        '有超过15分钟未受理的故障信息！',
         Element._id.toString().toUpperCase(), // code
         Element.typeName, // type
         '点击查看', // desc
@@ -68,7 +68,7 @@ class PushPending extends Subscription {
         departmentAdmin.forEach(async admin => {
           await ctx.service.pushNotification.staffNotification(
             admin.adminCardnum,
-            `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
+            `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未受理`,
             Element._id.toString().toUpperCase(), // code
             Element.typeName, // type
             '点击查看', // desc
@@ -84,7 +84,7 @@ class PushPending extends Subscription {
         const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
         await ctx.service.pushNotification.staffNotification(
           luckyDog.cardnum,
-          `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未处理`,
+          `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过30分钟仍未受理`,
           Element._id.toString().toUpperCase(), // code
           Element.typeName, // type
           '点击查看', // desc

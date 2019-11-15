@@ -7,7 +7,7 @@ class DepartmentController extends Controller {
     const { ctx } = this;
     // 验证权限
     if (!ctx.userInfo.isAdmin) {
-      ctx.permissionError('只允许管理员操作部门设置');
+      ctx.permissionError('只允许系统管理员操作部门设置');
     }
     // 获取部门权限
     const departmentName = ctx.request.body.departmentName;
@@ -36,7 +36,7 @@ class DepartmentController extends Controller {
     const { ctx } = this;
     const { departmentId, adminCardnum } = ctx.request.body;
     if (!ctx.userInfo.isAdmin) {
-      ctx.permissionError('只允许管理员操作');
+      ctx.permissionError('只允许系统管理员操作');
     }
 
     const resOfCardnum = await ctx.model.User.findOne({ cardnum: adminCardnum });
@@ -46,7 +46,7 @@ class DepartmentController extends Controller {
 
     const resOfDepartmentAdmin = await ctx.model.DepartmentAdminBind.findOne({ adminCardnum });
     if (resOfDepartmentAdmin) {
-      ctx.permissionError('该管理员已存在');
+      ctx.permissionError('该部门管理员已存在');
     }
 
     // 绑定部门管理员

@@ -18,7 +18,7 @@
             type="textarea"
             v-model="form.address"
             :autosize="{ minRows: 5, maxRows: 5}"
-            placeholder="请输入宿舍地址/办公室地址便于工作人员准确定位问题"
+            placeholder="请输入宿舍地址/办公室地址便于运维人员准确定位问题"
           ></el-input>
         </el-form-item>
         <el-form-item>

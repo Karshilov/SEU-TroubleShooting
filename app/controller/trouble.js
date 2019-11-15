@@ -3,6 +3,7 @@ const moment = require('moment');
 const Controller = require('egg').Controller;
 
 const statusDisp = {
+  WAITING: '待受理',
   PENDING: '处理中',
   DONE: '处理完成，等待验收',
   ACCEPT: '故障已解决',
@@ -84,7 +85,7 @@ class TroubleController extends Controller {
     const trouble = new ctx.model.Trouble({
       createdTime: now,
       desc,
-      status: 'PENDING', // 等待处理
+      status: 'WAITING', // 初始状态为WAITNG待受理
       phonenum,
       address,
       departmentId,
@@ -126,7 +127,7 @@ class TroubleController extends Controller {
   async list() {
     // 查询故障列表
     const { ctx } = this;
-    let { statusFilter = 'PENDING', role, page = 1, pagesize = 10 } = ctx.request.query;
+    let { statusFilter = 'WAITING', role, page = 1, pagesize = 10 } = ctx.request.query;
     page = +page;
     pagesize = +pagesize;
     if (statusFilter === 'END') {
@@ -245,8 +246,9 @@ class TroubleController extends Controller {
       image: record.image,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
+      canAccept: isSameDepartment && record.status === 'WAITING', // 允许受理
       canDeal: isSameDepartment && record.status === 'PENDING', // 允许相同部门的人员处理
-      canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && record.status === 'PENDING',
+      canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       showEvaluation: !!record.evaluation,
       dealTime: record.dealTime,
@@ -256,6 +258,45 @@ class TroubleController extends Controller {
       staffCardnum: record.staffCardnum,
       staffName: staffInfo.name,
     };
+  }
+
+  async accept() {
+    // 工作人员标记故障受理
+    // 查询故障信息
+    const { ctx } = this;
+    const { troubleId } = ctx.request.body;
+    const cardnum = ctx.userInfo.cardnum;
+    const record = await ctx.model.Trouble.findById(troubleId);
+    let isSameDepartment = false;
+    if (!record) {
+      ctx.error(1, '故障信息不存在');
+    }
+    // 只允许故障处理人将处于WAITING状态的故障标记为PENDING
+    // 允许相同部门的故障处理人处理故障
+    const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: cardnum });
+    if (resOfStaffBind.length !== 0) {
+      resOfStaffBind.forEach(k => {
+        if (record.departmentId === k.departmentId) isSameDepartment = true;
+      });
+    }
+    if (record.status !== 'WAITING' || !isSameDepartment) {
+      ctx.permissionError('无权操作');
+    }
+    record.status = 'PENDING';
+    record.dealTime = +moment();
+    await record.save();
+    // 向提交故障报修的用户推送处理完成
+    await ctx.service.pushNotification.userNotification(
+      record.userCardnum,
+      '您报告的故障正在被处理，请稍候',
+      record.address,
+      record.typeName, // type
+      '运维人员处理中', // status
+      moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
+      '运维人员正在处理您报告的故障，请保持联系畅通，并注意微信提醒',
+      this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
+    );
+
   }
 
   async deal() {
@@ -291,7 +332,7 @@ class TroubleController extends Controller {
       record.typeName, // type
       '处理完成', // status
       moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
-      '工作人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
+      '运维人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
 
@@ -332,15 +373,15 @@ class TroubleController extends Controller {
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
-    // 只允许转发处于PENDING状态的故障信息
-    // 管理员或者当前故障处理人员可以转发
-    if (!(record.status === 'PENDING' && (ctx.userInfo.isAdmin || record.staffCardnum === cardnum))) {
+    const isDepartmentAdmin = !!(await ctx.model.DepartmentAdminBind.findOne({ adminCardnum: ctx.userInfo.cardnum, departmentId: record.departmentId }));
+    // 只允许转发处于WAITING / PENDING状态的故障信息
+    // 系统管理员、当前故障处理人员、部门管理员可以转发
+    if (!((record.status === 'WAITING' || record.status === 'PENDING') && (isDepartmentAdmin || ctx.userInfo.isAdmin || record.staffCardnum === cardnum))) {
       ctx.permissionError('无权操作');
     }
-    // 检查是否符合部门要求
+    // 检查指定用户是否为系统内的运维人员
     const staffBind = ctx.model.StaffBind.findOne({
       staffCardnum,
-      // departmentId:record.departmentId
     });
     if (!staffBind) {
       ctx.error(2, '指定的员工不属于故障类型所属部门');

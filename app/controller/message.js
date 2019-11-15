@@ -24,7 +24,7 @@ class MessageController extends Controller {
       ctx.error(-4, '没有查询到相关故障信息');
     }
 
-    if (resOfTroubleId.status === 'PENDING') {
+    if (resOfTroubleId.status === 'PENDING' || resOfTroubleId.status === 'WAITING') {
       // 向双方推送消息
 
       const userCardnum = resOfTroubleId.userCardnum;

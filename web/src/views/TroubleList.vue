@@ -2,8 +2,9 @@
   <div class="page">
     <div style="text-align:center;">
     <el-radio-group v-model="statusFilter" @change="handleChange">
-      <el-radio-button label="PENDING" @click="showPending">待解决</el-radio-button>
-      <el-radio-button label="DONE" @click="showDone">{{role === 'USER' ? '待评价' : '等待用户验收'}}</el-radio-button>
+      <el-radio-button label="WAITING" @click="showWaiting">待受理</el-radio-button>
+      <el-radio-button label="PENDING" @click="showPending">处理中</el-radio-button>
+      <el-radio-button label="DONE" @click="showDone">{{role === 'USER' ? '待评价' : '待验收'}}</el-radio-button>
       <el-radio-button label="END" @click="showEnd">已完成</el-radio-button>
     </el-radio-group>
     <div class="content">
@@ -52,6 +53,12 @@ export default {
         this.page = this.page + 1
         this.list = [...this.list, ...newItems]
       }
+    },
+    async showWaiting(){
+      this.statusFilter = 'WAITING'
+      this.page = 1
+      this.list = []
+      await this.loadMore()
     },
     async showPending(){
       this.statusFilter = 'PENDING'
