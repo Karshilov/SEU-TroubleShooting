@@ -42,7 +42,7 @@ class keywordsService extends Service {
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
       ctx.status = 200;
       ctx.status = 200;
-    } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe' && dispatchClickEvent[ctx.request.body.EventKey]) {
+    } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe') {
       ctx.status = 200;
       ctx.body = `<xml>
                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
