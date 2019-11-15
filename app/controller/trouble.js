@@ -282,6 +282,7 @@ class TroubleController extends Controller {
     if (record.status !== 'WAITING' || !isSameDepartment) {
       ctx.permissionError('无权操作');
     }
+    record.staffCardnum = cardnum;
     record.status = 'PENDING';
     record.dealTime = +moment();
     await record.save();
@@ -321,6 +322,7 @@ class TroubleController extends Controller {
     if (record.status !== 'PENDING' || !isSameDepartment) {
       ctx.permissionError('无权操作');
     }
+    record.staffCardnum = cardnum;
     record.status = 'DONE';
     record.dealTime = +moment();
     await record.save();
