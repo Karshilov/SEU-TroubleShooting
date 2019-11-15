@@ -133,16 +133,21 @@ export default {
       let res = await this.$axios.get("/trouble?troubleId=" + this.troubleId, {
         headers: { token: this.token }
       });
-      this.detail = res.data.result;
-      this.loadMessage()
+      if (res.data.success) {
+        this.detail = res.data.result;
+      } else {
+        this.$message.error("无权访问");
+        wx.closeWindow();
+      }
+
+      this.loadMessage();
       // 获取员工列表
       if (this.detail.canRedirect) {
-        res = await this.$axios.get(
-          "/department/staff",
-          { headers: { token: this.token } }
-        );
+        res = await this.$axios.get("/department/staff", {
+          headers: { token: this.token }
+        });
         this.staffList = res.data.result;
-        this.redirectTo = res.data.result[0].staffCardnum
+        this.redirectTo = res.data.result[0].staffCardnum;
       }
     },
     async accept() {
@@ -194,18 +199,18 @@ export default {
           headers: { token: this.token }
         }
       );
-      this.newMessage = ''
+      this.newMessage = "";
       this.loadMessage();
     },
-    async redirect(){
+    async redirect() {
       await this.$axios.post(
         "/trouble/redirect",
-        { troubleId: this.troubleId, staffCardnum:this.redirectTo },
+        { troubleId: this.troubleId, staffCardnum: this.redirectTo },
         {
           headers: { token: this.token }
         }
       );
-      wx.closeWindow()
+      wx.closeWindow();
     }
   },
   async created() {
