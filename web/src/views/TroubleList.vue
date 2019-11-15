@@ -14,6 +14,7 @@
           <div class="item-id">单号：{{item._id.toUpperCase()}}</div>
         </div>
         <div class="item-type">故障类型：{{item.typeName}}</div>
+        <div class="item-desc">故障描述：{{item.desc.length > 20 ? item.desc.slice(0,20)+'...' : item.desc.slice(0,20)}}</div>
         <div class="item-time">报修时间：{{formatTime(item.createdTime)}}</div>
       </div>
       <div class="load-button" @click="loadMore">点击加载更多</div>
@@ -107,6 +108,11 @@ export default {
   margin-top: 10px;
 }
 
+.item-desc{
+  font-size: 14px;
+  margin-top:10px;
+}
+
 .item-type{
   font-size: 20px;
   font-weight: bold;
@@ -114,7 +120,7 @@ export default {
 }
 
 .item-time{
-  font-size:14px;
+  font-size:12px;
   margin-top:10px;
   color:#888;
 }
@@ -132,7 +138,7 @@ export default {
 }
 
 .item-id{
-  font-size:14px;
+  font-size:12px;
   color:#888;
 }
 .load-button{
