@@ -6,7 +6,7 @@ class PushPending extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '1m', // 15 分钟间隔
+      interval: '15m', // 15 分钟间隔
       type: 'worker', // 随机选取单一work执行
     };
   }
