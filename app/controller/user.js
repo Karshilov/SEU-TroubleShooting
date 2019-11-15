@@ -48,12 +48,16 @@ class userController extends Controller {
     // }
 
     if (!ctx.request.body.phonenum) {
-      ctx.error(4, '电话号码错误');
+      ctx.error(4, '电话号码不能为空');
     } else {
       ctx.userInfo.phonenum = ctx.request.body.phonenum;
     }
-
-    ctx.userInfo.address = ctx.request.body.address ? ctx.request.body.address : '';
+    if (!ctx.request.body.address) {
+      ctx.error(4, '联系地址不能为空');
+    } else {
+      ctx.userInfo.address = ctx.request.body.address;
+    }
+    // ctx.userInfo.address = ctx.request.body.address ? ctx.request.body.address : '';
 
     await ctx.userInfo.save();
 
