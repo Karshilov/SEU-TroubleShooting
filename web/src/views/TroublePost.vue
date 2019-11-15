@@ -119,7 +119,7 @@ export default {
         this.$router.replace("/success");
       } else {
         //this.$message.error(res.data.errmsg);
-        this.$message.error('正在调试，暂停使用');
+        this.$message.error('正在调试，敬请期待');
         this.loading = false;
       }
     }
