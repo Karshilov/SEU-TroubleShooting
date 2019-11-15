@@ -14,7 +14,7 @@
           <div class="item-id">单号：{{item._id.toUpperCase()}}</div>
         </div>
         <div class="item-type">故障类型：{{item.typeName}}</div>
-        <div class="item-desc">故障描述：{{item.desc.length > 20 ? item.desc.slice(0,20)+'...' : item.desc.slice(0,20)}}</div>
+        <div class="item-desc">故障描述：{{item.desc.length > 40 ? item.desc.slice(0,40)+'...' : item.desc }}</div>
         <div class="item-time">报修时间：{{formatTime(item.createdTime)}}</div>
       </div>
       <div class="load-button" @click="loadMore">点击加载更多</div>
