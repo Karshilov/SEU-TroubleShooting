@@ -370,12 +370,12 @@ class TroubleController extends Controller {
     // 查询故障信息
     const { ctx } = this;
     const { troubleId, staffBindId } = ctx.request.body;
-    console.log('转发路由参数');
-    console.log({ troubleId, staffBindId });
+    // console.log('转发路由参数');
+    // console.log({ troubleId, staffBindId });
     const cardnum = ctx.userInfo.cardnum;
     const record = await ctx.model.Trouble.findById(troubleId);
-    console.log('原来的故障记录');
-    console.log(record);
+    // console.log('原来的故障记录');
+    // console.log(record);
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -390,14 +390,14 @@ class TroubleController extends Controller {
     if (!staffBind) {
       ctx.error(2, '指定的员工不属于故障类型所属部门');
     }
-    console.log('转发人员信息');
-    console.log(staffBind);
+    // console.log('转发人员信息');
+    // console.log(staffBind);
     // 更新故障记录信息
     record.staffCardnum = staffBind.staffCardnum;
     record.departmentId = staffBind.departmentId;
     record.typeName = staffBind.departmentName;
-    console.log('转发后更新故障信息');
-    console.log(record);
+    // console.log('转发后更新故障信息');
+    // console.log(record);
     await record.save();
 
     // 向处理人员推送等待处理

@@ -136,8 +136,8 @@ export default {
       if (res.data.success) {
         this.detail = res.data.result;
       } else {
-        this.$message.error("无权访问");
-        wx.closeWindow();
+        // 跳转到禁止页面
+       this.$router.push(`/forbidden`)
       }
 
       this.loadMessage();

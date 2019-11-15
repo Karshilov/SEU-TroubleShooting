@@ -70,5 +70,11 @@ export default new Router({
       component: () => import('./views/Success.vue'),
       meta: {title: '提交成功'}
     },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('./views/Forbidden.vue'),
+      meta: {title: '禁止访问'}
+    },
   ]
 })
