@@ -390,12 +390,15 @@ class TroubleController extends Controller {
     if (!staffBind) {
       ctx.error(2, '指定的员工不属于故障类型所属部门');
     }
+    // 确定转发后的故障类型
+    const troubleType = await ctx.model.TroubleType.findOne({ departmentId: staffBind.departmentId });
+
     // console.log('转发人员信息');
     // console.log(staffBind);
     // 更新故障记录信息
     record.staffCardnum = staffBind.staffCardnum;
     record.departmentId = staffBind.departmentId;
-    record.typeName = staffBind.departmentName;
+    record.typeName = troubleType.displayName;
     // console.log('转发后更新故障信息');
     // console.log(record);
     await record.save();
