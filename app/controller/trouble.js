@@ -386,7 +386,7 @@ class TroubleController extends Controller {
       ctx.permissionError('无权操作');
     }
     // 检查指定用户是否为系统内的运维人员
-    const staffBind = ctx.model.StaffBind.findById(staffBindId);
+    const staffBind = await ctx.model.StaffBind.findById(staffBindId);
     if (!staffBind) {
       ctx.error(2, '指定的员工不属于故障类型所属部门');
     }
