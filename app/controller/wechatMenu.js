@@ -11,7 +11,7 @@ class WechatMenuController extends Controller {
       ctx.permissionError('无权操作');
     }
     const menuRecord = await this.ctx.model.Menu.find({});
-    console.log(menuRecord);
+    // console.log(menuRecord);
     const res = {
       LEFT: { title: '', sub: [] },
       CENTER: { title: '', sub: [] },
@@ -235,9 +235,9 @@ class WechatMenuController extends Controller {
         });
       }
     });
-    console.log(menuData[0]);
-    console.log(menuData[1]);
-    console.log(menuData[2]);
+    // console.log(menuData[0]);
+    // console.log(menuData[1]);
+    // console.log(menuData[2]);
     const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
     const result = await this.app.curl(url, {
       method: 'POST',

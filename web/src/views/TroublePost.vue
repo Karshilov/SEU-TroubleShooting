@@ -75,7 +75,7 @@ export default {
 
   methods: {
     typeSelect(val){
-      console.log(val);
+      // console.log(val);
       this.typeDesc=this.typeList.filter(i=>{
         return val===i._id;
       })[0].typeDesc

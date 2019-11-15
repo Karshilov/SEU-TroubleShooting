@@ -14,8 +14,8 @@ class replyMessageService extends Service {
               content,
             },
     };
-    const res = await axios.post(url, replyData);
-    console.log(res.data);
+    await axios.post(url, replyData);
+    // console.log(res.data);
   }
 }
 

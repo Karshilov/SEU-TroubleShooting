@@ -12,10 +12,10 @@ class callbackController extends Controller {
     // 验证时请求是否来自ids小程序
     const str = `cardnum=${cardnum}&name=${name}&session=${ids_session}&challenge=${challenge}&secret=${ctx.app.config.idsSecret}`;
     if (signature !== sha1(str)) {
-      console.log('不是来自ids认证的请求，拒绝请求');
+      // console.log('不是来自ids认证的请求，拒绝请求');
       ctx.error(-1, '不是来自ids认证的请求，拒绝请求');
     }
-    console.log('来自小程序的请求');
+    // console.log('来自小程序的请求');
     // 获取用户的openid，创建新的用户
     const resOfidsSession = await ctx.model.Ids.findOne({ idsSession: ids_session });
     const newPerson = new ctx.model.User({

@@ -5,7 +5,7 @@ module.exports = () => {
   return async function identity(ctx, next) {
 
     const token = ctx.request.headers.token;
-    console.log('token:' + token);
+    // console.log('token:' + token);
     const record = token ? await ctx.model.User.findOne({ token }) : false;
     if (record && record.tokenExpireTime > +moment()) {
       ctx.userInfo = record;

@@ -17,7 +17,7 @@ class keywordsService extends Service {
       故障申报: 'post',
       处理进度: 'list_USER',
     };
-    console.log(ctx.request.body);
+    // console.log(ctx.request.body);
     let keyword;
     try {
       keyword = ctx.request.body.Content.split(' ')[0];
@@ -26,7 +26,7 @@ class keywordsService extends Service {
     if (ctx.request.body.MsgType === 'text' && dispatchKeywords[keyword]) {
       // 响应关键字
       const res = await dispatchKeywords[keyword](ctx.request.body, ctx);
-      console.log(res);
+      // console.log(res);
       ctx.status = 200;
       if (!res) {
         ctx.status = 200;
@@ -65,7 +65,7 @@ SEIC小助手提醒您：
   }
 
   async initAdmin(body, ctx) {
-    console.log(body);
+    // console.log(body);
     const openid = body.FromUserName;
     // 判断是否已经初始化过
     const adminCount = await ctx.model.User.countDocuments({ isAdmin: true });

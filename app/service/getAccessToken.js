@@ -53,21 +53,21 @@ class accessTokenService extends Service {
       await newTicket.save();
       return result.data.ticket;
     }
-    console.log(result.data);
+    // console.log(result.data);
 
 
   }
 
   async jsSdkTicket(extraUrl = null) {
     const ticket = await this.jsApiTicket();
-    console.log(ticket);
+    // console.log(ticket);
     const noncestr = uuid().split('-').join('');
-    console.log(noncestr);
+    // console.log(noncestr);
     const timestamp = moment().unix();
-    console.log(timestamp);
+    // console.log(timestamp);
     const string1 = `jsapi_ticket=${ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${extraUrl ? extraUrl : this.config.redirectURL}`;
-    console.log(this.config.redirectURL);
-    console.log(string1);
+    // console.log(this.config.redirectURL);
+    // console.log(string1);
     const signature = sha1(string1);
     return { nonceStr: noncestr, timestamp, signature };
   }

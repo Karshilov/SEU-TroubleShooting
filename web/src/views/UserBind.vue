@@ -75,7 +75,7 @@ export default {
     },
     save() {
       this.$refs["form"].validate(async valid => {
-        console.log(valid);
+        // console.log(valid);
         if (valid) {
           this.loading = true;
           let res = await this.$axios.post("/user/bind", this.form, {
@@ -109,7 +109,7 @@ export default {
     });
     this.form.cardnum = res.data.result.cardnum;
     this.form.name = res.data.result.name
-    console.log(res);
+    // console.log(res);
   }
 };
 </script>
