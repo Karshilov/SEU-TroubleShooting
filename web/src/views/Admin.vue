@@ -1,22 +1,22 @@
 <template>
   <div id="admin-view" class="page">
     <div>
-      <div class="title">设置管理员</div>
-      <div class="title-hint">管理员具有调整后台设置的权限，请谨慎设置</div>
+      <div class="title">设置系统管理员</div>
+      <div class="title-hint">系统管理员具有调整后台设置的权限，请谨慎设置</div>
       <div class="content">
         <el-form label-width="70px">
           <el-form-item label="一卡通号">
             <el-input v-model="cardnum"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="add">设置管理员</el-button>
+            <el-button type="primary" @click="add">设置系统管理员</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div style="margin-top:40px;">
-      <div class="title">取消管理员</div>
-      <div class="title-hint">取消管理员资格</div>
+      <div class="title">取消系统管理员</div>
+      <div class="title-hint">取消系统管理员资格</div>
       <div class="content">
         <el-table :data="list" style="width: 100%">
           <el-table-column prop="name" label="姓名"></el-table-column>
