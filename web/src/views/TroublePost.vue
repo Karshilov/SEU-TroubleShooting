@@ -118,7 +118,8 @@ export default {
         //this.$message({type:'success', message:res.data.result})
         this.$router.replace("/success");
       } else {
-        this.$message.error(res.data.errmsg);
+        //this.$message.error(res.data.errmsg);
+        this.$message.error('正在调试，暂停使用');
         this.loading = false;
       }
     }
