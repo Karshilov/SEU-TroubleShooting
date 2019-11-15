@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div style="text-align:center;">
-    <el-radio-group v-model="statusFilter" @change="handleChange">
+    <el-radio-group v-model="statusFilter" @change="handleChange" size="small">
       <el-radio-button label="WAITING" @click="showWaiting">待受理</el-radio-button>
       <el-radio-button label="PENDING" @click="showPending">处理中</el-radio-button>
       <el-radio-button label="DONE" @click="showDone">{{role === 'USER' ? '待评价' : '待验收'}}</el-radio-button>
