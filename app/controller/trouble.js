@@ -101,10 +101,10 @@ class TroubleController extends Controller {
     // 向提交故障报修的用户推送正在处理通知
     await ctx.service.pushNotification.userNotification(
       userCardnum,
-      '您申报的故障信息已被受理',
+      '您申报的故障信息正在等待受理',
       address,
       troubleType.displayName, // type
-      `正在等待运维人员${luckyDog.name}（一卡通号：${luckyDog.staffCardnum}）处理`, // status
+      `正在等待运维人员${luckyDog.name}（一卡通号：${luckyDog.staffCardnum}）受理`, // status
       moment(now).format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
       '运维人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
       this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id) // url - 故障详情页面
@@ -112,7 +112,7 @@ class TroubleController extends Controller {
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
       luckyDog.staffCardnum,
-      '有新的故障等待处理', // title
+      '有新的故障等待受理', // title
       trouble._id.toString().toUpperCase(), // code
       troubleType.displayName, // type
       '点击查看', // desc
