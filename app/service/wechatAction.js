@@ -23,13 +23,13 @@ class keywordsService extends Service {
       keyword = ctx.request.body.Content.split(' ')[0];
     // eslint-disable-next-line no-empty
     } catch (e) { }
-    if (dispatchKeywords[keyword]) {
+    if (ctx.request.body.MsgType === 'text' && dispatchKeywords[keyword]) {
       // 响应关键字
       const res = await dispatchKeywords[keyword](ctx.request.body, ctx);
       console.log(res);
       ctx.status = 200;
       if (!res) {
-        ctx.body = 'success';
+        ctx.status = 200;
       } else {
         ctx.body = `<xml>
                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
@@ -39,39 +39,26 @@ class keywordsService extends Service {
                     <Content><![CDATA[${res}]]></Content>
                 </xml>`;
       }
-    } else if (dispatchClickEvent[ctx.request.body.EventKey]) {
-      // 响应click事件
-      const resOfOpenid = await ctx.model.User.findOne({ openid: ctx.request.body.FromUserName });
-      if (resOfOpenid) {
-        // 用户已经绑定
-        const state = dispatchClickEvent[ctx.request.body.EventKey];
-        const redirectURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`;
-        const content = `<a href="${redirectURL}">点击继续</a>`;
-        ctx.body = `<xml>
+    } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
+      ctx.status = 200;
+      ctx.status = 200;
+    } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe' && dispatchClickEvent[ctx.request.body.EventKey]) {
+      ctx.status = 200;
+      ctx.body = `<xml>
                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
                     <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
                     <CreateTime>${+moment()}</CreateTime>
                     <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[${content}]]></Content>
+                    <Content><![CDATA[感谢您关注东南大学网络与信息中心官方微信平台！
+                      点击下方“最新动态”，可查看网络与信息中心各部门联系方式及通知公告；
+                      校园网服务咨询及故障报修，请致电025-83790808；
+                      学生宿舍网络故障报修，请致电025-58710000。
+                      
+                      SEIC小助手提醒您：
+                      全新报障系统即将上线！敬请期待！
+                      有奖问卷正在进行中～
+                      点击下方“有奖问卷”即可参与答题～]]></Content>
                 </xml>`;
-      } else {
-        // 用户没有绑定
-        const idsSession = uuid();
-        const newIds = new ctx.model.Ids({
-          idsSession,
-          openId: ctx.request.body.FromUserName,
-          target: dispatchClickEvent[ctx.request.body.EventKey],
-        });
-        await newIds.save();
-        const content = `<a href="https://myseu.cn" data-miniprogram-appid="wxaef6d2413690047f" data-miniprogram-path="pages/idsAuth?APPID=${ctx.app.config.wechat.appID}&IDS_SESSION=${idsSession}&FORCE=1">统一身份认证登录</a>`;
-        ctx.body = `<xml>
-                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                    <CreateTime>${+moment()}</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[${content}]]></Content>
-                </xml>`;
-      }
     } else {
       ctx.body = 'success';
     }
