@@ -156,7 +156,7 @@ export default {
       await this.loadTroubleType();
       // 获取员工列表
       if (this.detail.canRedirect) {
-        this.loadStaff()
+        this.loadStaff();
       }
       this.loadMessage();
     },
@@ -171,8 +171,13 @@ export default {
           headers: { token: this.token }
         }
       );
-      this.staffList = res.data.result;
-      this.redirectStaffBindId = res.data.result[0]._id;
+      if (res.data.result.length !== 0) {
+        this.staffList = res.data.result;
+        this.redirectStaffBindId = res.data.result[0]._id;
+      } else {
+        this.staffList = [];
+        this.redirectStaffBindId = "";
+      }
     },
     async accept() {
       let res = await this.$axios.post(
@@ -227,18 +232,22 @@ export default {
       this.loadMessage();
     },
     async redirect() {
-      await this.$axios.post(
-        "/trouble/redirect",
-        {
-          troubleId: this.troubleId,
-          staffBindId: this.redirectStaffBindId,
-          typeId: this.redirectTypeId
-        },
-        {
-          headers: { token: this.token }
-        }
-      );
-      wx.closeWindow();
+      if (this.redirectStaffBindId === "") {
+        this.$message.error("未指定运维人员");
+      } else {
+        await this.$axios.post(
+          "/trouble/redirect",
+          {
+            troubleId: this.troubleId,
+            staffBindId: this.redirectStaffBindId,
+            typeId: this.redirectTypeId
+          },
+          {
+            headers: { token: this.token }
+          }
+        );
+        wx.closeWindow();
+      }
     }
   },
   async created() {
