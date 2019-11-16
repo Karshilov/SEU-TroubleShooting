@@ -52,7 +52,7 @@ class TroubleController extends Controller {
     // 获取部门管理员列表
     const adminList = await ctx.model.DepartmentAdminBind.find({ departmentId });
 
-    // 故障提交，首次推送给部门员工，不推送给部门管理员
+    // 故障提交，推送给部门员工，不推送给部门管理员
     let list = staffList.filter(staff => {
       let isadmin = false;
       adminList.forEach(admin => {
@@ -61,8 +61,10 @@ class TroubleController extends Controller {
       return !isadmin;
     });
 
-    // 如果做差之后为 0，那么就都推送
-    list = staffList;
+    // 如果所有运维人员都是管理员，那就一视同仁
+    if (list.length === 0) {
+      list = staffList;
+    }
     // 随机抽取一个幸运儿，把这个任务派给他
     const luckyDog = ctx.helper.randomFromArray(list);
 
@@ -97,6 +99,17 @@ class TroubleController extends Controller {
     });
 
     await trouble.save();
+
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: now,
+      enterStatus: 'WAITING',
+      troubleId: trouble._id,
+      staffCardnum: luckyDog.staffCardnum, // 操作运维人员一卡通
+      typeId, // 故障类型名称
+      departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
 
     // 向提交故障报修的用户推送正在处理通知
     await ctx.service.pushNotification.userNotification(
@@ -140,7 +153,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -166,7 +179,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -189,7 +202,7 @@ class TroubleController extends Controller {
       // 管理员查询的逻辑
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -286,6 +299,18 @@ class TroubleController extends Controller {
     record.status = 'PENDING';
     record.dealTime = +moment();
     await record.save();
+
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: 'PENDING',
+      troubleId,
+      staffCardnum: cardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
+
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
       record.userCardnum,
@@ -326,6 +351,16 @@ class TroubleController extends Controller {
     record.status = 'DONE';
     record.dealTime = +moment();
     await record.save();
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: 'DONE',
+      troubleId,
+      staffCardnum: cardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
       record.userCardnum,
@@ -362,6 +397,16 @@ class TroubleController extends Controller {
     record.evaluation = evaluation;
     record.evaluationLevel = evaluationLevel;
     await record.save();
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: record.status,
+      troubleId,
+      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
     return '评价成功！';
   }
 
@@ -370,12 +415,8 @@ class TroubleController extends Controller {
     // 查询故障信息
     const { ctx } = this;
     const { troubleId, staffBindId, typeId } = ctx.request.body;
-    // console.log('转发路由参数');
-    // console.log({ troubleId, staffBindId });
     const cardnum = ctx.userInfo.cardnum;
     const record = await ctx.model.Trouble.findById(troubleId);
-    // console.log('原来的故障记录');
-    // console.log(record);
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -395,15 +436,22 @@ class TroubleController extends Controller {
     if (troubleType.departmentId !== staffBind.departmentId) {
       ctx.error(3, '指定的员工不属于故障类型所属部门');
     }
-    // console.log('转发人员信息');
-    // console.log(staffBind);
     // 更新故障记录信息
     record.staffCardnum = staffBind.staffCardnum;
     record.departmentId = staffBind.departmentId;
     record.typeName = troubleType.displayName;
-    // console.log('转发后更新故障信息');
-    // console.log(record);
     await record.save();
+
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: record.status,
+      troubleId,
+      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
