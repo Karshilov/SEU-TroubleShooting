@@ -65,7 +65,7 @@
               :value="item._id"
             ></el-option>
           </el-select>
-          <el-select v-model="redirectStaffBindId" placeholder="选择人员">
+          <el-select v-model="redirectStaffBindId" placeholder="选择人员" style="margin-top:10px;">
             <el-option
               v-for="item in staffList"
               :key="item._id"
