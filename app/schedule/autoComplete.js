@@ -15,17 +15,26 @@ class AutoComplete extends Subscription {
   async subscribe() {
     const { ctx } = this;
     const now = +moment();
-    let record = await ctx.model.Trouble.find({
+    await ctx.model.Trouble.updateMany({
       status: 'DONE', dealTime: { $lt: now - 3 * 24 * 60 * 60 * 1000 }, // 3 * 24 * 60 * 60 * 1000
-    }
+    },
+    { $set: {
+      status: 'ACCEPT',
+      checkTime: +moment(),
+      evaluation: '用户未填写意见建议',
+      evaluationLevel: 5 } }
     );
-    record.forEach(async Element => {
-        Element.status = 'ACCEPT';
-        Element.checkTime = +moment();
-        Element.evaluation = '用户未填写意见建议';
-        record.evaluationLevel = 5;
-    }); // 向15分钟仍未处理完成的故障的负责工作人员发出信息
-    await record.save();
+    // let record = await ctx.model.Trouble.find({
+    //   status: 'DONE', dealTime: { $lt: now - 3 * 24 * 60 * 60 * 1000 }, // 3 * 24 * 60 * 60 * 1000
+    // }
+    // );
+    // record.forEach(async Element => {
+    //     Element.status = 'ACCEPT';
+    //     Element.checkTime = +moment();
+    //     Element.evaluation = '用户未填写意见建议';
+    //     record.evaluationLevel = 5;
+    //     await ctx.model.Trouble.updateOne({_id:Element._id})
+    // });
   }
 }
 
