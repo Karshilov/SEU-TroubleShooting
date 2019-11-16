@@ -145,14 +145,20 @@ class DepartmentController extends Controller {
 
   async listStaff() {
     const { ctx } = this;
-    const { departmentId } = ctx.query;
+    const { departmentId, typeId } = ctx.query;
     const isStaff = await ctx.model.StaffBind.countDocuments({ staffCardnum: ctx.userInfo.cardnum });
     const isDepartmentAdmin = await ctx.model.DepartmentAdminBind.countDocuments({ adminCardnum: ctx.userInfo.cardnum });
     if (!ctx.userInfo.isAdmin && !isStaff && !isDepartmentAdmin) {
       ctx.permissionError('无权访问');
     }
     let record;
-    if (departmentId) {
+    if (typeId) {
+      record = await ctx.model.TroubleType.findById(typeId);
+      if (!record) {
+        ctx.error(1, '指定故障类型不存在');
+      }
+      record = await ctx.model.StaffBind.find({ departmentId: record.departmentId }, '_id departmentName departmentId staffCardnum name');
+    } else if (departmentId) {
       record = await ctx.model.StaffBind.find({ departmentId }, '_id departmentName departmentId staffCardnum name');
     } else {
       record = await ctx.model.StaffBind.find({}, '_id departmentName departmentId staffCardnum name');

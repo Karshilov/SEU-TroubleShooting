@@ -369,7 +369,7 @@ class TroubleController extends Controller {
     // 转发故障任务信息
     // 查询故障信息
     const { ctx } = this;
-    const { troubleId, staffBindId } = ctx.request.body;
+    const { troubleId, staffBindId, typeId } = ctx.request.body;
     // console.log('转发路由参数');
     // console.log({ troubleId, staffBindId });
     const cardnum = ctx.userInfo.cardnum;
@@ -388,11 +388,13 @@ class TroubleController extends Controller {
     // 检查指定用户是否为系统内的运维人员
     const staffBind = await ctx.model.StaffBind.findById(staffBindId);
     if (!staffBind) {
-      ctx.error(2, '指定的员工不属于故障类型所属部门');
+      ctx.error(2, '指定的用户不属于运维人员');
     }
     // 确定转发后的故障类型
-    const troubleType = await ctx.model.TroubleType.findOne({ departmentId: staffBind.departmentId });
-
+    const troubleType = await ctx.model.TroubleType.findById(typeId);
+    if (troubleType.departmentId !== staffBind.departmentId) {
+      ctx.error(3, '指定的员工不属于故障类型所属部门');
+    }
     // console.log('转发人员信息');
     // console.log(staffBind);
     // 更新故障记录信息

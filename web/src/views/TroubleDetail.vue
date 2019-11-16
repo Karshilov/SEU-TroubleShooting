@@ -10,7 +10,10 @@
           <el-form-item style="margin-bottom:0" label="故障描述">{{detail.desc}}</el-form-item>
           <el-form-item style="margin-bottom:0" label="联系电话">{{detail.phonenum}}</el-form-item>
           <el-form-item style="margin-bottom:0" label="报修地点">{{detail.address}}</el-form-item>
-          <el-form-item style="margin-bottom:0" label="负责人员">{{`${detail.staffName} (${detail.staffCardnum})`}}</el-form-item>
+          <el-form-item
+            style="margin-bottom:0"
+            label="负责人员"
+          >{{`${detail.staffName} (${detail.staffCardnum})`}}</el-form-item>
           <el-form-item v-if="detail.image" style="margin-bottom:0" label="图片附件">
             <img :src="detail.image" style="width:100%;border-radius:8px;" />
           </el-form-item>
@@ -54,14 +57,22 @@
       <div class="title-hint">将该故障单派发给其他运维人员处理</div>
       <div class="content">
         <div>
-        <el-select v-model="redirectTo" placeholder="请选择">
-          <el-option
-            v-for="item in staffList"
-            :key="item._id"
-            :label="`${item.name}(${item.staffCardnum})`"
-            :value="item._id"
-          ></el-option>
-        </el-select>
+          <el-select v-model="redirectTypeId" placeholder="选择故障类型" @change="loadStaff">
+            <el-option
+              v-for="item in typeList"
+              :key="item._id"
+              :label="`${item.displayName}`"
+              :value="item._id"
+            ></el-option>
+          </el-select>
+          <el-select v-model="redirectStaffBindId" placeholder="选择人员">
+            <el-option
+              v-for="item in staffList"
+              :key="item._id"
+              :label="`${item.name}`"
+              :value="item._id"
+            ></el-option>
+          </el-select>
         </div>
         <el-button style="margin-top:15px;" @click="redirect">派发</el-button>
       </div>
@@ -114,8 +125,10 @@ export default {
       evaluation: "",
       newMessage: "",
       message: [],
+      typeList: [],
       staffList: [],
-      redirectTo: ""
+      redirectTypeId: "",
+      redirectStaffBindId: ""
     };
   },
   methods: {
@@ -137,18 +150,29 @@ export default {
         this.detail = res.data.result;
       } else {
         // 跳转到禁止页面
-       this.$router.push(`/forbidden`)
+        this.$router.push(`/forbidden`);
       }
-
-      this.loadMessage();
+      this.redirectTypeId = this.detail.typeId;
+      await this.loadTroubleType();
       // 获取员工列表
       if (this.detail.canRedirect) {
-        res = await this.$axios.get("/department/staff", {
-          headers: { token: this.token }
-        });
-        this.staffList = res.data.result;
-        this.redirectTo = res.data.result[0]._id;
+        this.loadStaff()
       }
+      this.loadMessage();
+    },
+    async loadTroubleType() {
+      let res = await this.$axios.get("/type");
+      this.typeList = res.data.result;
+    },
+    async loadStaff() {
+      let res = await this.$axios.get(
+        `/department/staff?typeId=${this.redirectTypeId}`,
+        {
+          headers: { token: this.token }
+        }
+      );
+      this.staffList = res.data.result;
+      this.redirectStaffBindId = res.data.result[0]._id;
     },
     async accept() {
       let res = await this.$axios.post(
@@ -205,7 +229,11 @@ export default {
     async redirect() {
       await this.$axios.post(
         "/trouble/redirect",
-        { troubleId: this.troubleId, staffBindId: this.redirectTo },
+        {
+          troubleId: this.troubleId,
+          staffBindId: this.redirectStaffBindId,
+          typeId: this.redirectTypeId
+        },
         {
           headers: { token: this.token }
         }
