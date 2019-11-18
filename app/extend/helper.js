@@ -15,5 +15,5 @@ module.exports = {
     const hourReturn = Math.floor((now - before) / hour);
     const minuteReturn = Math.round((now - before - hourReturn * hour) / minute);
     return (hourReturn === 0 ? '' : hourReturn + '小时') + minuteReturn + '分钟';
-  }
+  },
 };
