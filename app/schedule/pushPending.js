@@ -23,7 +23,8 @@ class PushPending extends Subscription {
     record.forEach(async Element => {
       await ctx.service.pushNotification.staffNotification(
         Element.staffCardnum,
-        `有超过${Math.round((now - Element.createdTime) / (1000 * 60))}分钟未受理的故障信息！`,
+        `有超过${(Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) ?
+          Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) + '小时' : '') + Math.round(((now - Element.createdTime) % (1000 * 60 * 60)) / (60 * 1000)) + '分钟'}未受理的故障信息！`,
         Element._id.toString().toUpperCase(), // code
         Element.typeName, // type
         '点击查看', // desc
@@ -68,7 +69,8 @@ class PushPending extends Subscription {
         departmentAdmin.forEach(async admin => {
           await ctx.service.pushNotification.staffNotification(
             admin.adminCardnum,
-            `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过${Math.round((now - Element.createdTime) / (1000 * 60))}分钟仍未受理`,
+            `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过${(Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) ?
+              Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) + '小时' : '') + Math.round(((now - Element.createdTime) % (1000 * 60 * 60)) / (60 * 1000)) + '分钟'}仍未受理`,
             Element._id.toString().toUpperCase(), // code
             Element.typeName, // type
             '点击查看', // desc
@@ -84,7 +86,8 @@ class PushPending extends Subscription {
         const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
         await ctx.service.pushNotification.staffNotification(
           luckyDog.cardnum,
-          `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过${Math.round((now - Element.createdTime) / (1000 * 60))}分钟仍未受理`,
+          `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过${(Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) ?
+            Math.floor(Math.round((now - Element.createdTime) / (1000 * 60 * 60))) + '小时' : '') + Math.round(((now - Element.createdTime) % (1000 * 60 * 60)) / (60 * 1000)) + '分钟'}仍未受理`,
           Element._id.toString().toUpperCase(), // code
           Element.typeName, // type
           '点击查看', // desc
