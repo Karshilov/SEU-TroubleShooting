@@ -37,7 +37,6 @@ module.exports = app => {
   router.delete('/department/admin', controller.department.deleteDepartmentAdmin);
   router.get('/department/name', controller.department.listOneDepartment);
 
-  router.get('/test', controller.test.notice);
 
   router.get('/jssdk', controller.jsSdkTicket.index);
 
