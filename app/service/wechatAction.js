@@ -21,7 +21,7 @@ class keywordsService extends Service {
     let keyword;
     try {
       keyword = ctx.request.body.Content.split(' ')[0];
-    // eslint-disable-next-line no-empty
+      // eslint-disable-next-line no-empty
     } catch (e) { }
     if (ctx.request.body.MsgType === 'text' && dispatchKeywords[keyword]) {
       // 响应关键字
@@ -43,22 +43,24 @@ class keywordsService extends Service {
       ctx.status = 200;
       ctx.status = 200;
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe') {
+      // 关注时推送
       ctx.status = 200;
-      ctx.body = `<xml>
-                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                    <CreateTime>${+moment()}</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[感谢您关注东南大学网络与信息中心官方微信平台！
-🌈点击下方“最新动态”，可查看网络与信息中心各部门联系方式及通知公告；
-🛠校园网服务咨询及故障报修，请致电025-83790808；
-🛠学生宿舍网络故障报修，请致电025-58710000。
-                      
-SEIC小助手提醒您：
-⭐️全新报障系统即将上线！敬请期待！
-⭐️有奖问卷正在进行中～
-点击下方“有奖问卷”即可参与答题～]]></Content>
-                </xml>`;
+      //       ctx.body = `<xml>
+      //                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+      //                     <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+      //                     <CreateTime>${+moment()}</CreateTime>
+      //                     <MsgType><![CDATA[text]]></MsgType>
+      //                     <Content><![CDATA[感谢您关注东南大学网络与信息中心官方微信平台！
+      // 🌈点击下方“最新动态”，可查看网络与信息中心各部门联系方式及通知公告；
+      // 🛠校园网服务咨询及故障报修，请致电025-83790808；
+      // 🛠学生宿舍网络故障报修，请致电025-58710000。
+
+      // SEIC小助手提醒您：
+      // ⭐️全新报障系统即将上线！敬请期待！
+      // ⭐️有奖问卷正在进行中～
+      // 点击下方“有奖问卷”即可参与答题～]]></Content>
+      //                 </xml>`;
+      ctx.body = 'success';
     } else {
       ctx.body = 'success';
     }
