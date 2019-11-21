@@ -261,6 +261,7 @@ class TroubleController extends Controller {
       canPostMessage: record.status === 'PENDING',
       canAccept: (isSameDepartment || isDepartmentAdmin) && record.status === 'WAITING', // 允许受理
       canDeal: (isSameDepartment || isDepartmentAdmin) && record.status === 'PENDING', // 允许相同部门的人员处理
+      canRemind: record.status === 'PENDING' && record.userCardnum === cardnum, // 用户催单
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       showEvaluation: !!record.evaluation,
@@ -520,6 +521,45 @@ class TroubleController extends Controller {
     );
 
     return '转发成功';
+  }
+
+  async remind() {
+    const { ctx } = this;
+    const { troubleId } = ctx.request.body;
+    const now = +moment();
+    const trouble = await ctx.model.Trouble.findById(troubleId);
+    if (!trouble) {
+      ctx.error(1, '未查询到故障信息');
+    }
+    if (trouble.userCardnum !== ctx.userInfo.cardnum) {
+      ctx.identityError('非用户本人，禁止操作');
+    }
+    // 一个小时最多三次
+    const remindCount = await ctx.model.RemindInfo.countDocuments({ troubleId, createTime: { $gt: now - 60 * 60 * 1000 } });
+    if (remindCount > 3) {
+      ctx.error(2, '提醒过于频繁，请稍后');
+    }
+    // 新建提醒记录
+    const newRemindInfo = new ctx.model.RemindInfo({
+      troubleId,
+      createTime: now,
+    });
+    await newRemindInfo.save();
+    // 向负责人推送提醒
+    await ctx.service.pushNotification.staffNotification(
+      trouble.staffCardnum,
+      '有新的故障报修等待处理', // title
+      trouble._id.toString().toUpperCase(), // code
+      trouble.typeName, // type
+      '点击查看', // desc
+      trouble.phonenum,
+      moment(trouble.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+      '故障描述：' + trouble.desc,
+      this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id)
+    );
+
+    return '提醒成功';
+
   }
 }
 

@@ -52,6 +52,13 @@
         <el-button @click="deal" type="primary">处理完成</el-button>
       </div>
     </div>
+    <div v-if="detail.canRemind" class="panel">
+      <div class="subtitle">故障处理提醒</div>
+      <div class="title-hint">如果负责人员长时间未联系您处理故障，请点击此处，提醒负责人员</div>
+      <div class="content">
+        <el-button @click="remind" type="primary">处理完成</el-button>
+      </div>
+    </div>
     <div v-if="detail.canRedirect" class="panel">
       <div class="subtitle">派发处理</div>
       <div class="title-hint">将该故障单派发给其他运维人员处理</div>
@@ -247,6 +254,20 @@ export default {
           }
         );
         wx.closeWindow();
+      }
+    },
+    async remind() {
+      let res = await this.$axios.post(
+        "/trouble/remind",
+        { troubleId: this.troubleId },
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (res.data.success) {
+        this.load();
+      } else {
+        this.$message.error(res.data.errmsg);
       }
     }
   },
