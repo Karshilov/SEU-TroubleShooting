@@ -10,6 +10,7 @@ class keywordsService extends Service {
       管理后台: this.configUI,
       任务清单: this.todolList,
       初始管理员转让: this.changeAdmin,
+      注销: this.logOut,
       // 微信签到功能
       签到: this.checkIn,
     };
@@ -30,6 +31,7 @@ class keywordsService extends Service {
       ctx.status = 200;
       if (!res) {
         ctx.status = 200;
+        ctx.body = 'success';
       } else {
         ctx.body = `<xml>
                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
@@ -100,6 +102,7 @@ class keywordsService extends Service {
   }
 
   async todolList(body, ctx) {
+    // 适时考虑一下鉴权
     return `<a href="${ctx.helper.oauthUrl(ctx, 'list', 'STAFF')}">点击查看任务清单</a>`;
   }
 
@@ -129,6 +132,26 @@ class keywordsService extends Service {
 
   async checkIn() {
     return '<a href="https://seicwxbz.seu.edu.cn/checkin">点击进入快捷签到</a>';
+  }
+
+  async logOut(body, ctx) {
+    // 鉴权，仅对管理员开放此功能
+    const openid = body.FromUserName;
+    const user = await ctx.model.User.findOne({ openid });
+    const targetCardnum = body.Content.split(' ')[1];
+    if (!(user && user.isAdmin)) {
+      return '非管理员，禁止操作';
+    }
+    const recordOfCardnum = await ctx.model.User.findOne({ cardnum: targetCardnum });
+    if (!recordOfCardnum) {
+      return '注销目标不存在';
+    }
+    await ctx.model.StaffBind.deleteOne({ staffCardnum: targetCardnum });
+    await ctx.model.DepartmentAdminBind.deleteOne({ adminCardnum: targetCardnum });
+    await ctx.model.User.deleteOne({ cardnum: targetCardnum });
+
+    return '删除目标用户成功';
+
   }
 }
 
