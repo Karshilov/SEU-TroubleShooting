@@ -407,6 +407,59 @@ class TroubleController extends Controller {
       departmentId: record.departmentId, // 所属部门Id
     });
     await statisticRecord.save();
+    // 问题没有解决，自动创建一个新的故障信息，并向用户和维修人员推送模版消息
+    if (!accept) {
+      const newTrouble = new ctx.model.Trouble({
+        createdTime: +moment(),
+        desc: record.desc,
+        status: 'PENDING',
+        phonenum: record.phonenum,
+        address: record.address,
+        departmentId: record.departmentId,
+        typeId: record.typeId,
+        typeName: record.typeName,
+        staffCardnum: record.staffCardnum, // 默认还是上一个维修人员
+        userCardnum: record.userCardnum,
+        image: record.image,
+      });
+      await newTrouble.save();
+      const staff = await ctx.model.User.findOne({ cardnum: newTrouble.cardnum });
+      // 向用户推送重新申请故障的推送消息
+      await ctx.service.pushNotification.userNotification(
+        newTrouble.userCardnum,
+        '您申报的故障未解决，为您重新提交故障信息',
+        newTrouble.address,
+        newTrouble.typeName, // type
+        `正在等待运维人员${staff.name}（一卡通号：${newTrouble.staffCardnum}）受理`, // status
+        moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
+        '运维人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
+        this.ctx.helper.oauthUrl(ctx, 'detail', newTrouble._id) // url - 故障详情页面
+      );
+      // 向运维人员推送故障未解决的消息
+      await ctx.service.pushNotification.staffNotification(
+        newTrouble.staffCardnum,
+        '用户提交的故障仍未解决，请尽快处理', // title
+        newTrouble._id.toString().toUpperCase(), // code
+        newTrouble.typeName, // type
+        '点击查看', // desc
+        staff.phonenum,
+        moment().format('YYYY-MM-DD HH:mm:ss'),
+        '故障描述信息：' + newTrouble.desc,
+        this.ctx.helper.oauthUrl(ctx, 'detail', newTrouble._id) // url - 故障详情页面
+      );
+      // 创建统计日志
+      const statisticRecord = new ctx.model.Statistic({
+        timestamp: +moment(),
+        enterStatus: newTrouble.status,
+        troubleId: newTrouble._id,
+        staffCardnum: newTrouble.staffCardnum, // 操作运维人员一卡通
+        typeId: newTrouble.typeId, // 故障类型名称
+        departmentId: newTrouble.departmentId, // 所属部门Id
+      });
+
+      await statisticRecord.save();
+
+    }
     return '评价成功！';
   }
 
