@@ -146,6 +146,7 @@ class keywordsService extends Service {
     if (!recordOfCardnum) {
       return '注销目标不存在';
     }
+    console.log('targetCardnum:' + targetCardnum);
     await ctx.model.StaffBind.deleteOne({ staffCardnum: targetCardnum });
     await ctx.model.DepartmentAdminBind.deleteOne({ adminCardnum: targetCardnum });
     await ctx.model.User.deleteOne({ cardnum: targetCardnum });

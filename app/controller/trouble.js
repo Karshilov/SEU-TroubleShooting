@@ -409,7 +409,7 @@ class TroubleController extends Controller {
     });
     await statisticRecord.save();
     // 问题没有解决，自动创建一个新的故障信息，并向用户和维修人员推送模版消息
-    console.log('accept:' + accept);
+    // console.log('accept:' + accept);
     if (!accept) {
       const newTrouble = new ctx.model.Trouble({
         createdTime: +moment(),
@@ -424,7 +424,7 @@ class TroubleController extends Controller {
         userCardnum: record.userCardnum,
         image: record.image,
       });
-      console.log('newTrouble:' + newTrouble);
+      // console.log('newTrouble:' + newTrouble);
       await newTrouble.save();
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.staffCardnum });
       console.log('staff:' + staff);
@@ -460,9 +460,9 @@ class TroubleController extends Controller {
         typeId: newTrouble.typeId, // 故障类型名称
         departmentId: newTrouble.departmentId, // 所属部门Id
       });
-      console.log('statisticRecord:' + statisticRecord);
+      // console.log('statisticRecord:' + statisticRecord);
       await statisticRecord.save();
-      console.log('ok！');
+      // console.log('ok！');
 
     }
     return '评价成功！';
@@ -538,9 +538,9 @@ class TroubleController extends Controller {
     if (trouble.userCardnum !== ctx.userInfo.cardnum) {
       ctx.identityError('非用户本人，禁止操作');
     }
-    // 一个小时最多三次
+    // 一个小时最多3次
     const remindCount = await ctx.model.RemindInfo.countDocuments({ troubleId, createTime: { $gt: now - 60 * 60 * 1000 } });
-    if (remindCount > 3) {
+    if (remindCount >= 3) {
       ctx.error(2, '提醒过于频繁，请稍后');
     }
     // 新建提醒记录
