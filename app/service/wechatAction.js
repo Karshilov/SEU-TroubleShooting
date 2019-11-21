@@ -147,6 +147,7 @@ class keywordsService extends Service {
       return '注销目标不存在';
     }
     console.log('targetCardnum:' + targetCardnum);
+    await ctx.model.Ids.deleteMany({ openId: openid });
     await ctx.model.StaffBind.deleteOne({ staffCardnum: targetCardnum });
     await ctx.model.DepartmentAdminBind.deleteOne({ adminCardnum: targetCardnum });
     await ctx.model.User.deleteOne({ cardnum: targetCardnum });
