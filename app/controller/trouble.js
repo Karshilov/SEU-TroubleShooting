@@ -409,6 +409,7 @@ class TroubleController extends Controller {
     });
     await statisticRecord.save();
     // 问题没有解决，自动创建一个新的故障信息，并向用户和维修人员推送模版消息
+    console.log('accept:' + accept);
     if (!accept) {
       const newTrouble = new ctx.model.Trouble({
         createdTime: +moment(),
@@ -423,6 +424,7 @@ class TroubleController extends Controller {
         userCardnum: record.userCardnum,
         image: record.image,
       });
+      console.log('newTrouble:' + newTrouble);
       await newTrouble.save();
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.cardnum });
       // 向用户推送重新申请故障的推送消息
@@ -457,7 +459,7 @@ class TroubleController extends Controller {
         typeId: newTrouble.typeId, // 故障类型名称
         departmentId: newTrouble.departmentId, // 所属部门Id
       });
-
+      console.log('statisticRecord:' + statisticRecord);
       await statisticRecord.save();
 
     }
@@ -548,7 +550,7 @@ class TroubleController extends Controller {
     // 向负责人推送提醒
     await ctx.service.pushNotification.staffNotification(
       trouble.staffCardnum,
-      '有新的故障报修等待处理', // title
+      '该故障长时间未处理，请尽快处理', // title
       trouble._id.toString().toUpperCase(), // code
       trouble.typeName, // type
       '点击查看', // desc
