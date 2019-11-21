@@ -92,10 +92,10 @@
             <el-radio v-model="checkStatus" :label="true">是</el-radio>
             <el-radio v-model="checkStatus" :label="false">否</el-radio>
           </el-form-item>
-          <el-form-item style="margin-bottom:0;" label="服务评分">
+          <el-form-item v-if="checkStatus === true" style="margin-bottom:0;" label="服务评分">
             <el-rate v-model="evaluationLevel" style="margin-top:10px;"></el-rate>
           </el-form-item>
-          <el-form-item label="意见建议">
+          <el-form-item v-if="checkStatus === true" label="意见建议">
             <el-input
               type="textarea"
               placeholder="请填写您对服务的意见和建议（可选）"
@@ -103,8 +103,8 @@
               :autosize="{ minRows: 3, maxRows: 10}"
             ></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-button @click="check">评价</el-button>
+          <el-form-item >
+            <el-button @click="check">{{checkStatus ? "评价" : "重新提交故障信息"}}</el-button>
           </el-form-item>
         </el-form>
         <el-form v-else label-width="80px">
