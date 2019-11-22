@@ -1,33 +1,9 @@
 # SEU-TroubleShooting
 
-东南大学网络故障报修
+东南大学网络与信息中心故障报修平台
 
-## QuickStart
+## 调试URL入口
 
-<!-- add docs here for user -->
-
-see [egg docs][egg] for more detail.
-
-### Development
-
-```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
-```
-
-### Deploy
-
-```bash
-$ npm start
-$ npm stop
-```
-
-### npm scripts
-
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxddf0c7e0b5167c36&redirect_uri=https://seicwxbz.seu.edu.cn/api/wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect
 
 
-[egg]: https://eggjs.org
