@@ -26,7 +26,7 @@
         <div class="message" v-for="item in message" :key="item._id">
           <div
             class="message-meta"
-          >{{item.fromWho === 'staff' ? '运维人员':'用户'}} {{formatTime(item.time)}}</div>
+          >{{item.fromWho === 'staff' ? '运维人员':'用户' + item.fromWhoName ? ' - ' + item.fromWhoName : ''}} {{formatTime(item.time)}}</div>
           <div class="message-content">{{item.content}}</div>
         </div>
         <el-input

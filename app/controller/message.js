@@ -60,6 +60,7 @@ class MessageController extends Controller {
           fromWho: 'staff',
           troubleId: id,
           content: message,
+          fromWhoName: ctx.userInfo.name,
         });
         await newChatInfo.save();
       } else if (ctx.userInfo.cardnum === userCardnum) {
@@ -83,6 +84,7 @@ class MessageController extends Controller {
           fromWho: 'user',
           troubleId: id,
           content: message,
+          fromWhoName: ctx.userInfo.name,
         });
         await newChatInfo.save();
       }
