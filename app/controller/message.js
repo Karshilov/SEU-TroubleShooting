@@ -95,7 +95,7 @@ class MessageController extends Controller {
   async listMessage() {
     const { ctx } = this;
     const troubleId = ctx.query.troubleId;
-    const resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, [ 'content', 'time', 'fromWho' ], { sort: { time: 1 } });
+    const resOfTroubleId = await ctx.model.ChatInfo.find({ troubleId }, [ 'content', 'time', 'fromWho', 'fromWhoName' ], { sort: { time: 1 } });
     return resOfTroubleId;
   }
 
