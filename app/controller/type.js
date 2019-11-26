@@ -3,7 +3,7 @@
 const Controller = require('egg').Controller;
 
 // 故障列表的顺序
-const typeList = [ '四牌楼网络报障', '九龙湖网络报障', '丁家桥网络报障', '网站报障', '宿舍区网络报障', '其它报障', '信息系统报障' ];
+const typeList = [ '四牌楼网络报障', '九龙湖网络报障', '丁家桥网络报障', '网站报障', '宿舍区网络报障', '信息系统报障' ];
 
 class TypeController extends Controller {
   // 创建故障类型
@@ -74,14 +74,18 @@ class TypeController extends Controller {
     // eslint-disable-next-line prefer-const
     let resOfTroubleTidy = [];
     typeList.forEach(type => {
-      console.log(type);
       resOfTrouble.forEach(res => {
-        console.log(res);
         if (res.displayName === type) {
           resOfTroubleTidy.push(res);
         }
       });
     });
+    resOfTrouble.forEach(res => {
+      if (typeList.indexOf(res.displayName) === -1 && res.displayName !== '其它报障') {
+        resOfTroubleTidy.push(res);
+      }
+    });
+    resOfTroubleTidy.push(resOfTrouble.filter(res => res.displayName === '其它报障'));
 
     return resOfTroubleTidy;
   }
