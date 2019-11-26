@@ -165,8 +165,8 @@ export default {
       } else {
         // 跳转到禁止页面
         console.log('跳转');
-        this.$router.push({ path: 'forbidden', query: { errcode: res.data.errcode }});
-        // this.$router.push(`/forbidden/${res.data.errcode}`);
+        //this.$router.push({ path: 'forbidden', query: { errcode: res.data.errcode }});
+        this.$router.push(`/forbidden?errcode=${res.data.errcode}`);
       }
       this.redirectTypeId = this.detail.typeId;
       await this.loadTroubleType();
@@ -291,7 +291,7 @@ export default {
           message: "删除成功",
           type: "success"
         });
-        this.$router.push({ path: 'forbidden', query: { errcode: 1 }});
+         this.$router.push(`/forbidden?errcode=1`);
       }else{
         this.$message.error(res.data.errmsg);
       }
