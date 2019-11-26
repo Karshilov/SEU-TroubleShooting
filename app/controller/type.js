@@ -85,7 +85,8 @@ class TypeController extends Controller {
         resOfTroubleTidy.push(res);
       }
     });
-    resOfTroubleTidy.push(resOfTrouble.filter(res => res.displayName === '其它报障'));
+    resOfTroubleTidy.push(resOfTrouble.map(res => res.displayName === '其它报障'));
+    console.log(resOfTroubleTidy);
 
     return resOfTroubleTidy;
   }
