@@ -542,7 +542,7 @@ class TroubleController extends Controller {
     // 一个小时最多3次
     const remindCount = await ctx.model.RemindInfo.countDocuments({ troubleId, createTime: { $gt: now - 60 * 60 * 1000 } });
     if (remindCount >= 3) {
-      ctx.error(2, '提醒过于频繁，请稍后');
+      ctx.error(2, '提醒过于频繁，请稍候');
     }
     // 新建提醒记录
     const newRemindInfo = new ctx.model.RemindInfo({
