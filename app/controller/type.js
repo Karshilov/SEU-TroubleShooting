@@ -73,7 +73,9 @@ class TypeController extends Controller {
     }
     let resOfTroubleTidy;
     typeList.forEach(type => {
+      console.log(type);
       resOfTrouble.forEach(res => {
+        console.log(res);
         if (res.displayName === type) {
           resOfTroubleTidy.push(res);
         }
