@@ -12,9 +12,9 @@
 export default {
   data() {
     return {
-      errcode:'',
-      title:'',
-      hint:'',
+      errcode:"",
+      title:"",
+      hint:"",
     };
   },
   methods: {
@@ -26,16 +26,16 @@ export default {
     this.errcode = this.$route.query.errcode
     console.log(this.errcode);
     if(this.errcode == -1){
-      this.title = '无权访问';
-      this.hint = '该故障已交由其他部门处理';
-      window.title = '禁止访问'
+      this.title = "无权访问";
+      this.hint = "该故障已交由其他部门处理";
+      window.title = "禁止访问";
     }else if (this.errcode == 1){
-      this.title = '无法访问';
-      this.hint = '该故障被删除';
-      window.title = '无法访问'
+      this.title = "无法访问";
+      this.hint = "该故障被删除";
+      window.title = "无法访问";
     }else{
-      this.title = '无法访问';
-      window.title = '无法访问'
+      this.title = "无法访问";
+      window.title = "无法访问";
     }
 
   }
