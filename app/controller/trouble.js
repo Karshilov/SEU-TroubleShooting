@@ -569,7 +569,7 @@ class TroubleController extends Controller {
 
   async delete() {
     const { ctx } = this;
-    const troubleId = ctx.query;
+    const { troubleId } = ctx.query;
     const trouble = await ctx.model.Trouble.findById(troubleId);
     console.log('trouble:' + trouble);
     if (!trouble) {
