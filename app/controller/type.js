@@ -71,7 +71,8 @@ class TypeController extends Controller {
     } else {
       resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, [ '_id', 'displayName', 'typeDesc' ]);
     }
-    let resOfTroubleTidy;
+    // eslint-disable-next-line prefer-const
+    let resOfTroubleTidy = [];
     typeList.forEach(type => {
       console.log(type);
       resOfTrouble.forEach(res => {
