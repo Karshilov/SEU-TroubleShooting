@@ -264,6 +264,7 @@ class TroubleController extends Controller {
       canRemind: record.status === 'PENDING' && record.userCardnum === cardnum, // 用户催单
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
+      canCancel: record.status === 'WAITING' && record.userCardnum === cardnum, // 用户取消故障报修
       showEvaluation: !!record.evaluation,
       dealTime: record.dealTime,
       departmentId: record.departmentId,
@@ -564,6 +565,21 @@ class TroubleController extends Controller {
 
     return '提醒成功';
 
+  }
+
+  async delete() {
+    const { ctx } = this;
+    const troubleId = ctx.query;
+    const trouble = await ctx.model.Trouble.findById(troubleId);
+    if (!trouble) {
+      ctx.error(1, '未查询到故障信息');
+    }
+    if (trouble.userCardnum !== ctx.userInfo.cardnum) {
+      ctx.identityError('非用户本人，禁止操作');
+    }
+    await ctx.model.Trouble.deleteOne({ _id: troubleId });
+
+    return '删除成功';
   }
 }
 

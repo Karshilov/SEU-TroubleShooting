@@ -45,6 +45,13 @@
         <el-button @click="accept" type="primary">受理</el-button>
       </div>
     </div>
+    <div v-if="detail.canCancel" class="panel">
+      <div class="subtitle">取消故障报修</div>
+      <div class="title-hint">如果您已经自行处理故障，请在故障受理前点击此处，取消故障报修</div>
+      <div class="content">
+        <el-button @click="cancel" type="primary">受理</el-button>
+      </div>
+    </div>
     <div v-if="detail.canDeal" class="panel">
       <div class="subtitle">故障处理</div>
       <div class="title-hint">故障处理完成后点击此处，提醒用户验收处理结果</div>
@@ -267,6 +274,23 @@ export default {
       if (res.data.success) {
         this.load();
       } else {
+        this.$message.error(res.data.errmsg);
+      }
+    },
+    async cancel() {
+      let res = await this.$axios.delete(
+        `/trouble?troubleId=${this.troubleId}`,
+        {
+          headers: { token: this.token },
+        }
+      );
+      if(res.data.success){
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+        this.$router.push(`/forbidden`);
+      }else{
         this.$message.error(res.data.errmsg);
       }
     }
