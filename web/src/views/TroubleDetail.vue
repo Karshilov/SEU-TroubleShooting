@@ -42,7 +42,7 @@
       <div class="subtitle">故障受理</div>
       <div class="title-hint">该故障等待受理，请尽快接单</div>
       <div class="content">
-        <el-button @click="accept" type="primary">受理</el-button>
+        <el-button @click="accept" type="warning">取消</el-button>
       </div>
     </div>
     <div v-if="detail.canCancel" class="panel">
