@@ -571,15 +571,13 @@ class TroubleController extends Controller {
     const { ctx } = this;
     const { troubleId } = ctx.query;
     const trouble = await ctx.model.Trouble.findById(troubleId);
-    console.log('trouble:' + trouble);
     if (!trouble) {
       ctx.error(1, '未查询到故障信息');
     }
     if (trouble.userCardnum !== ctx.userInfo.cardnum) {
       ctx.identityError('非用户本人，禁止操作');
     }
-    const res = await ctx.model.Trouble.deleteOne({ _id: troubleId });
-    console.log('res' + res);
+    await ctx.model.Trouble.deleteOne({ _id: troubleId });
 
     return '删除成功';
   }

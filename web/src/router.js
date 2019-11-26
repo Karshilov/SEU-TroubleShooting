@@ -74,7 +74,6 @@ export default new Router({
       path: '/forbidden',
       name: 'forbidden',
       component: () => import('./views/Forbidden.vue'),
-      meta: {title: '禁止访问'}
     },
   ]
 })
