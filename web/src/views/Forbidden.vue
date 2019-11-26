@@ -24,7 +24,6 @@ export default {
   },
   created() {
     this.errcode = this.$route.query.errcode
-    console.log(this.errcode);
     if(this.errcode == -1){
       this.title = "无权访问";
       this.hint = "该故障已交由其他部门处理";
