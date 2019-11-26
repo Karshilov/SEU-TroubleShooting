@@ -24,11 +24,12 @@ export default {
   },
   created() {
     this.errcode = this.$route.query.errcode
-    if(errcode == -1){
+    console.log(this.errcode);
+    if(this.errcode == -1){
       this.title = '无权访问';
       this.hint = '该故障已交由其他部门处理';
       window.title = '禁止访问'
-    }else if (errcode == 1){
+    }else if (this.errcode == 1){
       this.title = '无法访问';
       this.hint = '该故障被删除';
       window.title = '无法访问'
