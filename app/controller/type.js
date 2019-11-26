@@ -86,8 +86,6 @@ class TypeController extends Controller {
       }
     });
     resOfTroubleTidy = resOfTroubleTidy.concat(resOfTrouble.filter(res => res.displayName === '其它报障'));
-    console.log(resOfTrouble.filter(res => res.displayName === '其它报障'));
-    console.log(resOfTroubleTidy);
 
     return resOfTroubleTidy;
   }
