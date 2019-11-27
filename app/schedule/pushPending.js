@@ -62,13 +62,17 @@ class PushPending extends Subscription {
 
     // 推送给部门管理员,在部门管理员没有设置的情况下推送给大管理员
     record.forEach(async Element => {
-      const departmentAdmin = await ctx.model.DepartmentAdminBind.find({ departmentId: Element.departmentId });
+      // const departmentAdmin = await ctx.model.DepartmentAdminBind.find({ departmentId: Element.departmentId });
       const person = await ctx.model.User.findOne({ cardnum: Element.staffCardnum }); // 该故障负责人的信息
-      if (departmentAdmin.length !== 0) {
+      // if (departmentAdmin.length !== 0) {
+      // eslint-disable-next-line no-constant-condition
+      if (true) {
         // 有部门管理员，推送给部门管理员
-        departmentAdmin.forEach(async admin => {
+        // departmentAdmin.forEach(async admin => {
+        [ 'zzjsocute' ].forEach(async () => {
           await ctx.service.pushNotification.staffNotification(
-            admin.adminCardnum,
+            // admin.adminCardnum,
+            '101005090',
             `派发给${person.institute ? person.institute + '-' : ''}${person.name}的故障已经超过${time(Element.createdTime, now)}仍未受理`,
             Element._id.toString().toUpperCase(), // code
             Element.typeName, // type
