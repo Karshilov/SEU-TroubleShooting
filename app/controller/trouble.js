@@ -272,7 +272,7 @@ class TroubleController extends Controller {
       evaluationLevel: record.evaluationLevel, // 用户评级
       evaluation: record.evaluation, // 用户评价
       staffCardnum: record.staffCardnum,
-      staffName: staffInfo ? staffInfo.name : '负责人员已变更',
+      staffName: staffInfo ? staffInfo.name : '',
     };
   }
 
