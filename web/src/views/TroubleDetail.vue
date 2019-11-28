@@ -14,7 +14,7 @@
           <el-form-item
             style="margin-bottom:0"
             label="负责人员"
-          >{{`${detail.staffName}`}}{{detail.staffName ? `(${detail.staffCardnum})`:''}</el-form-item>
+          >{{`${detail.staffName}`}}{{detail.staffName ? `(${detail.staffCardnum})`:''}}</el-form-item>
           <el-form-item v-if="detail.image" style="margin-bottom:0" label="图片附件">
             <img :src="detail.image" style="width:100%;border-radius:8px;" />
           </el-form-item>
