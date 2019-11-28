@@ -165,7 +165,6 @@ export default {
         this.detail = res.data.result;
       } else {
         // 跳转到禁止页面
-        console.log('跳转');
         //this.$router.push({ path: 'forbidden', query: { errcode: res.data.errcode }});
         this.$router.push(`/forbidden?errcode=${res.data.errcode}`);
       }
