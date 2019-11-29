@@ -44,7 +44,7 @@
             <template slot-scope="scope">
               <el-button @click="move(scope, 'UP', menu1List)" type="text" size="small">上移</el-button>
               <el-button @click="move(scope, 'DOWN', menu1List)" type="text" size="small">下移</el-button>
-              <el-button @click="deleteItem(scope.row)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -83,7 +83,7 @@
             <template slot-scope="scope">
               <el-button @click="move(scope, 'UP', menu2List)" type="text" size="small">上移</el-button>
               <el-button @click="move(scope, 'DOWN', menu2List)" type="text" size="small">下移</el-button>
-              <el-button @click="deleteItem(scope.row)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -122,12 +122,19 @@
             <template slot-scope="scope">
               <el-button @click="move(scope, 'UP', menu3List)" type="text" size="small">上移</el-button>
               <el-button @click="move(scope, 'DOWN', menu3List)" type="text" size="small">下移</el-button>
-              <el-button @click="deleteItem(scope.row)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
+      <span>是否确定删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="deleteItem">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -153,7 +160,9 @@ export default {
       menu1List: [],
       menu2List: [],
       menu3List: [],
-      token: ""
+      token: "",
+      dialogVisible: false,
+      deleteTarget: ""
     };
   },
   methods: {
@@ -362,10 +371,26 @@ export default {
       this.menu3List = res.RIGHT.sub;
     },
     async deleteItem(row) {
-      let res = await this.$axios.delete("/menu?id=" + row._id, {
+      const res = await this.$axios.delete("/menu?id=" + this.deleteTarget._id, {
         headers: { token: this.token }
       });
+      if(res.data.success){
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+      }else{
+        this.$message({
+          message: '删除失败',
+          type: 'error'
+        });
+      }
       this.load();
+      this.dialogVisible = false;
+    },
+    async openDialog(row){
+      this.deleteTarget = row;
+      this.dialogVisible = true;
     }
   },
   created() {

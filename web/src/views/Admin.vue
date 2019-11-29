@@ -22,10 +22,17 @@
           <el-table-column prop="name" label="姓名"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteAdmin(scope.row.cardnum)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row.cardnum)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
+          <span>是否确定删除</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="deleteAdmin">确定</el-button>
+          </span>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -38,7 +45,8 @@ export default {
       list: [],
       token: "",
       cardnum: "",
-      dialogVisible: false
+      dialogVisible: false,
+      deleteTarget: ""
     };
   },
   methods: {
@@ -61,8 +69,8 @@ export default {
       });
       this.list = res.data.result;
     },
-    async deleteAdmin(cardnum) {
-      let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
+    async deleteAdmin() {
+      const res = await this.$axios.delete("/user/admin?cardnum=" + this.deleteTarget, {
         headers: { token: this.token }
       });
       if(res.data.success){
@@ -78,6 +86,10 @@ export default {
       }
       this.dialogVisible = false;
       this.load();
+    },
+    async openDialog(cardnum) {
+      this.dialogVisible = true;
+      this.deleteTarget = cardnum;
     }
   },
   created() {

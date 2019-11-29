@@ -24,12 +24,20 @@
             <template slot-scope="scope">
               <el-button @click="editStaff(scope.row.id)" type="text" size="small">人员管理</el-button>
               <el-button @click="editType(scope.row.id)" type="text" size="small">故障类型</el-button>
-              <el-button @click="deleteDepartment(scope.row.id)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row.id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
+      <span>是否确定删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="deleteDepartment">确定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -39,7 +47,9 @@ export default {
     return {
       list: [],
       token: "",
-      departmentName: ""
+      departmentName: "",
+      dialogVisible: false,
+      deleteTarget: ""
     };
   },
   methods: {
@@ -63,17 +73,33 @@ export default {
       });
       this.list = res.data.result;
     },
-    async deleteDepartment(id) {
-      let res = await this.$axios.delete("/department?departmentId="+id, {
+    async deleteDepartment() {
+      const res = await this.$axios.delete("/department?departmentId="+this.deleteTarget, {
         headers: { token: this.token }
       });
-      this.load()
+      if(res.data.success){
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+      }else{
+        this.$message({
+          message: '删除错误',
+          type: 'error'
+        });
+      }
+      this.dialogVisible = false;
+      this.load();
     },
     editType(id){
       this.$router.push(`/type/${this.token}/${id}`)
     },
     editStaff(id){
       this.$router.push(`/staff/${this.token}/${id}`)
+    },
+    openDialog(id){
+      this.deleteTarget = id;
+      this.dialogVisible = true;
     }
   },
   created() {

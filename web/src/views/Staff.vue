@@ -24,7 +24,7 @@
           <el-table-column prop="adminCardnum" label="一卡通号"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteAdmin(scope.row.adminCardnum)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row.adminCardnum, 'departmentAdmin')" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -39,13 +39,19 @@
           <el-table-column prop="staffCardnum" label="一卡通号"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteStaff(scope.row.staffCardnum)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row.staffCardnum, 'staff')" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
-    
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
+      <span>是否确定删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="deleteBind">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,7 +63,10 @@ export default {
       list: [],
       adminList: [],
       token: "",
-      cardnum: ""
+      cardnum: "",
+      dialogVisible: false,
+      deleteTarget: "",
+      deleteType: ""
     };
   },
   methods: {
@@ -122,7 +131,7 @@ export default {
     async deleteAdmin(adminCardnum) {
       await this.$axios.delete(
         "/department/admin?adminCardnum=" +
-          adminCardnum+
+          adminCardnum +
           "&departmentId=" +
           this.departmentId,
         {
@@ -130,6 +139,37 @@ export default {
         }
       );
       this.load();
+    },
+    async deleteBind() {
+      let res;
+      if (this.deleteType === "staff") {
+        res = await this.$axios.delete(
+          "/department/staff?staffCardnum=" +
+            this.deleteTarget +
+            "&departmentId=" +
+            this.departmentId,
+          {
+            headers: { token: this.token }
+          }
+        );
+      } else if (this.deleteType === "departmentAdmin") {
+        res = await this.$axios.delete(
+          "/department/admin?adminCardnum=" +
+            this.deleteTarget+
+            "&departmentId=" +
+            this.departmentId,
+          {
+            headers: { token: this.token }
+          }
+        );
+      }
+      this.dialogVisible = false;
+      this.load();
+    },
+    openDialog(cardnum, type) {
+      this.deleteTarget = cardnum;
+      this.deleteType = type;
+      this.dialogVisible = true;
     }
   },
   created() {

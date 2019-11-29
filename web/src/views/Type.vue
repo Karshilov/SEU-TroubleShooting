@@ -25,10 +25,17 @@
           <el-table-column prop="displayName" label="故障类型名称"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteType(scope.row._id)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
+          <span>是否确定删除</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="deleteType">确定</el-button>
+          </span>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -42,7 +49,9 @@ export default {
       list: [],
       token: "",
       typeName: "",
-      typeDesc:""
+      typeDesc: "",
+      dialogVisible: false,
+      deleteTarget: ""
     };
   },
   methods: {
@@ -69,12 +78,29 @@ export default {
       res = await this.$axios.get("/department/name?departmentId="+this.departmentId)
       this.departmentName = res.data.result
     },
-    async deleteType(typeId) {
-      let res = await this.$axios.delete("/type?typeId="+typeId, {
+    async deleteType() {
+      let res = await this.$axios.delete("/type?typeId="+this.deleteTarget, {
         headers: { token: this.token }
       });
+      if (res.data.success){
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+      }else{
+        this.$message({
+          message: '删除失败',
+          type: 'error'
+        })
+      }
+      this.dialogVisible = false;
       this.load()
+    },
+    openDialog(_id) {
+      this.deleteTarget = _id;
+      this.dialogVisible = true;
     }
+    
   },
   created() {
     this.token = this.$route.params.token;
