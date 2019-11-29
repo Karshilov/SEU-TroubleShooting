@@ -39,7 +39,11 @@ class MessageController extends Controller {
       }
       console.log('isSameDepartment' + isSameDepartment);
 
-      const isDepartmentAdmin = !!(await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum }));
+      let isDepartmentAdmin = (await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum, departmentId: resOfTroubleId.departmentId }));
+
+      console.log('isDepartmentAdmin' + isDepartmentAdmin);
+
+      isDepartmentAdmin = !!isDepartmentAdmin;
 
       console.log('isDepartmentAdmin' + isDepartmentAdmin);
 
