@@ -79,7 +79,7 @@ export default {
         });
       } else {
         this.$message({
-          message:`${res.err.errmsg}`,
+          message:`删除失败`,
           type: 'error'
         })
       }
