@@ -163,6 +163,17 @@ export default {
           }
         );
       }
+      if(res.data.success){
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+      }else{
+          this.$message({
+          message: '删除失败',
+          type: 'error'
+        })
+      }
       this.dialogVisible = false;
       this.load();
     },

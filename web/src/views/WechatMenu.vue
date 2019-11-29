@@ -370,7 +370,7 @@ export default {
       this.menu3Name = res.RIGHT.title;
       this.menu3List = res.RIGHT.sub;
     },
-    async deleteItem(row) {
+    async deleteItem() {
       const res = await this.$axios.delete("/menu?id=" + this.deleteTarget._id, {
         headers: { token: this.token }
       });
