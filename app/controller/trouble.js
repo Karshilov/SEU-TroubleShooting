@@ -590,7 +590,7 @@ class TroubleController extends Controller {
     if (record.image) {
       ctx.type = record.image.split(';')[0].split('/')[1];
       ctx.status = 200;
-      const image = Buffer.from(record.image.split(',')[1]);
+      const image = Buffer.from(record.image.split(',')[1], 'base64');
       ctx.body = image;
       ctx.length = image.length;
     } else {
