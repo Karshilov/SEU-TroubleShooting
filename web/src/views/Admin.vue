@@ -22,7 +22,14 @@
           <el-table-column prop="name" label="姓名"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="deleteAdmin(scope.row.cardnum)" type="text" size="small">删除</el-button>
+              <el-button @click="dialogVisible = true" type="text" size="small">删除</el-button>
+              <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
+                <span>是否确定删除</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="dialogVisible = false">取消</el-button>
+                  <el-button type="primary" @click="deleteAdmin(scope.row.cardnum)">确定</el-button>
+                </span>
+              </el-dialog>
             </template>
           </el-table-column>
         </el-table>
@@ -37,7 +44,8 @@ export default {
     return {
       list: [],
       token: "",
-      cardnum: ""
+      cardnum: "",
+      dialogVisible: false
     };
   },
   methods: {
@@ -61,25 +69,11 @@ export default {
       this.list = res.data.result;
     },
     async deleteAdmin(cardnum) {
-      this.$confirm('是否要确定删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
-            headers: { token: this.token }
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      this.load()
+      let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
+        headers: { token: this.token }
+      });
+      this.dialogVisible = false;
+      this.load();
     }
   },
   created() {
