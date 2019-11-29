@@ -23,7 +23,7 @@
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
               <el-button @click="dialogVisible = true" type="text" size="small">删除</el-button>
-              <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
+              <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
                 <span>是否确定删除</span>
                 <span slot="footer" class="dialog-footer">
                   <el-button @click="dialogVisible = false">取消</el-button>
@@ -72,6 +72,17 @@ export default {
       let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
         headers: { token: this.token }
       });
+      if(res.data.success){
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+      } else {
+        this.$message({
+          message:`${res.err.errmsg}`,
+          type: 'error'
+        })
+      }
       this.dialogVisible = false;
       this.load();
     }
