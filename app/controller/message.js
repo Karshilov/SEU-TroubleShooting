@@ -23,22 +23,25 @@ class MessageController extends Controller {
     if (!resOfTroubleId) {
       ctx.error(-4, '没有查询到相关故障信息');
     }
-
     if (resOfTroubleId.status === 'PENDING' || resOfTroubleId.status === 'WAITING') {
       // 向双方推送消息
 
       const userCardnum = resOfTroubleId.userCardnum;
       const staffCardnum = resOfTroubleId.staffCardnum; // 负责该故障的维修人员
-
+      console.log('resOfTroubleId.userCardnum' + resOfTroubleId.userCardnum);
+      console.log('resOfTroubleId.staffCardnum' + resOfTroubleId.staffCardnum);
+      console.log('ctx.userInfo.cardnum' + ctx.userInfo.cardnum);
       const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
       if (resOfStaffBind.length !== 0) {
         resOfStaffBind.forEach(k => {
           if (resOfTroubleId.departmentId === k.departmentId) isSameDepartment = true;
         });
       }
+      console.log('isSameDepartment' + isSameDepartment);
 
       const isDepartmentAdmin = !!(await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum }));
 
+      console.log('isDepartmentAdmin' + isDepartmentAdmin);
 
       // 消息来自维修人员或者是部门管理员
       if (isSameDepartment || isDepartmentAdmin) {
