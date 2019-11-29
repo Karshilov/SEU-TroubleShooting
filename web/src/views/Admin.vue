@@ -25,7 +25,7 @@
               <el-button @click="dialogVisible = true" type="text" size="small">删除</el-button>
               <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
                 <span>是否确定删除</span>
-                <span slot="footer" class="dialog-footer">
+                <span class="dialog-footer">
                   <el-button @click="dialogVisible = false">取消</el-button>
                   <el-button type="primary" @click="deleteAdmin(scope.row.cardnum)">确定</el-button>
                 </span>
