@@ -587,7 +587,7 @@ class TroubleController extends Controller {
     const { ctx } = this;
     const { troubleId } = ctx.query;
     const record = await ctx.model.Trouble.findById(troubleId);
-    if (record.image) {
+    if (record && record.image) {
       ctx.type = record.image.split(';')[0].split('/')[1];
       ctx.status = 200;
       const image = Buffer.from(record.image.split(',')[1], 'base64');
