@@ -22,14 +22,7 @@
           <el-table-column prop="name" label="姓名"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="dialogVisible = true" type="text" size="small">删除</el-button>
-              <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
-                <span>是否确定删除</span>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="dialogVisible = false">取消</el-button>
-                  <el-button type="primary" @click="deleteAdmin(scope.row.cardnum)">确定 {{scope.row.cardnum}}</el-button>
-                </span>
-              </el-dialog>
+              <el-button @click="deleteAdmin(scope.row.cardnum)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -69,7 +62,6 @@ export default {
       this.list = res.data.result;
     },
     async deleteAdmin(cardnum) {
-      console.log(cardnum);
       let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
         headers: { token: this.token }
       });
