@@ -61,9 +61,24 @@ export default {
       this.list = res.data.result;
     },
     async deleteAdmin(cardnum) {
-      let res = await this.$axios.delete("/user/admin?cardnum="+cardnum, {
-        headers: { token: this.token }
-      });
+      this.$confirm('是否要确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          let res = await this.$axios.delete("/user/admin?cardnum=" + cardnum, {
+            headers: { token: this.token }
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       this.load()
     }
   },
