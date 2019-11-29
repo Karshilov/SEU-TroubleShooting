@@ -28,24 +28,14 @@ class MessageController extends Controller {
 
       const userCardnum = resOfTroubleId.userCardnum;
       const staffCardnum = resOfTroubleId.staffCardnum; // 负责该故障的维修人员
-      console.log('resOfTroubleId.userCardnum' + resOfTroubleId.userCardnum);
-      console.log('resOfTroubleId.staffCardnum' + resOfTroubleId.staffCardnum);
-      console.log('ctx.userInfo.cardnum' + ctx.userInfo.cardnum);
       const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
       if (resOfStaffBind.length !== 0) {
         resOfStaffBind.forEach(k => {
           if (resOfTroubleId.departmentId === k.departmentId) isSameDepartment = true;
         });
       }
-      console.log('isSameDepartment' + isSameDepartment);
 
-      let isDepartmentAdmin = (await ctx.model.DepartmentAdminBind.findOne({ adminCardnum: ctx.userInfo.cardnum, departmentId: resOfTroubleId.departmentId }));
-
-      console.log('isDepartmentAdmin' + isDepartmentAdmin);
-
-      isDepartmentAdmin = !!isDepartmentAdmin;
-
-      console.log('isDepartmentAdmin' + isDepartmentAdmin);
+      const isDepartmentAdmin = !!(await ctx.model.DepartmentAdminBind.findOne({ adminCardnum: ctx.userInfo.cardnum, departmentId: resOfTroubleId.departmentId }));
 
       // 消息来自维修人员或者是部门管理员
       if (isSameDepartment || isDepartmentAdmin) {
