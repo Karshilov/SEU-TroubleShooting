@@ -65,7 +65,7 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
+        }).then(async () => {
           this.$message({
             type: 'success',
             message: '删除成功!'
