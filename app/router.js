@@ -44,6 +44,7 @@ module.exports = app => {
   router.delete('/trouble', controller.trouble.delete);
   router.get('/trouble/list', controller.trouble.list);
   router.get('/trouble', controller.trouble.detail);
+  router.get('/trouble/wechat-image', controller.trouble.wechatImage);
   router.post('/trouble/accept', controller.trouble.accept);
   router.post('/trouble/deal', controller.trouble.deal);
   router.post('/trouble/check', controller.trouble.check);

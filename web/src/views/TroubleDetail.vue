@@ -16,7 +16,7 @@
             label="负责人员"
           >{{detail.staffName ? `${detail.staffName}` : '人员已变更' }}{{detail.staffName ? `(${detail.staffCardnum})`:''}}</el-form-item>
           <el-form-item v-if="detail.image" style="margin-bottom:0" label="图片附件">
-            <img :src="detail.image" style="width:100%;border-radius:8px;" />
+            <img :src="detail.image" style="width:100%;border-radius:8px;" @click="previewImage"/>
           </el-form-item>
         </el-form>
       </div>
@@ -156,6 +156,9 @@ export default {
         headers: { token: this.token }
       });
       this.message = res.data.result;
+    },
+    async previewImage() {
+
     },
     async load() {
       let res = await this.$axios.get("/trouble?troubleId=" + this.troubleId, {

@@ -582,6 +582,21 @@ class TroubleController extends Controller {
 
     return '删除成功';
   }
+
+  async wechatImage() {
+    const { ctx } = this;
+    const { troubleId } = ctx.query;
+    const record = await ctx.model.Trouble.findById(troubleId);
+    if (record.image) {
+      ctx.type = record.image.split(';')[0].split('/')[1];
+      ctx.status = 200;
+      const image = Buffer.from(record.image);
+      ctx.body = image;
+      ctx.length = image.length;
+    } else {
+      ctx.status = 404;
+    }
+  }
 }
 
 module.exports = TroubleController;
