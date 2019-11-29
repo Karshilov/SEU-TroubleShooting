@@ -16,7 +16,7 @@
             label="负责人员"
           >{{detail.staffName ? `${detail.staffName}` : '人员已变更' }}{{detail.staffName ? `(${detail.staffCardnum})`:''}}</el-form-item>
           <el-form-item v-if="detail.image" style="margin-bottom:0" label="图片附件">
-            <img :src="detail.image" style="width:100%;border-radius:8px;" @click="previewImage"/>
+            <img :src="detail.image" style="width:100%;border-radius:8px;" @click="previewImage" />
           </el-form-item>
         </el-form>
       </div>
@@ -111,7 +111,7 @@
               :autosize="{ minRows: 3, maxRows: 10}"
             ></el-input>
           </el-form-item>
-          <el-form-item >
+          <el-form-item>
             <el-button @click="check">{{checkStatus ? "评价" : "重新提交故障信息"}}</el-button>
           </el-form-item>
         </el-form>
@@ -158,7 +158,10 @@ export default {
       this.message = res.data.result;
     },
     async previewImage() {
-
+      wx.previewImage({
+        current: `${window.baseURL}trouble/wechat-image?troubleId=${this.troubleId}`, // 当前显示图片的http链接
+        urls: [`${window.baseURL}trouble/wechat-image?troubleId=${this.troubleId}`] // 需要预览的图片http链接列表
+      });
     },
     async load() {
       let res = await this.$axios.get("/trouble?troubleId=" + this.troubleId, {
@@ -286,16 +289,16 @@ export default {
       let res = await this.$axios.delete(
         `/trouble?troubleId=${this.troubleId}`,
         {
-          headers: { token: this.token },
+          headers: { token: this.token }
         }
       );
-      if(res.data.success){
+      if (res.data.success) {
         this.$message({
           message: "删除成功",
           type: "success"
         });
-         this.$router.push(`/forbidden?errcode=1`);
-      }else{
+        this.$router.push(`/forbidden?errcode=1`);
+      } else {
         this.$message.error(res.data.errmsg);
       }
     }
