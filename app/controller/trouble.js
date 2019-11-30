@@ -27,7 +27,7 @@ class TroubleController extends Controller {
       userCardnum,
       createdTime: { $gt: now - 24 * 60 * 60 * 1000 },
     });
-    if (postCount > 50) {
+    if (postCount > 3) {
       // 为了避免恶意骚扰，24小时内故障申报数量不能超过5个
       ctx.error(1, '故障申报频率过高，请稍后重试');
     }
