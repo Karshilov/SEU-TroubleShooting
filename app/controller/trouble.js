@@ -247,6 +247,7 @@ class TroubleController extends Controller {
     if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin && !isDepartmentAdmin) {
       ctx.permissionError('无权访问');
     }
+    const resOfUser = await ctx.model.User.findOne({ cardnum: record.userCardnum }); // 用户信息
 
     const staffInfo = await ctx.model.StaffBind.findOne({ staffCardnum: record.staffCardnum });
     return {
@@ -258,7 +259,7 @@ class TroubleController extends Controller {
       address: record.address,
       image: record.image,
       userCardnum: record.userCardnum,
-      userName: record.userName,
+      userName: resOfUser.name,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
       canAccept: (isSameDepartment || isDepartmentAdmin) && record.status === 'WAITING', // 允许受理
