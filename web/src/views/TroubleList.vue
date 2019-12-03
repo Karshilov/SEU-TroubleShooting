@@ -112,7 +112,6 @@ export default {
     this.token = this.$route.params.token;
     if (this.$store.state.statusFilter) {
       this.statusFilter = this.$store.state.statusFilter;
-      this.$store.commit("clear");
     }
     this.loadMore();
   }
