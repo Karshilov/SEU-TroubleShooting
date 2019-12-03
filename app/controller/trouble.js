@@ -599,6 +599,58 @@ class TroubleController extends Controller {
       ctx.status = 404;
     }
   }
+
+  async count() {
+    // 故障数量
+    const { ctx } = this;
+    let { statusFilter = 'WAITING', role } = ctx.request.query;
+    if (statusFilter === 'END') {
+      statusFilter = [{ status: 'ACCEPT' }, { status: 'REJECT' }, { status: 'CLOSED' }];
+    } else {
+      statusFilter = [{ status: statusFilter }];
+    }
+    if (role === 'USER') {
+      // 用户查询的逻辑
+      const count = await ctx.model.Trouble.countDocuments({
+        userCardnum: ctx.userInfo.cardnum,
+        $or: statusFilter,
+      });
+      return count;
+    } else if (role === 'STAFF') {
+      // 工作人员可以查询到本部门所有的故障信息
+      const staffDepartments = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
+      // 部门管理员可以看到本部门的故障信息
+      const adminDepartments = await ctx.model.DepartmentAdminBind.find({ adminCardnum: ctx.userInfo.cardnum });
+      const departments = staffDepartments.concat(adminDepartments);
+      let departmentIds = {};
+      // 去重
+      departments.forEach(d => {
+        departmentIds[d.departmentId] = true;
+      });
+      departmentIds = Object.keys(departmentIds);
+      // 查询该部门下面的所有故障信息,根据部门id进行寻找
+      let count = 0;
+      for (const departmentId of departmentIds) {
+        const temp = await ctx.model.Trouble.countDocuments({
+          departmentId,
+          $or: statusFilter,
+        });
+        count += temp;
+      }
+      return count;
+    } else if (role === 'ADMIN') {
+      if (!ctx.userInfo.isAdmin) {
+        ctx.permissionError('无权访问');
+      }
+      // 管理员查询的逻辑
+      const count = await ctx.model.Trouble.countDocuments({
+        $or: statusFilter,
+      });
+      return count;
+    }
+    return 0;
+
+  }
 }
 
 module.exports = TroubleController;

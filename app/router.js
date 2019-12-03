@@ -50,6 +50,7 @@ module.exports = app => {
   router.post('/trouble/check', controller.trouble.check);
   router.post('/trouble/redirect', controller.trouble.redirect);
   router.post('/trouble/remind', controller.trouble.remind);
+  router.get('/trouble/count', controller.trouble.count);
 
   router.post('/message', controller.message.createMessage);
   router.get('/message', controller.message.listMessage);
