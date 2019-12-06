@@ -268,6 +268,7 @@ class TroubleController extends Controller {
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       canCancel: record.status === 'WAITING' && record.userCardnum === cardnum, // 用户取消故障报修
+      canShowSummary: (isSameDepartment || isDepartmentAdmin || ctx.userInfo.isAdmin) && record.status === 'DONE',
       showEvaluation: !!record.evaluation,
       dealTime: record.dealTime,
       departmentId: record.departmentId,
@@ -334,7 +335,7 @@ class TroubleController extends Controller {
     // 工作人员标记故障处理完成
     // 查询故障信息
     const { ctx } = this;
-    const { troubleId } = ctx.request.body;
+    const { troubleId, summary } = ctx.request.body;
     const cardnum = ctx.userInfo.cardnum;
     const record = await ctx.model.Trouble.findById(troubleId);
     let isSameDepartment = false;
@@ -355,6 +356,7 @@ class TroubleController extends Controller {
     record.staffCardnum = cardnum;
     record.status = 'DONE';
     record.dealTime = +moment();
+    record.summary = summary;
     await record.save();
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({

@@ -57,8 +57,18 @@
       <div class="subtitle">故障处理</div>
       <div class="title-hint">故障处理完成后点击此处，提醒用户验收处理结果</div>
       <div class="content">
+        <el-input style="margin-bottom:15px"
+          type="textarea"
+          v-model="summary"
+          placeholder="请填写故障处理总结，不少于20字"
+          :autosize="{minRows:3, maxRows:6 }"
+        ></el-input>
         <el-button @click="deal" type="primary">处理完成</el-button>
       </div>
+    </div>
+    <div v-if="detail.canShowSummary">
+      <div class="subtitle">故障处理总结</div>
+      <div class="content">{{detail.summary}}</div>
     </div>
     <div v-if="detail.canRemind" class="panel">
       <div class="subtitle">故障处理提醒</div>
@@ -138,6 +148,7 @@ export default {
       checkStatus: true,
       evaluationLevel: 4,
       evaluation: "",
+      summary: "",
       newMessage: "",
       message: [],
       typeList: [],
@@ -159,8 +170,12 @@ export default {
     },
     async previewImage() {
       wx.previewImage({
-        current: `${window.baseURL}trouble/wechat-image?troubleId=${this.troubleId}`, // 当前显示图片的http链接
-        urls: [`${window.baseURL}trouble/wechat-image?troubleId=${this.troubleId}`] // 需要预览的图片http链接列表
+        current: `${window.baseURL}trouble/wechat-image?troubleId=${
+          this.troubleId
+        }`, // 当前显示图片的http链接
+        urls: [
+          `${window.baseURL}trouble/wechat-image?troubleId=${this.troubleId}`
+        ] // 需要预览的图片http链接列表
       });
     },
     async load() {
@@ -216,17 +231,24 @@ export default {
       }
     },
     async deal() {
-      let res = await this.$axios.post(
-        "/trouble/deal",
-        { troubleId: this.troubleId },
-        {
-          headers: { token: this.token }
-        }
-      );
-      if (res.data.success) {
-        this.load();
+      if (this.summary.length < 20) {
+        this.$message.error("字数不足，请认真填写");
       } else {
-        this.$message.error(res.data.errmsg);
+        let res = await this.$axios.post(
+          "/trouble/deal",
+          { 
+            troubleId: this.troubleId,
+            summary: this.summary
+          },
+          {
+            headers: { token: this.token }
+          }
+        );
+        if (res.data.success) {
+          this.load();
+        } else {
+          this.$message.error(res.data.errmsg);
+        }
       }
     },
     async check() {
