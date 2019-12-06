@@ -269,7 +269,7 @@ class TroubleController extends Controller {
       canRedirect: (record.staffCardnum === cardnum || ctx.userInfo.isAdmin || isDepartmentAdmin) && (record.status === 'PENDING' || record.status === 'WAITING'),
       canCheck: record.status === 'DONE' && record.userCardnum === cardnum,
       canCancel: record.status === 'WAITING' && record.userCardnum === cardnum, // 用户取消故障报修
-      canShowSummary: (isSameDepartment || isDepartmentAdmin || ctx.userInfo.isAdmin) && record.status === 'DONE',
+      canShowSummary: (isSameDepartment || isDepartmentAdmin || ctx.userInfo.isAdmin) && (record.status === 'DONE' || record.status === 'ACCEPT' || record.status === 'REJECT'),
       showEvaluation: !!record.evaluation,
       dealTime: record.dealTime,
       departmentId: record.departmentId,
