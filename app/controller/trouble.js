@@ -260,6 +260,7 @@ class TroubleController extends Controller {
       image: record.image,
       userCardnum: record.userCardnum,
       userName: resOfUser.name,
+      summary: record.summary,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
       canAccept: (isSameDepartment || isDepartmentAdmin) && record.status === 'WAITING', // 允许受理
