@@ -68,7 +68,7 @@
     </div>
     <div v-if="detail.canShowSummary">
       <div class="subtitle">故障处理总结</div>
-      <div class="content">{{detail.summary ? detail.summary : '未填写总结'}}</div>
+      <div class="content">{{detail.summary ? detail.summary : '未填写故障处理总结'}}</div>
     </div>
     <div v-if="detail.canRemind" class="panel">
       <div class="subtitle">故障处理提醒</div>
