@@ -343,6 +343,9 @@ class TroubleController extends Controller {
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
+    if (summary.length < 6) {
+      ctx.error(2, '故障处理总结字数不足');
+    }
     // 只允许故障处理人将处于PENDING状态的故障标记为DONE
     // 允许相同部门的故障处理人处理故障
     const resOfStaffBind = await ctx.model.StaffBind.find({ staffCardnum: cardnum });

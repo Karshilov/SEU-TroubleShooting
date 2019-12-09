@@ -60,7 +60,7 @@
         <el-input style="margin-bottom:15px"
           type="textarea"
           v-model="summary"
-          placeholder="请填写故障处理总结，不少于20字"
+          placeholder="请填写故障处理总结，不少于6字"
           :autosize="{minRows:3, maxRows:6 }"
         ></el-input>
         <el-button @click="deal" type="primary">处理完成</el-button>
@@ -231,7 +231,7 @@ export default {
       }
     },
     async deal() {
-      if (this.summary.length < 20) {
+      if (this.summary.length < 6) {
         this.$message.error("字数不足，请认真填写");
       } else {
         let res = await this.$axios.post(
