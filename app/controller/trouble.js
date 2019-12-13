@@ -437,7 +437,6 @@ class TroubleController extends Controller {
       // console.log('newTrouble:' + newTrouble);
       await newTrouble.save();
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.staffCardnum });
-      console.log('staff:' + staff);
       // 向用户推送重新申请故障的推送消息
       await ctx.service.pushNotification.userNotification(
         newTrouble.userCardnum,

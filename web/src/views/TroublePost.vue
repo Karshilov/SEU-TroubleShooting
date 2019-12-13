@@ -3,7 +3,7 @@
     <div class="title">故障报修</div>
     <div class="title-hint">
       很抱歉给您带来不便。
-      请您准确详实的反馈遇到的问题，我们的运维人员将会尽其所能为您提供帮助。
+      请您准确详实的反馈遇到的问题，我们的运维人员将在工作时间集中受理您反馈的问题，会尽其所能为您提供帮助。
     </div>
     <div style="margin-top: 30px;margin-right: 20px;margin-left: 10px;">
       <el-form :model="form" label-width="80px" v-loading="loading">

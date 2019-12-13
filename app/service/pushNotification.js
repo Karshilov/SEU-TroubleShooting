@@ -1,5 +1,6 @@
 'use strict';
 const Service = require('egg').Service;
+const moment = require('moment');
 
 class pushNotification extends Service {
   async userNotification(cardnum, title, address, type, status, lastModifiedTime, remark, url) {
@@ -56,7 +57,13 @@ class pushNotification extends Service {
   async staffNotification(cardnum, title, code, type, desc, phonenum, createdTime, remark, url) {
     const access_token = await this.service.getAccessToken.accessToken();
     const user = await this.ctx.model.User.findOne({ cardnum });
+    const nowHour = moment().hour();
     if (!user) {
+      return;
+    }
+    if (nowHour > 22 || nowHour < 6) {
+      // 晚上10点到第二天六点不推送故障报修通知
+      console.log('非工作时间，暂不推送故障报修通知');
       return;
     }
     const postJson = {
@@ -98,7 +105,7 @@ class pushNotification extends Service {
     });
 
     if (result.data.errcode) {
-      console.log(`故障报修通知发送失败   错误码：${result.data.errcode}`);
+      console.log(`故障报修通知发送失败 错误码：${result.data.errcode}`);
 
     }
 
