@@ -61,7 +61,7 @@ class pushNotification extends Service {
     if (!user) {
       return;
     }
-    if (nowHour > 22 || nowHour < 6) {
+    if (nowHour > 19 || nowHour < 7) {
       // 晚上10点到第二天六点不推送故障报修通知
       console.log('非工作时间，暂不推送故障报修通知');
       return;
