@@ -24,3 +24,11 @@ idsSecret: 'xxxxxx'
 # CAS认证(不以/结尾)
 casLoginURL: https://newids.seu.edu.cn/authserver/login
 casServiceValidateURL: https://newids.seu.edu.cn/authserver/serviceValidate
+
+# 外部对接
+exportOAuth: 
+    wisedu: 
+        secretKey: <fake-secret>
+        urlMap: 
+            key0: https://www.example.cn/route1/
+            key1: https://www.example.cn/route2/

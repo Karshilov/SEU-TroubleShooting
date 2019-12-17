@@ -53,6 +53,7 @@ module.exports = appInfo => {
     idsSecret: configYaml.idsSecret,
     casLoginURL: configYaml.casLoginURL,
     casServiceValidateURL: configYaml.casServiceValidateURL,
+    exportOAuth: configYaml.exportOAuth,
   };
 
   // use for cookie sign key, should change to your own and keep security

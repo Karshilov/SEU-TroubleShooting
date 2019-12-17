@@ -3,6 +3,7 @@
 const Controller = require('egg').Controller;
 const moment = require('moment');
 const uuid = require('uuid/v4');
+const md5 = require('js-md5');
 
 
 class loginController extends Controller {
@@ -51,7 +52,11 @@ class loginController extends Controller {
     // 用户存在isNewbie为0,否则为1
     let redirectURL;
     if (casURL === '') {
-      if (person.phonenum && person.address) {
+      if (this.config.exportOAuth[state[0]] && this.config.exportOAuth[state[0]].urlMap[state[1]]) {
+        // 和外部对接
+        const signature = md5(`uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&secretKey=${this.config.exportOAuth[state[0]].secretKey}`);
+        redirectURL = `${this.config.exportOAuth[state[0]].urlMap[state[1]]}?uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&signature=${signature}`;
+      } else if (person.phonenum && person.address) {
         redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`;
       } else {
         redirectURL = this.config.redirectURL + `#/userbind/${token}/${state[0]}${state[1] ? '/' + state[1] : ''}`;
