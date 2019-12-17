@@ -18,7 +18,7 @@ class keywordsService extends Service {
       故障申报: 'post',
       处理进度: 'list_USER',
     };
-    // console.log(ctx.request.body);
+    console.log(ctx.request.body);
     let keyword;
     try {
       keyword = ctx.request.body.Content.split(' ')[0];
