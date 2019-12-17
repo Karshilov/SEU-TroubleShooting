@@ -54,8 +54,9 @@ class loginController extends Controller {
     if (casURL === '') {
       if (this.config.exportOAuth[state[0]] && this.config.exportOAuth[state[0]].urlMap[state[1]]) {
         // 和外部对接
-        const signature = md5(`uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&secretKey=${this.config.exportOAuth[state[0]].secretKey}`);
-        redirectURL = `${this.config.exportOAuth[state[0]].urlMap[state[1]]}?uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&signature=${signature}`;
+        const timestamp = +moment();
+        const signature = md5(`uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&timestamp=${timestamp}&secretKey=${this.config.exportOAuth[state[0]].secretKey}`);
+        redirectURL = `${this.config.exportOAuth[state[0]].urlMap[state[1]]}?uid=${person.cardnum}&name=${encodeURIComponent(person.name)}&timestamp=${timestamp}&signature=${signature}`;
       } else if (person.phonenum && person.address) {
         redirectURL = this.config.redirectURL + `#/${state[0]}/${token}${state[1] ? '/' + state[1] : ''}`;
       } else {
