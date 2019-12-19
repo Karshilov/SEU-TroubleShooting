@@ -32,50 +32,80 @@ class WiseduService extends Service {
     await newToken.save();
     return result.data.apiToken;
   }
-  async submit(mongoId, TypeName, desc, typeName, userName, userCardnum, imageUrl, createdTime) {
+  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null) {
     // 故障提交
     const url = this.config.wiseduServer + 'submit';
-    const result = await axios.post(url, {
-      id: mongoId,
-      title: TypeName,
-      summary: desc,
-      sortId: name2Code[typeName],
-      level: 1,
-      source: 1,
-      reporter: userName,
-      reporterCode: userCardnum,
-      reportTime: createdTime,
-      file: imageUrl,
-    });
-    if (result.state === 'failure' || result.state === 'error') {
-      this.ctx.error(1, '故障提交失败');
+    const wiseduToken = this.getToken();
+    let res;
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        res = await axios.post(url, {
+          id: mongoId,
+          title: typeName,
+          summary: desc,
+          sortId: name2Code[typeName],
+          level: 1,
+          source: 1,
+          reporter: userName,
+          reporterCode: userCardnum,
+          reportTime: createdTime,
+          file: imageUrl,
+        }, {
+          headers: { 'x-api-token': wiseduToken },
+        });
+        if (res.data.state === 'success') {
+          return res.data; // 金智服务台的报障id
+        }
+        console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
     }
-    return result.data; // 金智服务台的报障id
-
   }
+  // 之后传入的 id 全是 mongoDB ObjectId
   async accept(id) {
     // 故障受理
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
+    }
     const url = this.config.wiseduServer + 'accept';
-    const result = await axios.post(url, {
 
-    })
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, { id: record.wiseduId }, { headers: { 'x-api-token': wiseduToken } });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
   }
-  async hasten(mongoId) {
+
+  async hasten(id) {
     // 故障催办
     const url = this.config.wiseduServer + 'hasten';
     const result = await axios.post(url, {
-      id: mongoId,
+      id,
     })
     if (result.state === 'failure' || result.state === 'error') {
       this.ctx.error(1, '故障催办失败');
     }
     return result.data; // 金智服务台的报障id
   }
-  async accomplish(mongoId, userName, userCardnum) {
+  async accomplish(id, userName, userCardnum) {
     // 故障等待验收
     const url = this.config.wiseduServer + 'accomplish';
     const result = await axios.post(url, {
-      id: mongoId,
+      id,
       createrName: userName,
       createrCode: userCardnum,
     })
@@ -84,11 +114,11 @@ class WiseduService extends Service {
     }
     return result.data; // 金智服务台的报障id
   }
-  async confirm(mongoId, userName, userCardnum, userAssess) {
+  async confirm(id, userName, userCardnum, userAssess) {
     // 故障办结
     const url = this.config.wiseduServer + 'confirm';
     const result = await axios.post(url, {
-      id: mongoId,
+      id,
       createrName: userName,
       createrCode: userCardnum,
       Assess: userAssess,
@@ -98,11 +128,11 @@ class WiseduService extends Service {
     }
     return result.data; // 金智服务台的报障id
   }
-  async transmit(mongoId, userCardnum, userIsAdmin){
+  async transmit(id, userCardnum, userIsAdmin){
     // 故障转发
     const url = this.config.wiseduServer + 'transmit';
     const result = await axios.post(url, {
-      id: mongoId,
+      id,
       acceptUserCodes: userCardnum,
       isAdmin: userIsAdmin,
     })
@@ -111,11 +141,11 @@ class WiseduService extends Service {
     }
     return result.data; // 金智服务台的报障id
   }
-  async reply(mongoId, userName, userCardnum, userContent){
+  async reply(id, userName, userCardnum, userContent){
     // 故障回复
     const url = this.config.wiseduServer + 'reply';
     const result = await axios.post(url, {
-      id: mongoId,
+      id,
       createrName: userName,
       createrCode: userCardnum,
       Content: userContent,
@@ -125,11 +155,11 @@ class WiseduService extends Service {
     }
     return result.data; // 金智服务台的报障id
   }
-  async reject(mongoId, userName, userCardnum, userContent){
+  async reject(id, userName, userCardnum, userContent){
         // 故障驳回
         const url = this.config.wiseduServer + 'reply';
         const result = await axios.post(url, {
-          id: mongoId,
+          id,
           createrName: userName,
           createrCode: userCardnum,
           Content: userContent,

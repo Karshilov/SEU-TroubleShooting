@@ -3,7 +3,6 @@ module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
   const troubleInfo = new Schema({
-    wiseduId: { type: String, default: '' }, // 金智服务台的报障id
     createdTime: { type: Number }, // 申报时间
     desc: { type: String }, // 问题描述
     status: { type: String }, // 故障状态
@@ -21,6 +20,7 @@ module.exports = app => {
     checkTime: { type: Number, default: 0 },
     closedTime: { type: Number, default: 0 },
     image: { type: String, default: '' },
+    wiseduId: { type: String, default: '' }, // 金智服务台的报障id
   });
 
   return mongoose.model('TroubleInfo', troubleInfo);
