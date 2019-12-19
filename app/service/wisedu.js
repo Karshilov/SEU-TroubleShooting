@@ -53,13 +53,21 @@ class WiseduService extends Service {
     return result.data; // 金智服务台的报障id
 
   }
+  // 之后传入的 id 全是 mongoDB ObjectId
   async accept(id) {
     // 故障受理
+    const record = await this.ctx.model.Trouble.findById(id);
+    if (!record || !record.wiseduId) {
+      return;
+    }
     const url = this.config.wiseduServer + 'accept';
-    const result = await axios.post(url, {
-
-    })
+    try {
+      await axios.post(url, { id: record.wiseduId });
+    } catch (e) {
+      console.log('向东大服务台推送出错', e);
+    }
   }
+  
   async hasten(id) {
     // 故障催办
     const url = this.config.wiseduServer + 'hasten';
