@@ -89,7 +89,6 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-
   async hasten(id) {
     // 故障催办
     const record = await this.ctx.model.Trouble.findById(id);
@@ -118,7 +117,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async accomplish(id, userName, userCardnum) {
+  async accomplish(id, staffName, staffCardnum) {
     // 故障等待验收
     const record = await this.ctx.model.Trouble.findById(id);
     const wiseduToken = await this.getToken();
@@ -132,8 +131,8 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, {
           id: record.wiseduId,
-          createrName: userName,
-          createrCode: userCardnum,
+          createrName: staffName,
+          createrCode: staffCardnum,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -179,7 +178,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async transmit(id, userCardnum, userIsAdmin) {
+  async transmit(id, staffCardnum, isAdmin) {
     // 故障转发
     const record = await this.ctx.model.Trouble.findById(id);
     const wiseduToken = await this.getToken();
@@ -193,8 +192,8 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, {
           id: record.wiseduId,
-          acceptUserCodes: userCardnum,
-          isAdmin: userIsAdmin,
+          acceptUserCodes: staffCardnum,
+          isAdmin,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -209,8 +208,8 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reply(id, userName, userCardnum, userContent) {
-    // 故障回复
+  async reply(id, name, cardnum, content) {
+    // 故障回复（留言消息回复？？）
     const record = await this.ctx.model.Trouble.findById(id);
     const wiseduToken = await this.getToken();
     if (!record || !record.wiseduId) {
@@ -223,9 +222,9 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, {
           id: record.wiseduId,
-          createrName: userName,
-          createrCode: userCardnum,
-          Content: userContent,
+          createrName: name,
+          createrCode: cardnum,
+          Content: content,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
