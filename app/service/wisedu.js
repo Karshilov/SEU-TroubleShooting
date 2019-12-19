@@ -14,17 +14,18 @@ const name2Code = {
 
 class WiseduService extends Service {
   async getToken() {
-    const nowTime = moment().unix(); // 当前时间
-    const res = await this.ctx.model.WiseduToken.find({ expireTime: { $gt: nowTime } }, { sort: { expireTime: -1 }, limit: 1 });
-    if (res.length) {
+    let now = moment().unix(); // 当前时间
+    const record = await this.ctx.model.WiseduToken.findOne({});
+    if (record && record.expireTime > now) {
       console.log('使用缓存的wisedu_access_token');
-      return res[0].token;
+      return record.token;
     }
+    await this.ctx.model.WiseduToken.deleteMany({});
     console.log('重新请求wisedu_access_token');
     const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
     const result = await axios.get(url);
-    const now = moment().unix();
-    const newToken = this.ctx.model.WiseduToken({
+    now = moment().unix();
+    const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
       expireTime: now + result.data.expiresIn * 1000,
     });
