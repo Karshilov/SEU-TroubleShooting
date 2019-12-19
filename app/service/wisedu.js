@@ -92,82 +92,184 @@ class WiseduService extends Service {
 
   async hasten(id) {
     // 故障催办
-    const url = this.config.wiseduServer + 'hasten';
-    const result = await axios.post(url, {
-      id,
-    })
-    if (result.state === 'failure' || result.state === 'error') {
-      this.ctx.error(1, '故障催办失败');
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
     }
-    return result.data; // 金智服务台的报障id
+    const url = this.config.wiseduServer + 'hasten';
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
   }
   async accomplish(id, userName, userCardnum) {
     // 故障等待验收
-    const url = this.config.wiseduServer + 'accomplish';
-    const result = await axios.post(url, {
-      id,
-      createrName: userName,
-      createrCode: userCardnum,
-    })
-    if (result.state === 'failure' || result.state === 'error'){
-      this.ctx.error(1, '故障待验收申请失败')
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
     }
-    return result.data; // 金智服务台的报障id
+    const url = this.config.wiseduServer + 'accomplish';
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
+          createrName: userName,
+          createrCode: userCardnum,
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
   }
   async confirm(id, userName, userCardnum, userAssess) {
     // 故障办结
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
+    }
     const url = this.config.wiseduServer + 'confirm';
-    const result = await axios.post(url, {
-      id,
-      createrName: userName,
-      createrCode: userCardnum,
-      Assess: userAssess,
-    })
-    if (result.state === 'failure' || result.state === 'error'){
-      this.ctx.error(1, '故障办结失败')
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
+          createrName: userName,
+          createrCode: userCardnum,
+          Assess: userAssess,
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
     }
-    return result.data; // 金智服务台的报障id
   }
-  async transmit(id, userCardnum, userIsAdmin){
+  async transmit(id, userCardnum, userIsAdmin) {
     // 故障转发
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
+    }
     const url = this.config.wiseduServer + 'transmit';
-    const result = await axios.post(url, {
-      id,
-      acceptUserCodes: userCardnum,
-      isAdmin: userIsAdmin,
-    })
-    if (result.state === 'failure' || result.state === 'error'){
-      this.ctx.error(1, '故障转发失败')
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
+          acceptUserCodes: userCardnum,
+          isAdmin: userIsAdmin,
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
     }
-    return result.data; // 金智服务台的报障id
   }
-  async reply(id, userName, userCardnum, userContent){
+  async reply(id, userName, userCardnum, userContent) {
     // 故障回复
-    const url = this.config.wiseduServer + 'reply';
-    const result = await axios.post(url, {
-      id,
-      createrName: userName,
-      createrCode: userCardnum,
-      Content: userContent,
-    })
-    if (result.state === 'failure' || result.state === 'error'){
-      this.ctx.error(1, '故障回复失败')
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
     }
-    return result.data; // 金智服务台的报障id
-  }
-  async reject(id, userName, userCardnum, userContent){
-        // 故障驳回
-        const url = this.config.wiseduServer + 'reply';
-        const result = await axios.post(url, {
-          id,
+    const url = this.config.wiseduServer + 'reply';
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
           createrName: userName,
           createrCode: userCardnum,
           Content: userContent,
-        })
-        if (result.state === 'failure' || result.state === 'error'){
-          this.ctx.error(1, '故障驳回失败')
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
         }
-        return result.data; // 金智服务台的报障id
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
+  }
+  async reject(id, userName, userCardnum, userContent) {
+    // 故障驳回
+    const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
+    if (!record || !record.wiseduId) {
+      return;
+    }
+    const url = this.config.wiseduServer + 'reply';
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, {
+          id: record.wiseduId,
+          createrName: userName,
+          createrCode: userCardnum,
+          Content: userContent,
+        }, {
+          headers: { 'x-api-token': wiseduToken }
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
   }
 }
 
