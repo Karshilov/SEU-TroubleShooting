@@ -63,4 +63,7 @@ module.exports = app => {
 
   router.post('/callback', controller.idsMinaCallback.callback);
   router.get('/idsCallback/:idsSession', controller.idsCASCallback.callback);
+
+  router.get('/connect/token', controller.connect.token);
+  router.post('/connect/submit', controller.connect.submit);
 };

@@ -7,7 +7,7 @@ module.exports = app => {
     departmentId: { type: String }, // 部门ID
     departmentName: { type: String }, // 部门名称
     staffCardnum: { type: String }, // 工作人员一卡通号
-    name: { type: String }, // 用户姓名
+    name: { type: String }, // 工作人员姓名
   });
   return mongoose.model('StaffBind', StaffBind);
 };
