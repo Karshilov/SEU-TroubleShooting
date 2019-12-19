@@ -105,7 +105,7 @@ class WiseduService extends Service {
         const res = await axios.post(url, {
           id: record.wiseduId,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;
@@ -135,7 +135,7 @@ class WiseduService extends Service {
           createrName: userName,
           createrCode: userCardnum,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;
@@ -166,7 +166,7 @@ class WiseduService extends Service {
           createrCode: userCardnum,
           Assess: userAssess,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;
@@ -196,7 +196,7 @@ class WiseduService extends Service {
           acceptUserCodes: userCardnum,
           isAdmin: userIsAdmin,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;
@@ -227,7 +227,7 @@ class WiseduService extends Service {
           createrCode: userCardnum,
           Content: userContent,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;
@@ -258,7 +258,7 @@ class WiseduService extends Service {
           createrCode: userCardnum,
           Content: userContent,
         }, {
-          headers: { 'x-api-token': wiseduToken }
+          headers: { 'x-api-token': wiseduToken },
         });
         if (res.data.state === 'success') {
           break;

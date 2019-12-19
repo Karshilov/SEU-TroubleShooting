@@ -36,3 +36,4 @@ exportOAuth:
 # 对接东大服务台
 wisedu_api_key: fake_api_key
 wisedu_secret: fake_secret
+wisedu_server: fake_server
