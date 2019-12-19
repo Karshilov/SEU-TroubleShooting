@@ -37,3 +37,5 @@ exportOAuth:
 wisedu_api_key: fake_api_key
 wisedu_secret: fake_secret
 wisedu_server: fake_server
+seic_api_key: seic_api_key
+seic_secret: seic_secret
