@@ -54,6 +54,8 @@ module.exports = appInfo => {
     casLoginURL: configYaml.casLoginURL,
     casServiceValidateURL: configYaml.casServiceValidateURL,
     exportOAuth: configYaml.exportOAuth,
+    wiseduApiKey: configYaml.wisedu_api_key,
+    wiseduSecret: configYaml.wisedu_secret,
   };
 
   // use for cookie sign key, should change to your own and keep security
