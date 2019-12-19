@@ -60,19 +60,84 @@ class WiseduService extends Service {
 
     })
   }
-  async hasten(id) {
+  async hasten(mongoId) {
     // 故障催办
     const url = this.config.wiseduServer + 'hasten';
     const result = await axios.post(url, {
-
+      id: mongoId,
     })
+    if (result.state === 'failure' || result.state === 'error') {
+      this.ctx.error(1, '故障催办失败');
+    }
+    return result.data; // 金智服务台的报障id
   }
-  async accomplish() {
+  async accomplish(mongoId, userName, userCardnum) {
     // 故障等待验收
     const url = this.config.wiseduServer + 'accomplish';
     const result = await axios.post(url, {
-
+      id: mongoId,
+      createrName: userName,
+      createrCode: userCardnum,
     })
+    if (result.state === 'failure' || result.state === 'error'){
+      this.ctx.error(1, '故障待验收申请失败')
+    }
+    return result.data; // 金智服务台的报障id
+  }
+  async confirm(mongoId, userName, userCardnum, userAssess) {
+    // 故障办结
+    const url = this.config.wiseduServer + 'confirm';
+    const result = await axios.post(url, {
+      id: mongoId,
+      createrName: userName,
+      createrCode: userCardnum,
+      Assess: userAssess,
+    })
+    if (result.state === 'failure' || result.state === 'error'){
+      this.ctx.error(1, '故障办结失败')
+    }
+    return result.data; // 金智服务台的报障id
+  }
+  async transmit(mongoId, userCardnum, userIsAdmin){
+    // 故障转发
+    const url = this.config.wiseduServer + 'transmit';
+    const result = await axios.post(url, {
+      id: mongoId,
+      acceptUserCodes: userCardnum,
+      isAdmin: userIsAdmin,
+    })
+    if (result.state === 'failure' || result.state === 'error'){
+      this.ctx.error(1, '故障转发失败')
+    }
+    return result.data; // 金智服务台的报障id
+  }
+  async reply(mongoId, userName, userCardnum, userContent){
+    // 故障回复
+    const url = this.config.wiseduServer + 'reply';
+    const result = await axios.post(url, {
+      id: mongoId,
+      createrName: userName,
+      createrCode: userCardnum,
+      Content: userContent,
+    })
+    if (result.state === 'failure' || result.state === 'error'){
+      this.ctx.error(1, '故障回复失败')
+    }
+    return result.data; // 金智服务台的报障id
+  }
+  async reject(mongoId, userName, userCardnum, userContent){
+        // 故障驳回
+        const url = this.config.wiseduServer + 'reply';
+        const result = await axios.post(url, {
+          id: mongoId,
+          createrName: userName,
+          createrCode: userCardnum,
+          Content: userContent,
+        })
+        if (result.state === 'failure' || result.state === 'error'){
+          this.ctx.error(1, '故障驳回失败')
+        }
+        return result.data; // 金智服务台的报障id
   }
 }
 
