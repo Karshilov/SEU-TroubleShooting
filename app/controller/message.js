@@ -85,6 +85,9 @@ class MessageController extends Controller {
         });
         await newChatInfo.save();
       }
+
+      // 向金智推送消息回复
+      await ctx.service.WiseduService.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message);
     }
 
   }
