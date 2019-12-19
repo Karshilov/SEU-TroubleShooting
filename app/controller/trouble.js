@@ -84,6 +84,8 @@ class TroubleController extends Controller {
 
     // 从微信服务器下载图片
     image = await this.ctx.service.fetchWechatMedia.image(image);
+    const imageUrl = Buffer.from(image.split(',')[1], 'base64');
+
     const trouble = new ctx.model.Trouble({
       createdTime: now,
       desc,
