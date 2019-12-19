@@ -55,15 +55,33 @@ class WiseduService extends Service {
     } catch (e) {
       console.log(e);
     }
-    return result.state === 'success' ? result.data : ''; // 金智服务台的报障id
+    return result.data; // 金智服务台的报障id
   }
+  // 之后传入的 id 全是 mongoDB ObjectId
   async accept(id) {
     // 故障受理
+    const record = await this.ctx.model.Trouble.findById(id);
+    if (!record || !record.wiseduId) {
+      return;
+    }
     const url = this.config.wiseduServer + 'accept';
-    const result = await axios.post(url, {
 
-    })
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, { id: record.wiseduId });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
+    }
   }
+
   async hasten(id) {
     // 故障催办
     const url = this.config.wiseduServer + 'hasten';
