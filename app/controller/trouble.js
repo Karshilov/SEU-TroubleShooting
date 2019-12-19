@@ -84,7 +84,7 @@ class TroubleController extends Controller {
 
     // 从微信服务器下载图片
     image = await this.ctx.service.fetchWechatMedia.image(image);
-    const imageUrl = Buffer.from(image.split(',')[1], 'base64');
+    const imageUrl = image ? Buffer.from(image.split(',')[1], 'base64') : null; // 图片地址
 
     const trouble = new ctx.model.Trouble({
       createdTime: now,
@@ -99,8 +99,22 @@ class TroubleController extends Controller {
       staffCardnum: luckyDog.staffCardnum,
       image,
     });
-
     await trouble.save();
+
+    // 向金智推送故障创建
+    const wiseduId = await this.ctx.service.WiseduService.submit(
+      trouble._id,
+      trouble.desc,
+      trouble.typeName,
+      ctx.userInfo.name,
+      trouble.userCardnum,
+      trouble.createTime,
+      imageUrl
+    );
+    if (wiseduId !== '') {
+      trouble.wiseduId = wiseduId;
+      await trouble.save();
+    }
 
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({

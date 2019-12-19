@@ -32,26 +32,30 @@ class WiseduService extends Service {
     await newToken.save();
     return result.data.apiToken;
   }
-  async submit(mongoId, TypeName, desc, typeName, userName, userCardnum, imageUrl, createdTime) {
+  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null) {
     // 故障提交
     const url = this.config.wiseduServer + 'submit';
-    const result = await axios.post(url, {
-      id: mongoId,
-      title: TypeName,
-      summary: desc,
-      sortId: name2Code[typeName],
-      level: 1,
-      source: 1,
-      reporter: userName,
-      reporterCode: userCardnum,
-      reportTime: createdTime,
-      file: imageUrl,
-    });
-    if (result.state === 'failure' || result.state === 'error') {
-      this.ctx.error(1, '故障提交失败');
+    const wiseduToken = this.service.WiseduService.getToken();
+    let result;
+    try {
+      result = await axios.post(url, {
+        id: mongoId,
+        title: typeName,
+        summary: desc,
+        sortId: name2Code[typeName],
+        level: 1,
+        source: 1,
+        reporter: userName,
+        reporterCode: userCardnum,
+        reportTime: createdTime,
+        file: imageUrl,
+      }, {
+        headers: { 'x-api-token': wiseduToken },
+      });
+    } catch (e) {
+      console.log(e);
     }
-    return result.data; // 金智服务台的报障id
-
+    return result.state === 'success' ? result.data : ''; // 金智服务台的报障id
   }
   async accept(id) {
     // 故障受理
