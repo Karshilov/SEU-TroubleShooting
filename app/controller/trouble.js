@@ -84,7 +84,6 @@ class TroubleController extends Controller {
 
     // 从微信服务器下载图片
     image = await this.ctx.service.fetchWechatMedia.image(image);
-    const imageUrl = Buffer.from(image.split(',')[1], 'base64');
 
     const trouble = new ctx.model.Trouble({
       createdTime: now,
@@ -102,6 +101,7 @@ class TroubleController extends Controller {
     await trouble.save();
 
     // 向金智推送故障申请
+    const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
     const wiseduId = await this.ctx.service.WiseduService.submit(
       trouble._id,
       trouble.desc,
