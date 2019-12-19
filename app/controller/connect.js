@@ -43,7 +43,7 @@ class wiseduController extends Controller {
     });
     await newToken.save();
     return {
-      token: newToken.token,
+      access_token: newToken.token,
       expiresIn,
     };
   }
@@ -174,6 +174,7 @@ class wiseduController extends Controller {
       '运维人员正在处理您报告的故障，请保持联系畅通，并注意微信提醒',
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
+    return 'ok';
   }
 
   async accomplish() {
@@ -227,6 +228,90 @@ class wiseduController extends Controller {
       '运维人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
+    return 'ok';
+  }
+
+  async reject() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id } = ctx.request.body;
+    const record = await ctx.model.Trouble.findById(id);
+    if (!record) {
+      ctx.error(1, '故障信息不存在');
+    }
+    record.status = 'PENDING';
+    await record.save();
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: record.status,
+      troubleId: record._id,
+      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
+    await ctx.service.pushNotification.staffNotification(
+      record.staffCardnum,
+      '用户提交的故障仍未解决，请尽快处理', // title
+      record._id.toString().toUpperCase(), // code
+      record.typeName, // type
+      '点击查看', // desc
+      record.phonenum,
+      moment().format('YYYY-MM-DD HH:mm:ss'),
+      '故障描述信息：' + record.desc,
+      this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
+    );
+    return 'ok';
+  }
+
+  async hasten() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id } = ctx.request.body;
+    const record = await ctx.model.Trouble.findById(id);
+    if (!record) {
+      ctx.error(1, '故障信息不存在');
+    }
+    // 向负责人推送提醒
+    await ctx.service.pushNotification.staffNotification(
+      record.staffCardnum,
+      '该故障长时间未处理，请尽快处理', // title
+      record._id.toString().toUpperCase(), // code
+      record.typeName, // type
+      '点击查看', // desc
+      record.phonenum,
+      moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+      '故障描述：' + record.desc,
+      this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
+    );
+    return 'ok';
+  }
+
+  async confirm() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id, level, comment } = ctx.request.body;
+    const record = await ctx.model.Trouble.findById(id);
+    if (!record) {
+      ctx.error(1, '故障信息不存在');
+    }
+    record.status = 'ACCEPT';
+    record.checkTime = +moment();
+    record.evaluation = comment;
+    record.evaluationLevel = level;
+    await record.save();
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: record.status,
+      troubleId: record._id,
+      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
+    return 'ok';
   }
 
   async redirect() {
