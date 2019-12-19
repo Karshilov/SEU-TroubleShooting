@@ -111,7 +111,7 @@ class TroubleController extends Controller {
       trouble.createTime,
       imageUrl
     );
-    if (wiseduId !== '') {
+    if (wiseduId) {
       trouble.wiseduId = wiseduId;
       await trouble.save();
     }

@@ -35,32 +35,40 @@ class WiseduService extends Service {
   async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null) {
     // 故障提交
     const url = this.config.wiseduServer + 'submit';
-    const wiseduToken = this.service.WiseduService.getToken();
-    let result;
-    try {
-      result = await axios.post(url, {
-        id: mongoId,
-        title: typeName,
-        summary: desc,
-        sortId: name2Code[typeName],
-        level: 1,
-        source: 1,
-        reporter: userName,
-        reporterCode: userCardnum,
-        reportTime: createdTime,
-        file: imageUrl,
-      }, {
-        headers: { 'x-api-token': wiseduToken },
-      });
-    } catch (e) {
-      console.log(e);
+    const wiseduToken = this.getToken();
+    let res;
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        res = await axios.post(url, {
+          id: mongoId,
+          title: typeName,
+          summary: desc,
+          sortId: name2Code[typeName],
+          level: 1,
+          source: 1,
+          reporter: userName,
+          reporterCode: userCardnum,
+          reportTime: createdTime,
+          file: imageUrl,
+        }, {
+          headers: { 'x-api-token': wiseduToken },
+        });
+        if (res.data.state === 'success') {
+          return res.data; // 金智服务台的报障id
+        }
+        console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
     }
-    return result.data; // 金智服务台的报障id
   }
   // 之后传入的 id 全是 mongoDB ObjectId
   async accept(id) {
     // 故障受理
     const record = await this.ctx.model.Trouble.findById(id);
+    const wiseduToken = await this.getToken();
     if (!record || !record.wiseduId) {
       return;
     }
@@ -69,7 +77,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, { id: record.wiseduId });
+        const res = await axios.post(url, { id: record.wiseduId }, { headers: { 'x-api-token': wiseduToken } });
         if (res.data.state === 'success') {
           break;
         } else {
