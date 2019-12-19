@@ -51,7 +51,6 @@ class WiseduService extends Service {
       this.ctx.error(1, '故障提交失败');
     }
     return result.data; // 金智服务台的报障id
-
   }
   // 之后传入的 id 全是 mongoDB ObjectId
   async accept(id) {
@@ -61,13 +60,23 @@ class WiseduService extends Service {
       return;
     }
     const url = this.config.wiseduServer + 'accept';
-    try {
-      await axios.post(url, { id: record.wiseduId });
-    } catch (e) {
-      console.log('向东大服务台推送出错', e);
+
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, { id: record.wiseduId });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        }
+      } catch (e) {
+        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+      }
+      attempt++;
     }
   }
-  
+
   async hasten(id) {
     // 故障催办
     const url = this.config.wiseduServer + 'hasten';
