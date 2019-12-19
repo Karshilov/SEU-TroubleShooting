@@ -533,6 +533,7 @@ class TroubleController extends Controller {
     record.staffCardnum = staffBind.staffCardnum;
     record.departmentId = staffBind.departmentId;
     record.typeName = troubleType.displayName;
+    record.typeId = typeId;
     await record.save();
 
     // 创建统计日志
@@ -545,9 +546,11 @@ class TroubleController extends Controller {
       departmentId: record.departmentId, // 所属部门Id
     });
     await statisticRecord.save();
+
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
     await ctx.service.WiseduService.transmit(troubleId, staffBind.staffCardnum, '1');
+
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
       staffBind.staffCardnum,

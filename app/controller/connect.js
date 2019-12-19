@@ -228,6 +228,124 @@ class wiseduController extends Controller {
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
   }
+
+  async redirect() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id, typeId = '', staffCardnum } = ctx.request.body;
+    const record = await ctx.model.Trouble.findById(id);
+    if (!record) {
+      // 判定故障信息是否存在
+      ctx.error(1, '故障信息不存在');
+    }
+    if (typeId) {
+      // 根据 code2Name 判定 typeId 是否正确以及确定故障类型是否存在
+      const troubleType = await ctx.model.TroubleType.findOne({ displayName: code2Name[typeId] });
+      if (Object.keys(code2Name).indexOf(typeId) === -1 || !troubleType) {
+        ctx.error(2, '故障类型不存在');
+      }
+      record.typeName = code2Name[typeId];
+      record.typeId = troubleType._id;
+    }
+    const staffRecord = await ctx.model.StaffBind.findById({ staffCardnum });
+    if (!staffRecord) {
+      // 判定运维人云是否存在
+      ctx.error(3, '运维人员不存在');
+    }
+    record.staffCardnum = staffRecord.staffCardnum;
+    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[typeId] });
+    if (departmentRecord.departmentId !== staffRecord.departmentId) {
+      // 判定运维人员所属部门是否负责该故障
+      ctx.error(4, '指定的员工不属于故障类型所属部门');
+    }
+    record.departmentId = departmentRecord._id;
+    await record.save();
+
+    // 创建统计日志
+    const statisticRecord = new ctx.model.Statistic({
+      timestamp: +moment(),
+      enterStatus: record.status,
+      troubleId: record._id,
+      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+      typeId: record.typeId, // 故障类型名称
+      departmentId: record.departmentId, // 所属部门Id
+    });
+    await statisticRecord.save();
+
+    // 向处理人员推送等待处理
+    await ctx.service.pushNotification.staffNotification(
+      staffRecord.staffCardnum,
+      '有新的故障报修等待处理', // title
+      record._id.toString().toUpperCase(), // code
+      record.typeName, // type
+      '点击查看', // desc
+      record.phonenum,
+      moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+      '故障描述：' + record.desc,
+      this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
+    );
+  }
+
+  async message() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id, fromWho, fromWhoName, content } = ctx.request.body;
+    const record = await ctx.model.Trouble.findById(id);
+    if (!record) {
+      // 判断故障是否存在
+      ctx.error(2, '故障信息不存在');
+    }
+    if (!(fromWho && fromWhoName)) {
+      // 判断消息来源是否完整
+      ctx.error(1, '信息不完整');
+    }
+    if (record.userCardnum === fromWho) {
+      // 消息来自用户
+      const newChatInfo = ctx.model.ChatInfo({
+        time: +moment(),
+        fromWho: 'user',
+        troubleId: id,
+        content,
+        fromWhoName,
+      });
+      await newChatInfo.save();
+      // 向运维人员推送消息
+      ctx.service.pushNotification.staffNotification(
+        record.staffCardnum,
+        `用户${record.userCardnum}对反馈的问题进行了补充，请注意查看`,
+        record._id.toString().toUpperCase(),
+        record.typeName,
+        record.desc,
+        record.phonenum,
+        moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+        '消息内容：' + content,
+        this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
+      );
+    } else {
+      // 实在不想仔细鉴权了。。。。
+      // 消息来自运维人员/部门管理员/系统管理员
+      const newChatInfo = new ctx.model.ChatInfo({
+        time: +moment(),
+        fromWho: 'staff',
+        troubleId: id,
+        content,
+        fromWhoName,
+      });
+      await newChatInfo.save();
+      // 向用户推送消息
+      const now = +moment();
+      ctx.service.pushNotification.userNotification(
+        record.userCardnum,
+        '亲爱的用户您好，针对你反馈的问题，运维人员的有了新的回复，请即时查看',
+        record.address,
+        record.typeName,
+        '故障处理中',
+        moment(now).format('YYYY-MM-DD HH:mm:ss'),
+        '消息内容：' + content,
+        this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
+      );
+    }
+  }
 }
 
 module.exports = wiseduController;
