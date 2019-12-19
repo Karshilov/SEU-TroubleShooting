@@ -43,7 +43,7 @@ class wiseduController extends Controller {
     });
     await newToken.save();
     return {
-      token: newToken.token,
+      access_token: newToken.token,
       expiresIn,
     };
   }
