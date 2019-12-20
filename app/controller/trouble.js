@@ -104,7 +104,7 @@ class TroubleController extends Controller {
     // 向金智推送故障申请
     const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
     try {
-      const wiseduId = await this.ctx.service.wise de.submit(
+      const wiseduId = await this.ctx.service.wisedu.submit(
         trouble._id,
         trouble.desc,
         trouble.typeName,
