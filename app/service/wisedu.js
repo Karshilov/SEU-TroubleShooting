@@ -26,6 +26,7 @@ class WiseduService extends Service {
     console.log('重新请求wisedu_access_token');
     const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
     const result = await axios.get(url);
+    console.log('获取 token：', result.data);
     now = moment().unix();
     const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
@@ -61,6 +62,7 @@ class WiseduService extends Service {
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
+        console.log('submit：', res.data);
         if (res.data.state === 'success') {
           return res.data; // 金智服务台的报障id
         }
