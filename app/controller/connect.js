@@ -344,11 +344,11 @@ class wiseduController extends Controller {
     }
     const staffRecord = await ctx.model.StaffBind.findById({ staffCardnum });
     if (!staffRecord) {
-      // 判定运维人云是否存在
+      // 判定运维人员是否存在
       ctx.error(3, '运维人员不存在');
     }
     record.staffCardnum = staffRecord.staffCardnum;
-    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[typeId] });
+    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
     if (departmentRecord.departmentId !== staffRecord.departmentId) {
       // 判定运维人员所属部门是否负责该故障
       ctx.error(4, '指定的员工不属于故障类型所属部门');
