@@ -25,8 +25,9 @@ class WiseduService extends Service {
     await this.ctx.model.WiseduToken.deleteMany({});
     console.log('重新请求wisedu_access_token');
     const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
-    const result = await axios.get(url);
+    let result = await axios.get(url);
     console.log('获取 token：', result.data);
+    result = result.data;
     now = moment().unix();
     const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
