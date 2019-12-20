@@ -260,13 +260,9 @@ class TroubleController extends Controller {
     // 允许部门管理员转发消息
     let isDepartmentAdmin = false;
     const resOfDepartmentAdminBind = await ctx.model.DepartmentAdminBind.find({ adminCardnum: cardnum });
-    console.log('====调试陶老师的问题====');
-    console.log(resOfDepartmentAdminBind);
-    console.log(record.departmentId);
-    console.log('====!调试陶老师的问题====');
     if (resOfDepartmentAdminBind.length !== 0) {
       resOfDepartmentAdminBind.forEach(k => {
-        isDepartmentAdmin = (k.departmentId === record.departmentId);
+        if (k.departmentId === record.departmentId) isDepartmentAdmin = true;
       });
     }
 
