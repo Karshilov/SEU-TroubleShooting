@@ -52,7 +52,7 @@ class WiseduService extends Service {
           id: mongoId,
           title: typeName,
           summary: desc,
-          sortId: name2Code[typeName],
+          sortCode: name2Code[typeName],
           level: 1,
           source: 1,
           reporter: userName,
