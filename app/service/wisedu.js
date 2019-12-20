@@ -72,7 +72,7 @@ class WiseduService extends Service {
         console.log(res);
         console.log('submit：', res.data);
         if (res.data.state === 'success') {
-          return res.data; // 金智服务台的报障id
+          return res.data.data; // 金智服务台的报障id
         }
         console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
       } catch (e) {
