@@ -21,14 +21,14 @@ class WiseduService extends Service {
     let now = +moment(); // 当前时间
     const record = await this.ctx.model.WiseduToken.findOne({});
     if (record && record.expiresTime > now) {
-      console.log('使用缓存的wisedu_access_token');
+      this.ctx.logger.info('使用缓存的wisedu_access_token');
       return record.token;
     }
     await this.ctx.model.WiseduToken.deleteMany({});
-    console.log('重新请求wisedu_access_token');
+    this.ctx.logger.info('重新请求wisedu_access_token');
     const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
     let result = await axios.get(url);
-    console.log('获取 token：', result.data);
+    this.ctx.logger.info('获取到东大服务台 token: %j', result.data);
     result = result.data;
     now = +moment();
     const newToken = new this.ctx.model.WiseduToken({
@@ -41,11 +41,9 @@ class WiseduService extends Service {
 
   async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address) {
     // 故障提交
-    console.log('对接东大服务台：开始推送');
+    this.ctx.logger.info('向东大服务台推送故障提报，故障单号：%s', mongoId);
     const url = this.config.wiseduServer + 'submit';
-    console.log('获取token');
     const wiseduToken = await this.getToken();
-    console.log(wiseduToken);
     let res;
     let attempt = 0;
     while (attempt < 3) {
@@ -69,14 +67,13 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
-        console.log(res);
-        console.log('submit：', res.data);
         if (res.data.state === 'success') {
+          this.ctx.logger.info('向东大服务台推送故障提报成功，故障单号：%s', mongoId);
           return res.data.data; // 金智服务台的报障id
         }
-        console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
@@ -84,6 +81,7 @@ class WiseduService extends Service {
   // 之后传入的 id 全是 mongoDB ObjectId
   async accept(mongoId) {
     // 故障受理
+    this.ctx.logger.info('向东大服务台推送故障受理，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -98,16 +96,17 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async hasten(mongoId) {
     // 故障催办
+    this.ctx.logger.info('向东大服务台推送故障催办，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -128,16 +127,17 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async accomplish(mongoId, staffName, staffCardnum) {
     // 故障等待验收
+    this.ctx.logger.info('向东大服务台推送故障验收，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -159,16 +159,17 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async confirm(mongoId, userName, userCardnum, userAssess) {
     // 故障办结
+    this.ctx.logger.info('向东大服务台推送故障办结，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -191,16 +192,17 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async transmit(mongoId, staffCardnum, isAdmin) {
     // 故障转发
+    this.ctx.logger.info('向东大服务台推送故障转发，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -223,19 +225,18 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async reply(mongoId, name, cardnum, content) {
     // 故障回复（留言消息回复？？）
-    console.log('开始调试消息回复');
+    this.ctx.logger.info('向东大服务台推送故障留言消息，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
-    console.log(record);
     const wiseduToken = await this.getToken();
     if (!record) {
       return;
@@ -254,21 +255,20 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
-        console.log('======回复推送======');
-        console.log(res);
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }
   }
   async reject(mongoId, userName, userCardnum, userContent) {
     // 故障驳回
+    this.ctx.logger.info('向东大服务台推送故障驳回，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
     if (!record) {
@@ -291,10 +291,10 @@ class WiseduService extends Service {
         if (res.data.state === 'success') {
           break;
         } else {
-          console.log('向东大服务台推送出现错误，重试，错误原因：', res.data.msg);
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
         }
       } catch (e) {
-        console.log('向东大服务台推送出现错误，重试，错误原因：', e);
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
       }
       attempt++;
     }

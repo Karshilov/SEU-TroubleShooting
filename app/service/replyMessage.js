@@ -15,7 +15,6 @@ class replyMessageService extends Service {
             },
     };
     await axios.post(url, replyData);
-    // console.log(res.data);
   }
 }
 

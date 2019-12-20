@@ -48,7 +48,7 @@ class pushNotification extends Service {
     });
 
     if (result.data.errcode) {
-      console.log(`故障单处理进度通知发送失败 错误码：${result.data.errcode}`);
+      this.ctx.logger.error(`故障单处理进度通知发送失败 错误码：${result.data.errcode}`);
     }
 
 
@@ -64,7 +64,7 @@ class pushNotification extends Service {
     }
     if (nowHour > 18 || nowHour < 8 || nowDay === 6 || nowDay === 0) {
       // 晚上7点到第二天7点以及周六日不推送故障报修通知,
-      console.log('非工作时间，暂不推送故障报修通知');
+      this.ctx.logger.info('非工作时间，暂不推送故障报修通知');
       return;
     }
     const postJson = {
@@ -106,8 +106,7 @@ class pushNotification extends Service {
     });
 
     if (result.data.errcode) {
-      console.log(`故障报修通知发送失败 错误码：${result.data.errcode}`);
-
+      this.ctx.logger.error(`故障报修通知发送失败 错误码：${result.data.errcode}`);
     }
 
   }

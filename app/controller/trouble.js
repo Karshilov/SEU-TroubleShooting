@@ -120,7 +120,7 @@ class TroubleController extends Controller {
         await trouble.save();
       }
     } catch (e) {
-      console.log(e);
+      ctx.logger.error(e);
     }
 
     // 创建统计日志
