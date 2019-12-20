@@ -250,7 +250,7 @@ class WiseduService extends Service {
           content,
           thirdParty,
         }, {
-          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/json' },
         });
         console.log('======回复推送======');
         console.log(res);
