@@ -247,7 +247,7 @@ class WiseduService extends Service {
           id: record.wiseduId,
           createrName: name,
           createrCode: cardnum,
-          Content: content,
+          content,
           thirdParty,
         }, {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
