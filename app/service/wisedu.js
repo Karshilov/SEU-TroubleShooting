@@ -40,7 +40,7 @@ class WiseduService extends Service {
     console.log('对接东大服务台：开始推送');
     const url = this.config.wiseduServer + 'submit';
     console.log('获取token');
-    const wiseduToken = this.getToken();
+    const wiseduToken = await this.getToken();
     console.log(wiseduToken);
     let res;
     let attempt = 0;
