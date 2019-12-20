@@ -231,7 +231,9 @@ class WiseduService extends Service {
   }
   async reply(id, name, cardnum, content) {
     // 故障回复（留言消息回复？？）
+    console.log('开始调试消息回复');
     const record = await this.ctx.model.Trouble.findById(id);
+    console.log(record);
     const wiseduToken = await this.getToken();
     if (!record || !record.wiseduId) {
       return;
