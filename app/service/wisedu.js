@@ -51,7 +51,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         res = await axios.post(url, qs.stringify({
-          id: mongoId,
+          id: '' + mongoId,
           title: typeName,
           summary: desc,
           sortCode: name2Code[typeName],
