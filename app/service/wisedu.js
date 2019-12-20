@@ -36,9 +36,11 @@ class WiseduService extends Service {
     await newToken.save();
     return result.data.apiToken;
   }
+
   async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address) {
     // 故障提交
     console.log('对接东大服务台：开始推送');
+    console.log(this.config);
     const url = this.config.wiseduServer + 'submit';
     console.log('获取token');
     const wiseduToken = await this.getToken();

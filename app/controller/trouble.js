@@ -110,7 +110,7 @@ class TroubleController extends Controller {
         trouble.typeName,
         ctx.userInfo.name,
         ctx.userInfo.cardnum,
-        moment(trouble.createdTime).format('yyyy-MM-dd HH:mm:ss'),
+        moment(trouble.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         imageUrl,
         phonenum,
         address
