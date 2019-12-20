@@ -343,7 +343,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障受理信息
     // 使用的是转发接口
-    await ctx.service.wised画.transmit(troubleId, record.staffCardnum, false);
+    await ctx.service.wisedu.transmit(troubleId, record.staffCardnum, false);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
