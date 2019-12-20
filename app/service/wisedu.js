@@ -18,7 +18,7 @@ const thirdParty = '3';
 
 class WiseduService extends Service {
   async getToken() {
-    let now = moment().unix(); // 当前时间
+    let now = +moment(); // 当前时间
     const record = await this.ctx.model.WiseduToken.findOne({});
     if (record && record.expiresTime > now) {
       console.log('使用缓存的wisedu_access_token');
@@ -30,7 +30,7 @@ class WiseduService extends Service {
     let result = await axios.get(url);
     console.log('获取 token：', result.data);
     result = result.data;
-    now = moment().unix();
+    now = +moment();
     const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
       expiresTime: now + result.data.expiresIn * 1000,

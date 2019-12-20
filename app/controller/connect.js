@@ -18,7 +18,7 @@ const code2Name = {
 async function checkToken(ctx) {
   const token = ctx.request.headers['x-api-token'];
   const record = await ctx.model.SeicToken.findOne({ token });
-  const now = moment().unix();
+  const now = +moment();
   if (!record || record.expiresTime < now) {
     ctx.error(1, '访问凭据无效');
   }
