@@ -2,6 +2,8 @@
 const Service = require('egg').Service;
 const moment = require('moment');
 const axios = require('axios');
+const qs = require('querystring');
+
 const name2Code = {
   四牌楼网络报障: '101',
   九龙湖网络报障: '102',
@@ -48,7 +50,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        res = await axios.post(url, {
+        res = await axios.post(url, qs.stringify({
           id: mongoId,
           title: typeName,
           summary: desc,
@@ -64,7 +66,7 @@ class WiseduService extends Service {
           reporterMobile: phonenum,
           address,
           reporterType: userCardnum[0],
-        }, {
+        }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         console.log(res);
@@ -92,7 +94,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, { id: record.wiseduId, thirdParty, createrCode: record.userCardnum }, { headers: { 'x-api-token': wiseduToken } });
+        const res = await axios.post(url, qs.stringify({ id: record.wiseduId, thirdParty, createrCode: record.userCardnum }), { headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' } });
         if (res.data.state === 'success') {
           break;
         } else {
@@ -116,12 +118,12 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           thirdParty,
           createrCode: record.userCardnum,
-        }, {
-          headers: { 'x-api-token': wiseduToken },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         if (res.data.state === 'success') {
           break;
@@ -146,13 +148,13 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           createrName: staffName,
           createrCode: staffCardnum,
           thirdParty,
-        }, {
-          headers: { 'x-api-token': wiseduToken },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         if (res.data.state === 'success') {
           break;
@@ -177,14 +179,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           createrName: userName,
           createrCode: userCardnum,
           Assess: '' + userAssess,
           thirdParty,
-        }, {
-          headers: { 'x-api-token': wiseduToken },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         if (res.data.state === 'success') {
           break;
@@ -209,14 +211,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           acceptUserCodes: staffCardnum,
           isAdmin,
           thirdParty,
           createrCode: record.userCardnum,
-        }, {
-          headers: { 'x-api-token': wiseduToken },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         if (res.data.state === 'success') {
           break;
@@ -243,14 +245,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           createrName: name,
           createrCode: cardnum,
           content,
           thirdParty,
-        }, {
-          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/json' },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         console.log('======回复推送======');
         console.log(res);
@@ -277,14 +279,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, {
+        const res = await axios.post(url, qs.stringify({
           id: record.wiseduId,
           createrName: userName,
           createrCode: userCardnum,
           Content: userContent,
           thirdParty,
-        }, {
-          headers: { 'x-api-token': wiseduToken },
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         if (res.data.state === 'success') {
           break;
