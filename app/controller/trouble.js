@@ -27,7 +27,7 @@ class TroubleController extends Controller {
       userCardnum,
       createdTime: { $gt: now - 24 * 60 * 60 * 1000 },
     });
-    if (postCount > 3) {
+    if (postCount > 30) {
       // 为了避免恶意骚扰，24小时内故障申报数量不能超过3个
       ctx.error(1, '故障申报频率过高，请稍后重试');
     }
@@ -95,6 +95,7 @@ class TroubleController extends Controller {
       typeId,
       typeName: troubleType.displayName,
       userCardnum,
+      userName: ctx.userInfo.name,
       staffCardnum: luckyDog.staffCardnum,
       image,
     });
@@ -102,18 +103,24 @@ class TroubleController extends Controller {
 
     // 向金智推送故障申请
     const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
-    const wiseduId = await this.ctx.service.WiseduService.submit(
-      trouble._id,
-      trouble.desc,
-      trouble.typeName,
-      ctx.userInfo.name,
-      ctx.userInfo.cardnum,
-      trouble.createdTime,
-      imageUrl
-    );
-    if (wiseduId) {
-      trouble.wiseduId = wiseduId;
-      await trouble.save();
+    try {
+      const wiseduId = await this.ctx.service.wisedu.submit(
+        trouble._id,
+        trouble.desc,
+        trouble.typeName,
+        ctx.userInfo.name,
+        ctx.userInfo.cardnum,
+        moment(trouble.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+        imageUrl,
+        phonenum,
+        address
+      );
+      if (wiseduId) {
+        trouble.wiseduId = wiseduId;
+        await trouble.save();
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     // 创建统计日志
@@ -169,7 +176,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -195,7 +202,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -218,7 +225,7 @@ class TroubleController extends Controller {
       // 管理员查询的逻辑
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -274,8 +281,8 @@ class TroubleController extends Controller {
       phonenum: record.phonenum,
       address: record.address,
       image: record.image,
-      userCardnum: record.userCardnum,
-      userName: resOfUser.name,
+      userCardnum: record.userCardnum ? record.userCardnum : '来自东大服务台提报',
+      userName: resOfUser.name ? resOfUser.name : record.userName,
       summary: record.summary,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
@@ -335,7 +342,8 @@ class TroubleController extends Controller {
     await statisticRecord.save();
 
     // 向金智推送故障受理信息
-    await ctx.service.WiseduService.accept(troubleId);
+    // 使用的是转发接口
+    await ctx.service.wised画.transmit(troubleId, record.staffCardnum, false);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
@@ -382,7 +390,7 @@ class TroubleController extends Controller {
     record.summary = summary;
     await record.save();
     // 向金智推送故障完成信息
-    await ctx.service.WiseduService.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum);
+    await ctx.service.wisedu.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
@@ -430,7 +438,7 @@ class TroubleController extends Controller {
     record.evaluationLevel = evaluationLevel;
     await record.save();
     // 向金智推送故障处理完成信息
-    await ctx.service.WiseduService.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel);
+    await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
@@ -460,7 +468,7 @@ class TroubleController extends Controller {
       // console.log('newTrouble:' + newTrouble);
       await newTrouble.save();
       // 向金智推送驳回消息
-      await ctx.service.WiseduService.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name);
+      await ctx.service.wisedu.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name);
 
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.staffCardnum });
       // 向用户推送重新申请故障的推送消息
@@ -549,7 +557,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
-    await ctx.service.WiseduService.transmit(troubleId, staffBind.staffCardnum, '1');
+    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, '1');
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
@@ -591,7 +599,7 @@ class TroubleController extends Controller {
     await newRemindInfo.save();
 
     // 向金智推送故障催办
-    await ctx.service.WiseduService.hasten(troubleId);
+    await ctx.service.wisedu.hasten(troubleId);
 
     // 向负责人推送提醒
     await ctx.service.pushNotification.staffNotification(

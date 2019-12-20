@@ -3,14 +3,16 @@ const Service = require('egg').Service;
 const moment = require('moment');
 const axios = require('axios');
 const name2Code = {
-  四牌楼网络报障: 101,
-  九龙湖网络报障: 102,
-  丁家桥网络报障: 103,
-  宿舍区网络报障: 104,
-  信息系统报障: 201,
-  网站报障: 211,
-  其他报障: 900,
+  四牌楼网络报障: '101',
+  九龙湖网络报障: '102',
+  丁家桥网络报障: '103',
+  宿舍区网络报障: '104',
+  信息系统报障: '201',
+  网站报障: '211',
+  其他报障: '900',
 };
+
+const thirdParty = '3';
 
 class WiseduService extends Service {
   async getToken() {
@@ -23,7 +25,9 @@ class WiseduService extends Service {
     await this.ctx.model.WiseduToken.deleteMany({});
     console.log('重新请求wisedu_access_token');
     const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
-    const result = await axios.get(url);
+    let result = await axios.get(url);
+    console.log('获取 token：', result.data);
+    result = result.data;
     now = moment().unix();
     const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
@@ -32,10 +36,14 @@ class WiseduService extends Service {
     await newToken.save();
     return result.data.apiToken;
   }
-  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null) {
+
+  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address) {
     // 故障提交
+    console.log('对接东大服务台：开始推送');
     const url = this.config.wiseduServer + 'submit';
-    const wiseduToken = this.getToken();
+    console.log('获取token');
+    const wiseduToken = await this.getToken();
+    console.log(wiseduToken);
     let res;
     let attempt = 0;
     while (attempt < 3) {
@@ -44,16 +52,23 @@ class WiseduService extends Service {
           id: mongoId,
           title: typeName,
           summary: desc,
-          sortId: name2Code[typeName],
+          sortCode: name2Code[typeName],
           level: 1,
           source: 1,
           reporter: userName,
           reporterCode: userCardnum,
           reportTime: createdTime,
           file: imageUrl,
+          thirdParty,
+          createrCode: userCardnum,
+          reporterMobile: phonenum,
+          address,
+          reporterType: userCardnum[0],
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
+        console.log(res);
+        console.log('submit：', res.data);
         if (res.data.state === 'success') {
           return res.data; // 金智服务台的报障id
         }
@@ -77,7 +92,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, { id: record.wiseduId }, { headers: { 'x-api-token': wiseduToken } });
+        const res = await axios.post(url, { id: record.wiseduId, thirdParty, createrCode: record.userCardnum }, { headers: { 'x-api-token': wiseduToken } });
         if (res.data.state === 'success') {
           break;
         } else {
@@ -103,6 +118,8 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, {
           id: record.wiseduId,
+          thirdParty,
+          createrCode: record.userCardnum,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -133,6 +150,7 @@ class WiseduService extends Service {
           id: record.wiseduId,
           createrName: staffName,
           createrCode: staffCardnum,
+          thirdParty,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -163,7 +181,8 @@ class WiseduService extends Service {
           id: record.wiseduId,
           createrName: userName,
           createrCode: userCardnum,
-          Assess: userAssess,
+          Assess: '' + userAssess,
+          thirdParty,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -194,6 +213,8 @@ class WiseduService extends Service {
           id: record.wiseduId,
           acceptUserCodes: staffCardnum,
           isAdmin,
+          thirdParty,
+          createrCode: record.userCardnum,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -225,6 +246,7 @@ class WiseduService extends Service {
           createrName: name,
           createrCode: cardnum,
           Content: content,
+          thirdParty,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
@@ -256,6 +278,7 @@ class WiseduService extends Service {
           createrName: userName,
           createrCode: userCardnum,
           Content: userContent,
+          thirdParty,
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
