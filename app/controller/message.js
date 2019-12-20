@@ -87,7 +87,7 @@ class MessageController extends Controller {
       }
 
       // 向金智推送消息回复
-      await ctx.service.WiseduService.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message);
+      await ctx.service.wisedu.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message);
     }
 
   }
