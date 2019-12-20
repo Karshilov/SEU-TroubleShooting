@@ -255,7 +255,7 @@ class TroubleController extends Controller {
     const resOfDepartmentAdminBind = await ctx.model.DepartmentAdminBind.find({ adminCardnum: cardnum });
     if (resOfDepartmentAdminBind.length !== 0) {
       resOfDepartmentAdminBind.forEach(k => {
-        isDepartmentAdmin = (k.departmentId === record.departmentId);
+        if (k.departmentId === record.departmentId) isDepartmentAdmin = true;
       });
     }
 
