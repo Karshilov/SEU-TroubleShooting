@@ -40,7 +40,6 @@ class WiseduService extends Service {
   async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address) {
     // 故障提交
     console.log('对接东大服务台：开始推送');
-    console.log(this.config);
     const url = this.config.wiseduServer + 'submit';
     console.log('获取token');
     const wiseduToken = await this.getToken();
@@ -68,6 +67,7 @@ class WiseduService extends Service {
         }, {
           headers: { 'x-api-token': wiseduToken },
         });
+        console.log(res);
         console.log('submit：', res.data);
         if (res.data.state === 'success') {
           return res.data; // 金智服务台的报障id
