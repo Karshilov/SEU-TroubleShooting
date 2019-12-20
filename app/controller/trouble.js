@@ -27,7 +27,7 @@ class TroubleController extends Controller {
       userCardnum,
       createdTime: { $gt: now - 24 * 60 * 60 * 1000 },
     });
-    if (postCount > 3) {
+    if (postCount > 30) {
       // 为了避免恶意骚扰，24小时内故障申报数量不能超过3个
       ctx.error(1, '故障申报频率过高，请稍后重试');
     }
@@ -103,20 +103,24 @@ class TroubleController extends Controller {
 
     // 向金智推送故障申请
     const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
-    const wiseduId = await this.ctx.service.WiseduService.submit(
-      trouble._id,
-      trouble.desc,
-      trouble.typeName,
-      ctx.userInfo.name,
-      ctx.userInfo.cardnum,
-      moment(trouble.createdTime).format('yyyy-MM-dd HH:mm:ss'),
-      imageUrl,
-      phonenum,
-      address
-    );
-    if (wiseduId) {
-      trouble.wiseduId = wiseduId;
-      await trouble.save();
+    try {
+      const wiseduId = await this.ctx.service.WiseduService.submit(
+        trouble._id,
+        trouble.desc,
+        trouble.typeName,
+        ctx.userInfo.name,
+        ctx.userInfo.cardnum,
+        moment(trouble.createdTime).format('yyyy-MM-dd HH:mm:ss'),
+        imageUrl,
+        phonenum,
+        address
+      );
+      if (wiseduId) {
+        trouble.wiseduId = wiseduId;
+        await trouble.save();
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     // 创建统计日志
@@ -172,7 +176,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -198,7 +202,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -221,7 +225,7 @@ class TroubleController extends Controller {
       // 管理员查询的逻辑
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
