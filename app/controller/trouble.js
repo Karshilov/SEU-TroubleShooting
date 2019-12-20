@@ -104,7 +104,7 @@ class TroubleController extends Controller {
     // 向金智推送故障申请
     const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
     try {
-      const wiseduId = await this.ctx.service.WiseduService.submit(
+      const wiseduId = await this.ctx.service.wise de.submit(
         trouble._id,
         trouble.desc,
         trouble.typeName,
@@ -343,7 +343,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障受理信息
     // 使用的是转发接口
-    await ctx.service.WiseduService.transmit(troubleId, record.staffCardnum, false);
+    await ctx.service.wised画.transmit(troubleId, record.staffCardnum, false);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
@@ -390,7 +390,7 @@ class TroubleController extends Controller {
     record.summary = summary;
     await record.save();
     // 向金智推送故障完成信息
-    await ctx.service.WiseduService.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum);
+    await ctx.service.wisedu.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
@@ -438,7 +438,7 @@ class TroubleController extends Controller {
     record.evaluationLevel = evaluationLevel;
     await record.save();
     // 向金智推送故障处理完成信息
-    await ctx.service.WiseduService.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel);
+    await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
@@ -468,7 +468,7 @@ class TroubleController extends Controller {
       // console.log('newTrouble:' + newTrouble);
       await newTrouble.save();
       // 向金智推送驳回消息
-      await ctx.service.WiseduService.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name);
+      await ctx.service.wisedu.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name);
 
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.staffCardnum });
       // 向用户推送重新申请故障的推送消息
@@ -557,7 +557,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
-    await ctx.service.WiseduService.transmit(troubleId, staffBind.staffCardnum, '1');
+    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, '1');
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
@@ -599,7 +599,7 @@ class TroubleController extends Controller {
     await newRemindInfo.save();
 
     // 向金智推送故障催办
-    await ctx.service.WiseduService.hasten(troubleId);
+    await ctx.service.wisedu.hasten(troubleId);
 
     // 向负责人推送提醒
     await ctx.service.pushNotification.staffNotification(
