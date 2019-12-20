@@ -16,6 +16,7 @@ module.exports = app => {
     typeName: { type: String }, // 用于显示的故障类型名称
     staffCardnum: { type: String }, // 维修人员一卡通号
     userCardnum: { type: String }, // 用户一卡通号
+    userName: { type: String }, // 来自东大服务台的故障可能没有用户一卡通，所以要记录用户姓名
     dealTime: { type: Number, default: 0 },
     checkTime: { type: Number, default: 0 },
     closedTime: { type: Number, default: 0 },

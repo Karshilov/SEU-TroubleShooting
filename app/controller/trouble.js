@@ -95,6 +95,7 @@ class TroubleController extends Controller {
       typeId,
       typeName: troubleType.displayName,
       userCardnum,
+      userName: ctx.userInfo.name,
       staffCardnum: luckyDog.staffCardnum,
       image,
     });
@@ -108,8 +109,10 @@ class TroubleController extends Controller {
       trouble.typeName,
       ctx.userInfo.name,
       ctx.userInfo.cardnum,
-      trouble.createdTime,
-      imageUrl
+      moment(trouble.createdTime).format('yyyy-MM-dd HH:mm:ss'),
+      imageUrl,
+      phonenum,
+      address
     );
     if (wiseduId) {
       trouble.wiseduId = wiseduId;
@@ -274,8 +277,8 @@ class TroubleController extends Controller {
       phonenum: record.phonenum,
       address: record.address,
       image: record.image,
-      userCardnum: record.userCardnum,
-      userName: resOfUser.name,
+      userCardnum: record.userCardnum ? record.userCardnum : '来自东大服务台提报',
+      userName: resOfUser.name ? resOfUser.name : record.userName,
       summary: record.summary,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
@@ -335,7 +338,8 @@ class TroubleController extends Controller {
     await statisticRecord.save();
 
     // 向金智推送故障受理信息
-    await ctx.service.WiseduService.accept(troubleId);
+    // 使用的是转发接口
+    await ctx.service.WiseduService.transmit(troubleId, record.staffCardnum, false);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(

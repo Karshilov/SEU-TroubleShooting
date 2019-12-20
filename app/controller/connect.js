@@ -50,7 +50,14 @@ class wiseduController extends Controller {
 
   async submit() {
     await checkToken(this.ctx);
-    const { id, sortId, desc, phonenum, address, image = null, createdTime, userCardnum, staffCardnum } = this.ctx.request.body;
+    let { id, sortId, desc, phonenum, address = '（用户未填写）', image = null, createdTime, userCardnum = '东大服务台', userName, staffCardnums } = this.ctx.request.body;
+    if (!userCardnum) {
+      userCardnum = '东大服务台';
+    }
+    if (!address) {
+      address = '(用户未填写)';
+    }
+    const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     // 如果 id 已存在则去重
     await this.ctx.model.Trouble.DeleteOne({ wiseduId: id });
     const typeName = code2Name['' + sortId];
@@ -74,6 +81,7 @@ class wiseduController extends Controller {
       typeId: typeRecord._id,
       typeName: typeRecord.displayName,
       userCardnum,
+      userName,
       staffCardnum,
       image,
     });
@@ -127,7 +135,8 @@ class wiseduController extends Controller {
     // 查询故障信息
     await checkToken(this.ctx);
     const { ctx } = this;
-    let { id, staffCardnum } = ctx.request.body;
+    const { id, staffCardnums } = ctx.request.body;
+    let staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     const record = await ctx.model.Trouble.findById(id);
     if (!record) {
       ctx.error(1, '故障信息不存在');
@@ -317,19 +326,20 @@ class wiseduController extends Controller {
   async redirect() {
     await checkToken(this.ctx);
     const { ctx } = this;
-    const { id, typeId = '', staffCardnum } = ctx.request.body;
+    const { id, sortId = '', staffCardnums } = ctx.request.body;
+    const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     const record = await ctx.model.Trouble.findById(id);
     if (!record) {
       // 判定故障信息是否存在
       ctx.error(1, '故障信息不存在');
     }
-    if (typeId) {
-      // 根据 code2Name 判定 typeId 是否正确以及确定故障类型是否存在
-      const troubleType = await ctx.model.TroubleType.findOne({ displayName: code2Name[typeId] });
-      if (Object.keys(code2Name).indexOf(typeId) === -1 || !troubleType) {
+    if (sortId) {
+      // 根据 code2Name 判定 sortId 是否正确以及确定故障类型是否存在
+      const troubleType = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
+      if (Object.keys(code2Name).indexOf(sortId) === -1 || !troubleType) {
         ctx.error(2, '故障类型不存在');
       }
-      record.typeName = code2Name[typeId];
+      record.typeName = code2Name[sortId];
       record.typeId = troubleType._id;
     }
     const staffRecord = await ctx.model.StaffBind.findById({ staffCardnum });
