@@ -348,7 +348,7 @@ class wiseduController extends Controller {
       ctx.error(3, '运维人员不存在');
     }
     record.staffCardnum = staffRecord.staffCardnum;
-    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[typeId] });
+    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
     if (departmentRecord.departmentId !== staffRecord.departmentId) {
       // 判定运维人员所属部门是否负责该故障
       ctx.error(4, '指定的员工不属于故障类型所属部门');
