@@ -82,11 +82,11 @@ class WiseduService extends Service {
     }
   }
   // 之后传入的 id 全是 mongoDB ObjectId
-  async accept(id) {
+  async accept(mongoId) {
     // 故障受理
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'accept';
@@ -94,7 +94,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, qs.stringify({ id: record.wiseduId, thirdParty, createrCode: record.userCardnum }), { headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' } });
+        const res = await axios.post(url, qs.stringify({ id: '' + mongoId, thirdParty, createrCode: record.userCardnum }), { headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' } });
         if (res.data.state === 'success') {
           break;
         } else {
@@ -106,11 +106,11 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async hasten(id) {
+  async hasten(mongoId) {
     // 故障催办
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'hasten';
@@ -119,7 +119,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           thirdParty,
           createrCode: record.userCardnum,
         }), {
@@ -136,11 +136,11 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async accomplish(id, staffName, staffCardnum) {
+  async accomplish(mongoId, staffName, staffCardnum) {
     // 故障等待验收
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'accomplish';
@@ -149,7 +149,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           createrName: staffName,
           createrCode: staffCardnum,
           thirdParty,
@@ -167,11 +167,11 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async confirm(id, userName, userCardnum, userAssess) {
+  async confirm(mongoId, userName, userCardnum, userAssess) {
     // 故障办结
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'confirm';
@@ -180,7 +180,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           createrName: userName,
           createrCode: userCardnum,
           Assess: '' + userAssess,
@@ -199,11 +199,11 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async transmit(id, staffCardnum, isAdmin) {
+  async transmit(mongoId, staffCardnum, isAdmin) {
     // 故障转发
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'transmit';
@@ -212,7 +212,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           acceptUserCodes: staffCardnum,
           isAdmin,
           thirdParty,
@@ -231,13 +231,13 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reply(id, name, cardnum, content) {
+  async reply(mongoId, name, cardnum, content) {
     // 故障回复（留言消息回复？？）
     console.log('开始调试消息回复');
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     console.log(record);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'reply';
@@ -246,7 +246,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           createrName: name,
           createrCode: cardnum,
           content,
@@ -267,11 +267,11 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reject(id, userName, userCardnum, userContent) {
+  async reject(mongoId, userName, userCardnum, userContent) {
     // 故障驳回
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
     const wiseduToken = await this.getToken();
-    if (!record || !record.wiseduId) {
+    if (!record) {
       return;
     }
     const url = this.config.wiseduServer + 'reply';
@@ -280,7 +280,7 @@ class WiseduService extends Service {
     while (attempt < 3) {
       try {
         const res = await axios.post(url, qs.stringify({
-          id: record.wiseduId,
+          id: '' + mongoId,
           createrName: userName,
           createrCode: userCardnum,
           Content: userContent,
