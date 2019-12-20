@@ -29,6 +29,7 @@ class TroubleController extends Controller {
     });
     if (postCount > 30) {
       // 为了避免恶意骚扰，24小时内故障申报数量不能超过3个
+      ctx.logger.info('用户 %s（%s）提交故障频率过高被临时限制', ctx.userInfo.name, userCardnum);
       ctx.error(1, '故障申报频率过高，请稍后重试');
     }
     if (!typeId) {
@@ -101,6 +102,7 @@ class TroubleController extends Controller {
     });
     await trouble.save();
 
+    ctx.logger.info(`用户 ${ctx.userInfo.name}(${userCardnum}) 提报了 ${troubleType.displayName}，报障内容：${desc.slice(0, 20)}...`);
     // 向金智推送故障申请
     const imageUrl = image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${trouble._id}` : null;
     try {
@@ -173,6 +175,7 @@ class TroubleController extends Controller {
     }
     if (role === 'USER') {
       // 用户查询的逻辑
+      ctx.logger.info(`用户 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 查看处理进度清单`);
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
@@ -186,6 +189,7 @@ class TroubleController extends Controller {
         return r;
       });
     } else if (role === 'STAFF') {
+      ctx.logger.info(`运维人员 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 查看任务清单`);
       // 工作人员可以查询到本部门所有的故障信息
       const staffDepartments = await ctx.model.StaffBind.find({ staffCardnum: ctx.userInfo.cardnum });
       // 部门管理员可以看到本部门的故障信息
@@ -223,6 +227,7 @@ class TroubleController extends Controller {
         ctx.permissionError('无权访问');
       }
       // 管理员查询的逻辑
+      ctx.logger.info(`系统管理员 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 查看故障信息总览`);
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
       }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
@@ -356,7 +361,7 @@ class TroubleController extends Controller {
       '运维人员正在处理您报告的故障，请保持联系畅通，并注意微信提醒',
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
-
+    ctx.logger.info(`工作人员 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 开始受理故障 ${troubleId}`);
   }
 
   async deal() {
@@ -412,7 +417,7 @@ class TroubleController extends Controller {
       '运维人员已经完成对故障的处理，请您及时检查处理结果并填写对本次服务的评价',
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
-
+    ctx.logger.info(`工作人员 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 已完成故障 ${troubleId} 的处理`);
   }
 
   async check() {
@@ -508,6 +513,7 @@ class TroubleController extends Controller {
       // console.log('ok！');
 
     }
+    ctx.logger.info(`用户 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 对故障 ${troubleId} 的处理结果做出了评价`);
     return '评价成功！';
   }
 
@@ -571,7 +577,7 @@ class TroubleController extends Controller {
       '故障描述：' + record.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
     );
-
+    ctx.logger.info(`工作人员 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 将故障 ${troubleId} 派发给了 ${staffBind.name}(${staffBind.cardnum}) 处理`);
     return '转发成功';
   }
 
@@ -613,7 +619,7 @@ class TroubleController extends Controller {
       '故障描述：' + trouble.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', trouble._id)
     );
-
+    ctx.logger.info(`用户 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 催办故障 ${troubleId}`);
     return '提醒成功';
 
   }
@@ -629,7 +635,7 @@ class TroubleController extends Controller {
       ctx.identityError('非用户本人，禁止操作');
     }
     await ctx.model.Trouble.deleteOne({ _id: troubleId });
-
+    ctx.logger.info(`用户 ${ctx.userInfo.cardnum}(${ctx.userInfo.name}) 取消了故障 ${troubleId} 的处理请求`);
     return '删除成功';
   }
 

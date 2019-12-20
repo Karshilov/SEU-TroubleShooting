@@ -22,6 +22,7 @@ class DepartmentController extends Controller {
     // 检查通过，创建新的部门
     const department = new ctx.model.Department({ name: departmentName });
     await department.save();
+    this.ctx.logger.info('%s 创建部门，名称：%s', ctx.userInfo.cardnum, departmentName);
     return '创建成功';
   }
 
@@ -56,7 +57,7 @@ class DepartmentController extends Controller {
       name: resOfCardnum.name,
     });
     await newDepartmentAdmin.save();
-
+    this.ctx.logger.info('%s 设置 %s（%s） 为部门管理员', ctx.userInfo.cardnum, resOfCardnum.name, resOfCardnum.cardnum);
     return '设置部门管理员成功';
   }
 
@@ -66,16 +67,15 @@ class DepartmentController extends Controller {
     if (!departmentId || !adminCardnum) {
       ctx.paramsError();
     }
-    // console.log({ departmentId, adminCardnum });
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('只允许管理员操作');
     }
     const count = await ctx.model.DepartmentAdminBind.countDocuments({ departmentId, adminCardnum });
-    // console.log('count:' + count);
     if (count === 0) {
       ctx.error(1, '未绑定该部门管理员');
     }
     await ctx.model.DepartmentAdminBind.deleteMany({ departmentId, adminCardnum });
+    this.ctx.logger.info('%s 取消 %s（%s） 部门管理员权限', ctx.userInfo.cardnum, adminCardnum);
     return '删除部门管理员成功';
   }
 
@@ -89,7 +89,6 @@ class DepartmentController extends Controller {
       ctx.paramsError('未指定查询部门');
     }
     return await ctx.model.DepartmentAdminBind.find({ departmentId });
-
   }
 
   async bindStaff() {
