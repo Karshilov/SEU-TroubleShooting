@@ -65,7 +65,7 @@ class WiseduService extends Service {
           address,
           reporterType: userCardnum[0],
         }, {
-          headers: { 'x-api-token': wiseduToken },
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
         console.log(res);
         console.log('submit：', res.data);
@@ -248,8 +248,10 @@ class WiseduService extends Service {
           Content: content,
           thirdParty,
         }, {
-          headers: { 'x-api-token': wiseduToken },
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
+        console.log('======回复推送======');
+        console.log(res);
         if (res.data.state === 'success') {
           break;
         } else {
