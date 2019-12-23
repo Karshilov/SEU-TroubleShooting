@@ -444,8 +444,10 @@ class TroubleController extends Controller {
     record.evaluation = evaluation;
     record.evaluationLevel = evaluationLevel;
     await record.save();
-    // 向金智推送故障处理完成信息
-    await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel, evaluation);
+    if (accept === 'ACCEPT') {
+      // 向金智推送故障处理完成信息
+      await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel, evaluation);
+    }
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
