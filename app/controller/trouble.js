@@ -444,7 +444,7 @@ class TroubleController extends Controller {
     record.evaluation = evaluation;
     record.evaluationLevel = evaluationLevel;
     await record.save();
-    if (accept === 'ACCEPT') {
+    if (accept) {
       // 向金智推送故障处理完成信息
       await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel, evaluation);
     }
