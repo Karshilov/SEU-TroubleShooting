@@ -459,56 +459,58 @@ class TroubleController extends Controller {
     // 问题没有解决，自动创建一个新的故障信息，并向用户和维修人员推送模版消息
     // console.log('accept:' + accept);
     if (!accept) {
-      const newTrouble = new ctx.model.Trouble({
-        createdTime: +moment(),
-        desc: record.desc,
-        status: 'PENDING',
-        phonenum: record.phonenum,
-        address: record.address,
-        departmentId: record.departmentId,
-        typeId: record.typeId,
-        typeName: record.typeName,
-        staffCardnum: record.staffCardnum, // 默认还是上一个维修人员
-        userCardnum: record.userCardnum,
-        image: record.image,
-      });
-      // console.log('newTrouble:' + newTrouble);
-      await newTrouble.save();
+      // 为了对接，还是要改成把现有的故障信息退回去
+      // const newTrouble = new ctx.model.Trouble({
+      //   createdTime: +moment(),
+      //   desc: record.desc,
+      //   status: 'PENDING',
+      //   phonenum: record.phonenum,
+      //   address: record.address,
+      //   departmentId: record.departmentId,
+      //   typeId: record.typeId,
+      //   typeName: record.typeName,
+      //   staffCardnum: record.staffCardnum, // 默认还是上一个维修人员
+      //   userCardnum: record.userCardnum,
+      //   image: record.image,
+      // });
+      // await newTrouble.save();
+      record.status = 'PENDING';
+      await record.save();
       // 向金智推送驳回消息
       await ctx.service.wisedu.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name, '用户反馈故障仍未解决，请继续处理');
 
       const staff = await ctx.model.User.findOne({ cardnum: newTrouble.staffCardnum });
       // 向用户推送重新申请故障的推送消息
       await ctx.service.pushNotification.userNotification(
-        newTrouble.userCardnum,
+        record.userCardnum,
         '您申报的故障未解决，为您重新提交故障信息',
-        newTrouble.address,
-        newTrouble.typeName, // type
-        `正在等待运维人员${staff.name}（一卡通号：${newTrouble.staffCardnum}）受理`, // status
+        record.address,
+        record.typeName, // type
+        `正在等待运维人员${staff.name}（一卡通号：${record.staffCardnum}）受理`, // status
         moment().format('YYYY-MM-DD HH:mm:ss'), // lastModifiedTime
         '运维人员已经收到您提交的故障信息，将尽快为您处理解决，期间请将您填写的联系方式保持畅通。',
-        this.ctx.helper.oauthUrl(ctx, 'detail', newTrouble._id) // url - 故障详情页面
+        this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
       );
       // 向运维人员推送故障未解决的消息
       await ctx.service.pushNotification.staffNotification(
-        newTrouble.staffCardnum,
+        record.staffCardnum,
         '用户提交的故障仍未解决，请尽快处理', // title
-        newTrouble._id.toString().toUpperCase(), // code
-        newTrouble.typeName, // type
+        record._id.toString().toUpperCase(), // code
+        record.typeName, // type
         '点击查看', // desc
-        newTrouble.phonenum,
+        record.phonenum,
         moment().format('YYYY-MM-DD HH:mm:ss'),
-        '故障描述信息：' + newTrouble.desc,
-        this.ctx.helper.oauthUrl(ctx, 'detail', newTrouble._id) // url - 故障详情页面
+        '故障描述信息：' + record.desc,
+        this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
       );
       // 创建统计日志
       const statisticRecord = new ctx.model.Statistic({
         timestamp: +moment(),
-        enterStatus: newTrouble.status,
-        troubleId: newTrouble._id,
-        staffCardnum: newTrouble.staffCardnum, // 操作运维人员一卡通
-        typeId: newTrouble.typeId, // 故障类型名称
-        departmentId: newTrouble.departmentId, // 所属部门Id
+        enterStatus: record.status,
+        troubleId: record._id,
+        staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+        typeId: record.typeId, // 故障类型名称
+        departmentId: record.departmentId, // 所属部门Id
       });
       // console.log('statisticRecord:' + statisticRecord);
       await statisticRecord.save();
