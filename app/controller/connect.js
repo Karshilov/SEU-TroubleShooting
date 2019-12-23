@@ -366,29 +366,24 @@ class wiseduController extends Controller {
       // 判定故障信息是否存在
       ctx.error(1, '故障信息不存在');
     }
-    if (sortId) {
-      // 根据 code2Name 判定 sortId 是否正确以及确定故障类型是否存在
-      const troubleType = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
-      if (Object.keys(code2Name).indexOf(sortId) === -1 || !troubleType) {
+    if (!sortId) {
+      sortId = name2Code[record.typeName];
+    } else {
+      if (Object.keys(code2Name).indexOf(sortId) === -1) {
         ctx.error(2, '故障类型不存在');
       }
-      record.typeName = code2Name[sortId];
-      record.typeId = troubleType._id;
-    } else {
-      sortId = name2Code[record.typeName];
     }
-    const staffRecord = await ctx.model.StaffBind.findOne({ staffCardnum });
+
+    const troubleType = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
+    record.typeName = code2Name[sortId];
+    record.typeId = troubleType._id;
+    record.departmentId = troubleType.departmentId;
+    const staffRecord = await ctx.model.StaffBind.findOne({ departmentId: troubleType.departmentId, staffCardnum });
     if (!staffRecord) {
       // 判定运维人员是否存在
-      ctx.error(3, '运维人员不存在');
+      ctx.error(3, '运维人员不存在或不负责指定的故障类型');
     }
     record.staffCardnum = staffRecord.staffCardnum;
-    const departmentRecord = await ctx.model.TroubleType.findOne({ displayName: code2Name[sortId] });
-    if (departmentRecord.departmentId !== staffRecord.departmentId) {
-      // 判定运维人员所属部门是否负责该故障
-      ctx.error(4, '指定的员工不属于故障类型所属部门');
-    }
-    record.departmentId = departmentRecord._id;
     await record.save();
 
     // 创建统计日志
