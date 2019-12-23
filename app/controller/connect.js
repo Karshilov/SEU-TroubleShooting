@@ -40,7 +40,7 @@ class wiseduController extends Controller {
     const expiresIn = 2 * 60 * 60 * 1000;
     const newToken = new ctx.model.SeicToken({
       token: uuid(),
-      expiresTime: moment().now() + expiresIn,
+      expiresTime: +moment() + expiresIn,
     });
     await newToken.save();
     return {
