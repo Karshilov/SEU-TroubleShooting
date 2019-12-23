@@ -414,6 +414,7 @@ class wiseduController extends Controller {
       '故障描述：' + record.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
     );
+    return 'ok';
   }
 
   async message() {
