@@ -57,8 +57,8 @@ module.exports = appInfo => {
     wiseduApiKey: configYaml.wisedu_api_key,
     wiseduSecret: configYaml.wisedu_secret,
     wiseduServer: configYaml.wisedu_server,
-    seicApiKey: configYaml.seic_api_key,
-    seicSecret: configYaml.seic_secret,
+    seicApiKey: configYaml.seic_connect_appId,
+    seicSecret: configYaml.seic_connect_appSecret,
   };
 
   // use for cookie sign key, should change to your own and keep security
