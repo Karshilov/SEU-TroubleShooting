@@ -20,7 +20,7 @@ class WiseduService extends Service {
   async getToken() {
     let now = +moment(); // 当前时间
     const record = await this.ctx.model.WiseduToken.findOne({});
-    if (record && record.expiresTime > now) {
+    if (record && (record.expiresTime > now)) {
       this.ctx.logger.info('使用缓存的wisedu_access_token');
       return record.token;
     }
@@ -70,6 +70,7 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
+        console.log(res);
         if (res.data.state === 'success') {
           this.ctx.logger.info('向东大服务台推送故障提报成功，故障单号：%s', mongoId);
           return res.data.data; // 金智服务台的报障id
