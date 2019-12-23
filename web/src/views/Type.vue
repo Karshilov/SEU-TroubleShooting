@@ -13,6 +13,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="add">添加</el-button>
+            <el-button type="primary" @click="addInternal">添加为内部类型</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -59,6 +60,21 @@ export default {
       let res = await this.$axios.post(
         "/type",
         { typeName: this.typeName, departmentId: this.departmentId ,typeDesc:this.typeDesc},
+        { headers: { token: this.token } }
+      );
+      if (res.data.success) {
+        this.$message({ type: "success", message: "添加成功" });
+        this.typeName="";
+        this.typeDesc="";
+        this.load();
+      } else {
+        this.$message.error(res.data.errmsg);
+      }
+    },
+    async addInternal() {
+      let res = await this.$axios.post(
+        "/type",
+        { typeName: this.typeName, departmentId: this.departmentId ,typeDesc:this.typeDesc, isInternal: true},
         { headers: { token: this.token } }
       );
       if (res.data.success) {

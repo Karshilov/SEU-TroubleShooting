@@ -14,6 +14,7 @@ class TypeController extends Controller {
     }
 
     const displayName = ctx.request.body.typeName;
+    const isInternal = !!ctx.request.body.isInternal;
     const resOfDisplayName = await ctx.model.TroubleType.findOne({ displayName, delete: false });
     if (resOfDisplayName) {
       ctx.error(1, '故障名称重复');
@@ -33,6 +34,7 @@ class TypeController extends Controller {
       resOfDisplayName.departmentId = id;
       resOfDisplayName.typeDesc = Desc;
       resOfDisplayName.delete = false;
+      resOfDisplayName.isInternal = isInternal;
       await resOfDisplayName.save();
     } else {
       // 原来没有
@@ -40,6 +42,7 @@ class TypeController extends Controller {
         displayName,
         departmentId: id,
         typeDesc: Desc,
+        isInternal,
       });
       await newTrouble.save();
     }
@@ -65,11 +68,16 @@ class TypeController extends Controller {
   async troubleList() {
     const { ctx } = this;
     const departmentId = ctx.query.departmentId;
+    const showInternal = !!ctx.query.showInternal;
     let resOfTrouble;
     if (departmentId) {
       resOfTrouble = await ctx.model.TroubleType.find({ delete: false, departmentId }, [ '_id', 'displayName', 'typeDesc' ]);
     } else {
-      resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, [ '_id', 'displayName', 'typeDesc' ]);
+      if (showInternal) {
+        resOfTrouble = await ctx.model.TroubleType.find({ delete: false }, [ '_id', 'displayName', 'typeDesc' ]);
+      } else {
+        resOfTrouble = await ctx.model.TroubleType.find({ delete: false, isInternal: false }, [ '__id', 'displayName', 'typeDesc' ]);
+      }
     }
     // eslint-disable-next-line prefer-const
     let resOfTroubleTidy = [];

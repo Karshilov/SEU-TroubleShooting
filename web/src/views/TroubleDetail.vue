@@ -198,7 +198,7 @@ export default {
       this.loadMessage();
     },
     async loadTroubleType() {
-      let res = await this.$axios.get("/type");
+      let res = await this.$axios.get("/type?showInternal=1");
       this.typeList = res.data.result;
     },
     async loadStaff() {
