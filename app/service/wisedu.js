@@ -300,8 +300,7 @@ class WiseduService extends Service {
     if (!record) {
       return;
     }
-    const url = this.config.wiseduServer + 'reply';
-
+    const url = this.config.wiseduServer + 'reject';
     let attempt = 0;
     while (attempt < 3) {
       try {
@@ -314,6 +313,14 @@ class WiseduService extends Service {
           thirdParty,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
+        });
+        console.log({
+          id: '' + mongoId,
+          creatorName: userName,
+          creatorCode: userCardnum,
+          creatorType: userCardnum[0],
+          content: userContent,
+          thirdParty,
         });
         if (res.data.state === 'success') {
           break;
