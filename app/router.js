@@ -71,5 +71,6 @@ module.exports = app => {
   router.post('/connect/redirect', controller.connect.redirect);
   router.post('/connect/reject', controller.connect.reject);
   router.post('/connect/hasten', controller.connect.hasten);
+  router.post('/connect/message', controller.connect.message);
   router.post('/connect/confirm', controller.connect.confirm);
 };
