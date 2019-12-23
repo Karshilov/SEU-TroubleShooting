@@ -218,7 +218,7 @@ class WiseduService extends Service {
       return;
     }
     const url = this.config.wiseduServer + 'transmit';
-
+    isAdmin = isAdmin ? '1' : '0';
     let attempt = 0;
     while (attempt < 3) {
       try {
