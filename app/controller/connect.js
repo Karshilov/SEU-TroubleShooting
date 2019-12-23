@@ -107,6 +107,7 @@ class wiseduController extends Controller {
       userName,
       staffCardnum,
       image,
+      wiseduId: id,
     });
     await record.save();
 

@@ -273,7 +273,6 @@ class TroubleController extends Controller {
       });
     }
 
-
     if (record.userCardnum !== cardnum && !isSameDepartment && !ctx.userInfo.isAdmin && !isDepartmentAdmin) {
       ctx.permissionError('无权访问');
     }
@@ -289,7 +288,7 @@ class TroubleController extends Controller {
       address: record.address,
       image: record.image,
       userCardnum: record.userCardnum ? record.userCardnum : '来自东大服务台提报',
-      userName: resOfUser.name ? resOfUser.name : record.userName,
+      userName: resOfUser ? resOfUser.name : record.userName,
       summary: record.summary,
       statusDisp: statusDisp[record.status],
       canPostMessage: record.status === 'PENDING',
