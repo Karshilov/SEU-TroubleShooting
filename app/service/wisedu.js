@@ -299,7 +299,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reject(mongoId, userName, userCardnum, userContent) {
+  async reject(mongoId, userCardnum, userName, userContent) {
     // 故障驳回
     this.ctx.logger.info('向东大服务台推送故障驳回，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
