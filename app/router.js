@@ -66,6 +66,7 @@ module.exports = app => {
 
   router.get('/connect/token', controller.connect.token);
   router.post('/connect/submit', controller.connect.submit);
+  router.post('/connect/accept', controller.connect.accept);
   router.post('/connect/reject', controller.connect.reject);
   router.post('/connect/accomplish', controller.connect.accomplish);
   router.post('/connect/hasten', controller.connect.hasten);
