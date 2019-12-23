@@ -235,6 +235,17 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
+        console.log({
+          id: '' + mongoId,
+          acceptUserCodes: staffCardnum,
+          acceptUserNames: staffName,
+          acceptUserTypes: staffCardnum[0],
+          isAdmin,
+          thirdParty,
+          creatorCode: record.userCardnum,
+          creatorName: record.userName,
+          creatorType: record.userCardnum[0],
+        });
         if (res.data.state === 'success') {
           break;
         } else {
