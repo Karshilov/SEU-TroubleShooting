@@ -471,6 +471,7 @@ class wiseduController extends Controller {
         this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
       );
     }
+    return 'ok';
   }
 }
 
