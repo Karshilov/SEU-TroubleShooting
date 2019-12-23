@@ -366,7 +366,7 @@ class wiseduController extends Controller {
       record.typeName = code2Name[sortId];
       record.typeId = troubleType._id;
     }
-    const staffRecord = await ctx.model.StaffBind.findById({ staffCardnum });
+    const staffRecord = await ctx.model.StaffBind.findOne({ staffCardnum });
     if (!staffRecord) {
       // 判定运维人员是否存在
       ctx.error(3, '运维人员不存在');
