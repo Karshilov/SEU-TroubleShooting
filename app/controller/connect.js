@@ -82,7 +82,7 @@ class wiseduController extends Controller {
     }
     const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     // 如果 id 已存在则去重
-    await this.ctx.model.Trouble.DeleteOne({ wiseduId: id });
+    await this.ctx.model.Trouble.deleteOne({ wiseduId: id });
     const typeName = code2Name['' + sortId];
     const typeRecord = await this.ctx.model.TroubleType.findOne({ displayName: typeName });
     // 检查故障类型
