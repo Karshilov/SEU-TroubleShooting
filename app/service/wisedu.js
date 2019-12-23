@@ -39,7 +39,7 @@ class WiseduService extends Service {
     return result.data.apiToken;
   }
 
-  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address) {
+  async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address, staffCardnum, staffName) {
     // 故障提交
     this.ctx.logger.info('向东大服务台推送故障提报，故障单号：%s', mongoId);
     const url = this.config.wiseduServer + 'submit';
@@ -60,10 +60,13 @@ class WiseduService extends Service {
           reportTime: createdTime,
           file: imageUrl,
           thirdParty,
-          createrCode: userCardnum,
+          creatorCode: userCardnum,
           reporterMobile: phonenum,
           address,
           reporterType: userCardnum[0],
+          acceptUserCodes: staffCardnum,
+          acceptUserNames: staffName,
+          acceptUserTypes: staffCardnum[0],
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
@@ -92,7 +95,7 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
-        const res = await axios.post(url, qs.stringify({ id: '' + mongoId, thirdParty, createrCode: record.userCardnum }), { headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' } });
+        const res = await axios.post(url, qs.stringify({ id: '' + mongoId, thirdParty, creatorCode: record.userCardnum }), { headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' } });
         if (res.data.state === 'success') {
           break;
         } else {
@@ -120,7 +123,9 @@ class WiseduService extends Service {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
           thirdParty,
-          createrCode: record.userCardnum,
+          creatorCode: record.userCardnum,
+          creatorName: record.userName,
+          creatorType: record.userCardnum[0],
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
@@ -150,8 +155,9 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
-          createrName: staffName,
-          createrCode: staffCardnum,
+          creatorName: staffName,
+          creatorCode: staffCardnum,
+          creatorType: staffCardnum[0],
           thirdParty,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
@@ -167,7 +173,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async confirm(mongoId, userName, userCardnum, userAssess) {
+  async confirm(mongoId, userName, userCardnum, userAssess, content) {
     // 故障办结
     this.ctx.logger.info('向东大服务台推送故障办结，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -182,9 +188,11 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
-          createrName: userName,
-          createrCode: userCardnum,
-          Assess: '' + userAssess,
+          creatorName: userName,
+          creatorCode: userCardnum,
+          creatorType: userCardnum[0],
+          assess: '' + userAssess,
+          content,
           thirdParty,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
@@ -200,7 +208,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async transmit(mongoId, staffCardnum, isAdmin) {
+  async transmit(mongoId, staffCardnum, staffName, isAdmin) {
     // 故障转发
     this.ctx.logger.info('向东大服务台推送故障转发，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -216,9 +224,13 @@ class WiseduService extends Service {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
           acceptUserCodes: staffCardnum,
+          acceptUserNames: staffName,
+          acceptUserTypes: staffCardnum[0],
           isAdmin,
           thirdParty,
-          createrCode: record.userCardnum,
+          creatorCode: record.userCardnum,
+          creatorName: record.userName,
+          creatorType: record.userCardnum[0],
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
@@ -248,8 +260,9 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
-          createrName: name,
-          createrCode: cardnum,
+          creatorName: name,
+          creatorCode: cardnum,
+          creatorType: cardnum[0],
           content,
           thirdParty,
         }), {
@@ -281,9 +294,10 @@ class WiseduService extends Service {
       try {
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
-          createrName: userName,
-          createrCode: userCardnum,
-          Content: userContent,
+          creatorName: userName,
+          creatorCode: userCardnum,
+          creatorType: userCardnum[0],
+          content: userContent,
           thirdParty,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },

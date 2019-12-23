@@ -115,7 +115,9 @@ class TroubleController extends Controller {
         moment(trouble.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         imageUrl,
         phonenum,
-        address
+        address,
+        luckyDog.staffCardnum,
+        luckyDog.name
       );
       if (wiseduId) {
         trouble.wiseduId = wiseduId;
@@ -348,7 +350,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障受理信息
     // 使用的是转发接口
-    await ctx.service.wisedu.transmit(troubleId, record.staffCardnum, false);
+    await ctx.service.wisedu.transmit(troubleId, record.staffCardnum, ctx.userInfo.name, false);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
@@ -443,7 +445,7 @@ class TroubleController extends Controller {
     record.evaluationLevel = evaluationLevel;
     await record.save();
     // 向金智推送故障处理完成信息
-    await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel);
+    await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel, evaluation);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
@@ -563,7 +565,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
-    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, '1');
+    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, staffBind.name, '1');
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
