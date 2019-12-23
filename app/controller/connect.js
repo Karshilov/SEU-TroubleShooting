@@ -473,6 +473,27 @@ class wiseduController extends Controller {
     }
     return 'ok';
   }
+
+  async modify() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { id, desc, image, address, phonenum } = ctx.request.body;
+    const record = await this.ctx.model.Trouble.findById(id);
+    if (desc) {
+      record.desc = desc;
+    }
+    if (image) {
+      record.image = image;
+    }
+    if (address) {
+      record.address = address;
+    }
+    if (phonenum) {
+      record.phonenum = phonenum;
+    }
+    await record.save();
+    return 'ok';
+  }
 }
 
 module.exports = wiseduController;
