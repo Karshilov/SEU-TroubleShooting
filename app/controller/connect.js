@@ -72,6 +72,8 @@ class wiseduController extends Controller {
     }
     if (!createdTime) {
       createdTime = +moment();
+    } else {
+      createdTime = +createdTime;
     }
     if (image) {
       if (!image.startsWith('data:image/jpg;base64') && !image.startsWith('data:image/jpeg;base64') && !image.startsWith('data:image/png;base64')) {
