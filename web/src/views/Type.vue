@@ -13,7 +13,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="add">添加</el-button>
-            <el-button type="primary" @click="addInternal">添加为内部类型</el-button>
+            <el-button type="primary" @click="addInternal">内部类型</el-button>
           </el-form-item>
         </el-form>
       </div>
