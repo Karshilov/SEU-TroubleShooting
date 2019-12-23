@@ -45,7 +45,7 @@ class wiseduController extends Controller {
     await newToken.save();
     return {
       access_token: newToken.token,
-      expiresIn,
+      expiresIn: expiresIn / 1000,
     };
   }
 
