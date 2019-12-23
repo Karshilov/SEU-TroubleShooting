@@ -51,12 +51,32 @@ class wiseduController extends Controller {
 
   async submit() {
     await checkToken(this.ctx);
-    let { id, sortId, desc, phonenum, address = '（用户未填写）', image = null, createdTime, userCardnum = '东大服务台', userName, staffCardnums } = this.ctx.request.body;
+    let { id, sortId, desc, phonenum, address, image = null, createdTime, userCardnum, userName, staffCardnums } = this.ctx.request.body;
+    if (!id) {
+      this.ctx.paramsError('缺少 id 参数');
+    }
+    if (!code2Name[sortId]) {
+      this.ctx.paramsError('指定的 sortId 不正确');
+    }
+    if (!desc) {
+      this.ctx.paramsError('缺少 desc 参数');
+    }
+    if (!phonenum) {
+      this.ctx.paramsError('缺少 phonenum 参数');
+    }
     if (!userCardnum) {
       userCardnum = '东大服务台';
     }
     if (!address) {
       address = '(用户未填写)';
+    }
+    if (!createdTime) {
+      createdTime = +moment();
+    }
+    if (image) {
+      if (!image.startsWith('data:image/jpg;base64') && !image.startsWith('data:image/jpeg;base64') && !image.startsWith('data:image/png;base64')) {
+        this.ctx.paramsError('附件格式不正确，必须为 jpeg 或 png 格式');
+      }
     }
     const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     // 如果 id 已存在则去重
