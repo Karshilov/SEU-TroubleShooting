@@ -14,6 +14,15 @@ const code2Name = {
   '211': '网站报障',
   '900': '其他报障',
 };
+const name2Code = {
+  四牌楼网络报障: '101',
+  九龙湖网络报障: '102',
+  丁家桥网络报障: '103',
+  宿舍区网络报障: '104',
+  信息系统报障: '201',
+  网站报障: '211',
+  其他报障: '900',
+};
 
 async function checkToken(ctx) {
   const token = ctx.request.headers['x-api-token'];
@@ -350,7 +359,7 @@ class wiseduController extends Controller {
   async redirect() {
     await checkToken(this.ctx);
     const { ctx } = this;
-    const { id, sortId = '', staffCardnums } = ctx.request.body;
+    let { id, sortId = '', staffCardnums } = ctx.request.body;
     const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
     const record = await ctx.model.Trouble.findById(id);
     if (!record) {
@@ -365,6 +374,8 @@ class wiseduController extends Controller {
       }
       record.typeName = code2Name[sortId];
       record.typeId = troubleType._id;
+    } else {
+      sortId = name2Code[record.typeName];
     }
     const staffRecord = await ctx.model.StaffBind.findOne({ staffCardnum });
     if (!staffRecord) {
