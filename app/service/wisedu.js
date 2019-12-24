@@ -250,6 +250,7 @@ class WiseduService extends Service {
           content: '运维人员正在受理',
           isAdmin: '0',
           thirdParty,
+          sortId: name2Code[record.typeName],
           creatorCode: adminCardnum,
           creatorName: adminName,
           creatorType: adminCardnum[0],
