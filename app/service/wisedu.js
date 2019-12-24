@@ -216,7 +216,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async transmit(mongoId, staffCardnum, staffName, isAdmin) {
+  async transmit(mongoId, staffCardnum, staffName, adminCardnum, adminName) {
     // 故障转发
     this.ctx.logger.info('向东大服务台推送故障转发，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -225,7 +225,6 @@ class WiseduService extends Service {
       return;
     }
     const url = this.config.wiseduServer + 'transmit';
-    isAdmin = isAdmin ? '1' : '0';
     let attempt = 0;
     while (attempt < 3) {
       try {
@@ -234,11 +233,11 @@ class WiseduService extends Service {
           acceptUserCodes: staffCardnum,
           acceptUserNames: staffName,
           acceptUserTypes: staffCardnum[0],
-          isAdmin,
+          isAdmin: '0',
           thirdParty,
-          creatorCode: record.userCardnum,
-          creatorName: record.userName,
-          creatorType: record.userCardnum[0],
+          creatorCode: adminCardnum,
+          creatorName: adminName,
+          creatorType: adminCardnum[0],
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });

@@ -349,7 +349,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障受理信息
     // 使用的是转发接口
-    await ctx.service.wisedu.transmit(troubleId, record.staffCardnum, ctx.userInfo.name, false);
+    await ctx.service.wisedu.transmit(troubleId, record.staffCardnum, ctx.userInfo.name, record.staffCardnum, ctx.userInfo.name);
 
     // 向提交故障报修的用户推送处理完成
     await ctx.service.pushNotification.userNotification(
@@ -568,7 +568,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
-    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, staffBind.name, '0');
+    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, staffBind.name, ctx.userInfo.cardnum, ctx.userInfo.name);
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
