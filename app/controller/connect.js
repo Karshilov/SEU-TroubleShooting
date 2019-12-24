@@ -529,7 +529,7 @@ class wiseduController extends Controller {
         'staffCardnum': troubleRecord.staffCardnum,
         'userCardnum': troubleRecord.userCardnum,
         'userName': troubleRecord.userName,
-        'image': troubleRecord.image,
+        'image': troubleRecord.image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${troubleRecord._id}` : null,
         'wiseduId': troubleRecord.wiseduId,
         'status': status2Action[troubleRecord.status],
       };
@@ -558,7 +558,7 @@ class wiseduController extends Controller {
         events.push(event);
       });
       const messageRecords = await this.ctx.model.ChatInfo.find({ troubleId: troubleRecord._id });
-      for (const mr in messageRecords) {
+      for (const mr of messageRecords) {
         events.push({
           action: 'reply',
           timestamp: mr.time,
