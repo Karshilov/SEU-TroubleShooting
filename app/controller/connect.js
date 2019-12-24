@@ -160,7 +160,7 @@ class wiseduController extends Controller {
       this.ctx.helper.oauthUrl(this.ctx, 'detail', record._id) // url - 故障详情页面
     );
 
-    return record._id;
+    return { seicwxbzId: record._id };
   }
 
   async accept() {
@@ -447,31 +447,32 @@ class wiseduController extends Controller {
         '消息内容：' + content,
         this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
       );
-    } else {
-      // 实在不想仔细鉴权了。。。。
-      // 消息来自运维人员/部门管理员/系统管理员
-      const newChatInfo = new ctx.model.ChatInfo({
-        time: +moment(),
-        fromWho: 'staff',
-        troubleId: id,
-        content,
-        fromWhoName,
-      });
-      await newChatInfo.save();
-      // 向用户推送消息
-      const now = +moment();
-      ctx.service.pushNotification.userNotification(
-        record.userCardnum,
-        '亲爱的用户您好，针对你反馈的问题，运维人员的有了新的回复，请即时查看',
-        record.address,
-        record.typeName,
-        '故障处理中',
-        moment(now).format('YYYY-MM-DD HH:mm:ss'),
-        '消息内容：' + content,
-        this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
-      );
+      return { seicwxbzMessageId: newChatInfo._id };
     }
-    return 'ok';
+
+    // 实在不想仔细鉴权了。。。。
+    // 消息来自运维人员/部门管理员/系统管理员
+    const newChatInfo = new ctx.model.ChatInfo({
+      time: +moment(),
+      fromWho: 'staff',
+      troubleId: id,
+      content,
+      fromWhoName,
+    });
+    await newChatInfo.save();
+    // 向用户推送消息
+    const now = +moment();
+    ctx.service.pushNotification.userNotification(
+      record.userCardnum,
+      '亲爱的用户您好，针对你反馈的问题，运维人员的有了新的回复，请即时查看',
+      record.address,
+      record.typeName,
+      '故障处理中',
+      moment(now).format('YYYY-MM-DD HH:mm:ss'),
+      '消息内容：' + content,
+      this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
+    );
+    return { seicwxbzMessageId: newChatInfo._id };
   }
 
   async modify() {
