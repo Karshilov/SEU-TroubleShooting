@@ -568,7 +568,7 @@ class TroubleController extends Controller {
 
     // 向金智推送故障信息转发信息
     // 注：是否是管理员 isAdmin 可能存在问题（最后一个参数）
-    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, staffBind.name, '1');
+    await ctx.service.wisedu.transmit(troubleId, staffBind.staffCardnum, staffBind.name, '0');
 
     // 向处理人员推送等待处理
     await ctx.service.pushNotification.staffNotification(
@@ -582,7 +582,7 @@ class TroubleController extends Controller {
       '故障描述：' + record.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
     );
-    ctx.logger.info(`工作人员 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 将故障 ${troubleId} 派发给了 ${staffBind.name}(${staffBind.cardnum}) 处理`);
+    ctx.logger.info(`工作人员 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 将故障 ${troubleId} 派发给了 ${staffBind.name}(${staffBind.staffCardnum}) 处理`);
     return '转发成功';
   }
 

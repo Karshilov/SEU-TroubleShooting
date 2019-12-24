@@ -276,7 +276,7 @@ class wiseduController extends Controller {
   async reject() {
     await checkToken(this.ctx);
     const { ctx } = this;
-    const { id } = ctx.request.body;
+    const { id, comment } = ctx.request.body;
     const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
@@ -301,7 +301,7 @@ class wiseduController extends Controller {
       '点击查看', // desc
       record.phonenum,
       moment().format('YYYY-MM-DD HH:mm:ss'),
-      '故障描述信息：' + record.desc,
+      comment ? '用户留言：' + comment : '故障描述：' + record.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id) // url - 故障详情页面
     );
     return 'ok';
@@ -310,7 +310,7 @@ class wiseduController extends Controller {
   async hasten() {
     await checkToken(this.ctx);
     const { ctx } = this;
-    const { id } = ctx.request.body;
+    const { id, comment } = ctx.request.body;
     const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
@@ -324,7 +324,7 @@ class wiseduController extends Controller {
       '点击查看', // desc
       record.phonenum,
       moment(record.createdTime).format('YYYY-MM-DD HH:mm:ss'),
-      '故障描述：' + record.desc,
+      comment ? '用户留言：' + comment : '故障描述：' + record.desc,
       this.ctx.helper.oauthUrl(ctx, 'detail', record._id)
     );
     return 'ok';
