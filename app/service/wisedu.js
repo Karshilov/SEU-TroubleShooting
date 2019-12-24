@@ -247,7 +247,7 @@ class WiseduService extends Service {
           acceptUserNames: staffName,
           acceptUserTypes: staffCardnum[0],
           content: '运维人员正在受理',
-          isAdmin,
+          isAdmin: '0',
           thirdParty,
           creatorCode: record.userCardnum,
           creatorName: record.userName,
