@@ -566,6 +566,7 @@ class wiseduController extends Controller {
             cardnum: mr.fromWho,
             name: mr.fromWhoName,
             role: mr.fromWho === troubleRecord.userCardnum ? 'USER' : 'STAFF',
+            content: mr.content,
           },
         });
       }
