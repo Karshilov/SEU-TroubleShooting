@@ -580,7 +580,7 @@ class wiseduController extends Controller {
       r.events = events;
       list.push(r);
     }
-    return { list, amount };
+    return { list, amount, pageAmount: Math.ceil(amount / pagesize) };
   }
 }
 
