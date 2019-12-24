@@ -519,7 +519,7 @@ class wiseduController extends Controller {
       [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ]
     );
     const list = [];
-    for (const troubleRecord in troubleRecords) {
+    for (const troubleRecord of troubleRecords) {
       const r = {
         '_id': troubleRecord._id,
         'desc': troubleRecord.desc,
