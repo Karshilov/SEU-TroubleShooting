@@ -249,9 +249,9 @@ class WiseduService extends Service {
           content: '运维人员正在受理',
           isAdmin: '0',
           thirdParty,
-          creatorCode: record.userCardnum,
-          creatorName: record.userName,
-          creatorType: record.userCardnum[0],
+          creatorCode: adminCardnum,
+          creatorName: adminName,
+          creatorType: adminCardnum[0],
         });
         if (res.data.state === 'success') {
           break;
