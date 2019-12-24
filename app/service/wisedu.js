@@ -33,7 +33,7 @@ class WiseduService extends Service {
     now = +moment();
     const newToken = new this.ctx.model.WiseduToken({
       token: result.data.apiToken,
-      expiresTime: now + result.data.expiresIn * 1000,
+      expiresTime: now + (result.data.expiresIn - 200) * 1000,
     });
     await newToken.save();
     return result.data.apiToken;

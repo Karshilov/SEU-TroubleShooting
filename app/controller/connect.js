@@ -45,7 +45,7 @@ class wiseduController extends Controller {
     if (signatureCheck !== signature) {
       ctx.error(2, '签名校验未通过');
     }
-    await ctx.model.SeicToken.deleteMany();
+    // await ctx.model.SeicToken.deleteMany();
     const expiresIn = 2 * 60 * 60 * 1000;
     const newToken = new ctx.model.SeicToken({
       token: uuid(),
@@ -170,7 +170,7 @@ class wiseduController extends Controller {
     const { ctx } = this;
     const { id, staffCardnums } = ctx.request.body;
     let staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -198,7 +198,7 @@ class wiseduController extends Controller {
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
       enterStatus: 'PENDING',
-      id,
+      id: record._id,
       staffCardnum, // 操作运维人员一卡通
       typeId: record.typeId, // 故障类型名称
       departmentId: record.departmentId, // 所属部门Id
@@ -223,7 +223,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id, summary } = ctx.request.body;
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -253,7 +253,7 @@ class wiseduController extends Controller {
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
       enterStatus: 'DONE',
-      id,
+      id: record._id,
       staffCardnum, // 操作运维人员一卡通
       typeId: record.typeId, // 故障类型名称
       departmentId: record.departmentId, // 所属部门Id
@@ -277,7 +277,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id } = ctx.request.body;
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -311,7 +311,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id } = ctx.request.body;
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -334,7 +334,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id, level, comment } = ctx.request.body;
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
     }
@@ -361,7 +361,7 @@ class wiseduController extends Controller {
     const { ctx } = this;
     let { id, sortId = '', staffCardnums } = ctx.request.body;
     const staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       // 判定故障信息是否存在
       ctx.error(1, '故障信息不存在');
@@ -416,7 +416,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id, fromWho, fromWhoName, content } = ctx.request.body;
-    const record = await ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       // 判断故障是否存在
       ctx.error(2, '故障信息不存在');
@@ -479,7 +479,7 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id, desc, image, address, phonenum } = ctx.request.body;
-    const record = await this.ctx.model.Trouble.findById(id);
+    const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (desc) {
       record.desc = desc;
     }
