@@ -508,7 +508,7 @@ class wiseduController extends Controller {
   async sync() {
     await checkToken(this.ctx);
     const { ctx } = this;
-    const { startDate, endDate } = ctx.request.query;
+    const { startDate, endDate, page = 1, pagesize = 10 } = ctx.request.query;
     const startTime = +moment(startDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
     const endTime = +moment(endDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss');
     if (endTime <= startTime) {
@@ -516,8 +516,14 @@ class wiseduController extends Controller {
     }
     // 按照提报时间筛选
     const troubleRecords = await this.ctx.model.Trouble.find({ createdTime: { $gte: startTime, $lte: endTime } },
-      [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ]
+      [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ],
+      {
+        skip: pagesize * (page - 1),
+        limit: pagesize,
+        sort: { createdTime: -1 },
+      }
     );
+    const amount = await this.ctx.model.Trouble.countDocuments({ createdTime: { $gte: startTime, $lte: endTime } });
     const list = [];
     for (const troubleRecord of troubleRecords) {
       const r = {
@@ -574,7 +580,7 @@ class wiseduController extends Controller {
       r.events = events;
       list.push(r);
     }
-    return list;
+    return { list, amount };
   }
 }
 
