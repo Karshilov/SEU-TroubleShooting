@@ -74,4 +74,5 @@ module.exports = app => {
   router.post('/connect/message', controller.connect.message);
   router.post('/connect/confirm', controller.connect.confirm);
   router.post('/connect/modify', controller.connect.modify);
+  router.get('/connect/sync', controller.connect.sync);
 };

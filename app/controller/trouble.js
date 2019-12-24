@@ -181,7 +181,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -208,7 +208,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -232,7 +232,7 @@ class TroubleController extends Controller {
       ctx.logger.info(`系统管理员 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 查看故障信息总览`);
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
+      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -446,35 +446,18 @@ class TroubleController extends Controller {
     if (accept) {
       // 向金智推送故障处理完成信息
       await ctx.service.wisedu.confirm(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, evaluationLevel, evaluation);
-    }
-    // 创建统计日志
-    const statisticRecord = new ctx.model.Statistic({
-      timestamp: +moment(),
-      enterStatus: record.status,
-      troubleId,
-      staffCardnum: record.staffCardnum, // 操作运维人员一卡通
-      typeId: record.typeId, // 故障类型名称
-      departmentId: record.departmentId, // 所属部门Id
-    });
-    await statisticRecord.save();
-    // 问题没有解决，自动创建一个新的故障信息，并向用户和维修人员推送模版消息
-    // console.log('accept:' + accept);
-    if (!accept) {
+      // 创建统计日志
+      const statisticRecord = new ctx.model.Statistic({
+        timestamp: +moment(),
+        enterStatus: 'ACCEPT',
+        troubleId,
+        staffCardnum: record.staffCardnum, // 操作运维人员一卡通
+        typeId: record.typeId, // 故障类型名称
+        departmentId: record.departmentId, // 所属部门Id
+      });
+      await statisticRecord.save();
+    } else {
       // 为了对接，还是要改成把现有的故障信息退回去
-      // const newTrouble = new ctx.model.Trouble({
-      //   createdTime: +moment(),
-      //   desc: record.desc,
-      //   status: 'PENDING',
-      //   phonenum: record.phonenum,
-      //   address: record.address,
-      //   departmentId: record.departmentId,
-      //   typeId: record.typeId,
-      //   typeName: record.typeName,
-      //   staffCardnum: record.staffCardnum, // 默认还是上一个维修人员
-      //   userCardnum: record.userCardnum,
-      //   image: record.image,
-      // });
-      // await newTrouble.save();
       record.status = 'PENDING';
       await record.save();
       // 向金智推送驳回消息
@@ -507,16 +490,13 @@ class TroubleController extends Controller {
       // 创建统计日志
       const statisticRecord = new ctx.model.Statistic({
         timestamp: +moment(),
-        enterStatus: record.status,
+        enterStatus: 'REJECT',
         troubleId: record._id,
         staffCardnum: record.staffCardnum, // 操作运维人员一卡通
         typeId: record.typeId, // 故障类型名称
         departmentId: record.departmentId, // 所属部门Id
       });
-      // console.log('statisticRecord:' + statisticRecord);
       await statisticRecord.save();
-      // console.log('ok！');
-
     }
     ctx.logger.info(`用户 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 对故障 ${troubleId} 的处理结果做出了评价`);
     return '评价成功！';

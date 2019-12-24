@@ -12,6 +12,7 @@ const code2Name = {
   '104': '宿舍区网络报障',
   '201': '信息系统报障',
   '211': '网站报障',
+  '800': '核心故障报修',
   '900': '其他报障',
 };
 const name2Code = {
@@ -21,7 +22,15 @@ const name2Code = {
   宿舍区网络报障: '104',
   信息系统报障: '201',
   网站报障: '211',
+  核心故障报修: '800',
   其他报障: '900',
+};
+const status2Action = {
+  'WAITING': 'submit',
+  'PENDING': 'accept',
+  'DONE': 'accomplish',
+  'ACCEPT': 'confirm',
+  'REJECT': 'reject',
 };
 
 async function checkToken(ctx) {
@@ -494,6 +503,76 @@ class wiseduController extends Controller {
     }
     await record.save();
     return 'ok';
+  }
+
+  async sync() {
+    await checkToken(this.ctx);
+    const { ctx } = this;
+    const { startDate, endDate } = ctx.request.query;
+    const startTime = +moment(startDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
+    const endTime = +moment(endDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss');
+    if (endTime <= startTime) {
+      ctx.paramsError('截止时间必须大于起始时间');
+    }
+    // 按照提报时间筛选
+    const troubleRecords = await this.ctx.model.Trouble.find({ createdTime: { $gte: startTime, $lte: endTime } },
+      [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ]
+    );
+    const list = [];
+    for (const troubleRecord in troubleRecords) {
+      const r = {
+        '_id': troubleRecord._id,
+        'desc': troubleRecord.desc,
+        'phonenum': troubleRecord.phonenum,
+        'address': troubleRecord.address,
+        'sortId': name2Code[troubleRecord.typeName],
+        'staffCardnum': troubleRecord.staffCardnum,
+        'userCardnum': troubleRecord.userCardnum,
+        'userName': troubleRecord.userName,
+        'image': troubleRecord.image,
+        'wiseduId': troubleRecord.wiseduId,
+        'status': status2Action[troubleRecord.status],
+      };
+      // 查找 staff 姓名
+      const staffRecord = await this.ctx.model.StaffBind.findOne({ staffCardnum: troubleRecord.staffCardnum });
+      r.staffName = staffRecord.name;
+      let events = [];
+      // 查找所有动作记录
+      const logRecords = await this.ctx.model.Statistic.find({ troubleId: troubleRecord._id });
+      logRecords.forEach(lr => {
+        if (!status2Action[lr.enterStatus]) {
+          // 忽略不关心的状态
+          return;
+        }
+        const event = {
+          action: status2Action[lr.enterStatus],
+          timestamp: lr.timestamp,
+        };
+        if (lr.enterStatus === 'DONE') {
+          event.content = { summary: troubleRecord.summary };
+        }
+        if (lr.enterStatus === 'ACCEPT') {
+          event.content = { level: troubleRecord.evaluationLevel, comment: troubleRecord.evaluation };
+        }
+        events.push(event);
+      });
+      const messageRecords = await this.ctx.model.ChatInfo.find({ troubleId: troubleRecord._id });
+      for (const mr in messageRecords) {
+        events.push({
+          action: 'reply',
+          timestamp: mr.time,
+          content: {
+            cardnum: mr.fromWho,
+            name: mr.fromWhoName,
+            role: mr.fromWho === troubleRecord.userCardnum ? 'USER' : 'STAFF',
+          },
+        });
+      }
+      events = events.sort((a, b) => a.timestamp - b.timestamp);
+      r.events = events;
+      list.push(r);
+    }
+    return list;
   }
 }
 
