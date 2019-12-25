@@ -577,6 +577,7 @@ class wiseduController extends Controller {
           action: 'reply',
           timestamp: mr.time,
           content: {
+            replyId: mr._id,
             cardnum: mr.fromWhoName === troubleRecord.userName ? troubleRecord.userCardnum : troubleRecord.staffCardnum,
             userType: mr.fromWhoName === troubleRecord.userName ? troubleRecord.userCardnum[0] : troubleRecord.staffCardnum[0],
             name: mr.fromWhoName,

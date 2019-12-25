@@ -60,6 +60,7 @@ class MessageController extends Controller {
           fromWhoName: ctx.userInfo.name,
         });
         await newChatInfo.save();
+        await ctx.service.wisedu.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message, newChatInfo._id);
       } else if (ctx.userInfo.cardnum === userCardnum) {
         // 消息来自用户
         const now = +moment();
@@ -84,10 +85,9 @@ class MessageController extends Controller {
           fromWhoName: ctx.userInfo.name,
         });
         await newChatInfo.save();
+        // 向金智推送消息回复
+        await ctx.service.wisedu.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message, newChatInfo._id);
       }
-
-      // 向金智推送消息回复
-      await ctx.service.wisedu.reply(id, ctx.userInfo.name, ctx.userInfo.cardnum, message);
     }
 
   }

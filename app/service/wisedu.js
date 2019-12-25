@@ -267,7 +267,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reply(mongoId, name, cardnum, content) {
+  async reply(mongoId, name, cardnum, content, replyId) {
     // 故障回复（留言消息回复？？）
     this.ctx.logger.info('向东大服务台推送故障留言消息，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -287,6 +287,7 @@ class WiseduService extends Service {
           creatorType: cardnum[0],
           content,
           thirdParty,
+          replyId,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
