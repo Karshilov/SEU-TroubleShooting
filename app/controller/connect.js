@@ -178,7 +178,10 @@ class wiseduController extends Controller {
     await checkToken(this.ctx);
     const { ctx } = this;
     const { id, staffCardnums } = ctx.request.body;
-    let staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
+    let staffCardnum;
+    if (staffCardnums) {
+      staffCardnum = this.ctx.helper.randomFromArray(staffCardnums.split(','));
+    }
     const record = await ctx.model.Trouble.findOne({ wiseduId: id });
     if (!record) {
       ctx.error(1, '故障信息不存在');
@@ -516,7 +519,7 @@ class wiseduController extends Controller {
     }
     // 按照提报时间筛选
     const troubleRecords = await this.ctx.model.Trouble.find({ createdTime: { $gte: startTime, $lte: endTime } },
-      [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ]
+      ['_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel']
     );
     const list = [];
     for (const troubleRecord of troubleRecords) {
