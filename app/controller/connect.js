@@ -546,7 +546,7 @@ class wiseduController extends Controller {
       };
       // 查找 staff 姓名
       const staffRecord = await this.ctx.model.StaffBind.findOne({ staffCardnum: troubleRecord.staffCardnum });
-      if (staffRecord) {
+      if (!staffRecord) {
         continue;
       }
       r.staffName = staffRecord.name;
