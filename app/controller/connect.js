@@ -536,8 +536,10 @@ class wiseduController extends Controller {
         'address': troubleRecord.address,
         'sortId': name2Code[troubleRecord.typeName],
         'staffCardnum': troubleRecord.staffCardnum,
+        'staffType': troubleRecord.staffCardnum[0],
         'userCardnum': troubleRecord.userCardnum,
         'userName': troubleRecord.userName,
+        'userType': troubleRecord.userCardnum[0],
         'image': troubleRecord.image ? `https://seicwxbz.seu.edu.cn/api/trouble/wechat-image?troubleId=${troubleRecord._id}` : null,
         'wiseduId': troubleRecord.wiseduId,
         'status': status2Action[troubleRecord.status],
@@ -573,6 +575,7 @@ class wiseduController extends Controller {
           timestamp: mr.time,
           content: {
             cardnum: mr.fromWho,
+            userType: mr.fromWho[0],
             name: mr.fromWhoName,
             role: mr.fromWho === troubleRecord.userCardnum ? 'USER' : 'STAFF',
             content: mr.content,
