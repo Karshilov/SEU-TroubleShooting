@@ -12,7 +12,7 @@ const name2Code = {
   信息系统报障: '201',
   网站报障: '211',
   核心故障报修: '800',
-  其他报障: '900',
+  其它报障: '900',
 };
 
 const thirdParty = '3';
@@ -280,6 +280,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
+        this.ctx.logger.error('回复接口传参 : ' + qs.stringify({
+          id: '' + mongoId,
+          creatorName: name,
+          creatorCode: cardnum,
+          creatorType: cardnum[0],
+          content,
+          thirdParty,
+        }));
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
           creatorName: name,
@@ -291,6 +299,7 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
+        this.ctx.logger.error('回复接口返回值 : '+ JSON.stringify(res.data));
         if (res.data.state === 'success') {
           break;
         } else {
