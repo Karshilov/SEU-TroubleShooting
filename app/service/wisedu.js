@@ -290,7 +290,7 @@ class WiseduService extends Service {
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
-        this.ctx.logger.error('回复接口返回值 : '+res.JSON());
+        this.ctx.logger.error('回复接口返回值 : '+ JSON.stringify(res));
         if (res.data.state === 'success') {
           break;
         } else {
