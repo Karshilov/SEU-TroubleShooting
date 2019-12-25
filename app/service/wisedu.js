@@ -280,6 +280,14 @@ class WiseduService extends Service {
     let attempt = 0;
     while (attempt < 3) {
       try {
+        this.ctx.logger.error('回复接口传参 : ' + qs.stringify({
+          id: '' + mongoId,
+          creatorName: name,
+          creatorCode: cardnum,
+          creatorType: cardnum[0],
+          content,
+          thirdParty,
+        }));
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
           creatorName: name,
