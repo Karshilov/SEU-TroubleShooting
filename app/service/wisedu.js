@@ -235,7 +235,7 @@ class WiseduService extends Service {
           acceptUserNames: staffName,
           acceptUserTypes: staffCardnum[0],
           isAdmin: '0',
-          sortId: name2Code[record.typeName],
+          sortCode: name2Code[record.typeName],
           thirdParty,
           creatorCode: adminCardnum,
           creatorName: adminName,
