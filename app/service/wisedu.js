@@ -23,6 +23,7 @@ class WiseduService extends Service {
     const record = await this.ctx.model.WiseduToken.findOne({});
     if (record && (record.expiresTime > now)) {
       this.ctx.logger.info('使用缓存的wisedu_access_token');
+      this.ctx.logger.info('wiseduToken : '+record);
       return record.token;
     }
     await this.ctx.model.WiseduToken.deleteMany({});
