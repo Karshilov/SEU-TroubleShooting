@@ -521,8 +521,8 @@ class wiseduController extends Controller {
     const troubleRecords = await this.ctx.model.Trouble.find({ createdTime: { $gte: startTime, $lte: endTime } },
       [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ],
       {
-        skip: pagesize * (page - 1),
-        limit: pagesize,
+        skip: +pagesize * (page - 1),
+        limit: +pagesize,
         sort: { createdTime: -1 },
       }
     );
@@ -545,7 +545,6 @@ class wiseduController extends Controller {
         'status': status2Action[troubleRecord.status],
       };
       // 查找 staff 姓名
-      console.log(troubleRecord);
       const staffRecord = await this.ctx.model.StaffBind.findOne({ staffCardnum: troubleRecord.staffCardnum });
       r.staffName = staffRecord.name;
       let events = [];
