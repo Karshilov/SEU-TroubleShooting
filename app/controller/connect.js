@@ -546,10 +546,11 @@ class wiseduController extends Controller {
       };
       // 查找 staff 姓名
       const staffRecord = await this.ctx.model.StaffBind.findOne({ staffCardnum: troubleRecord.staffCardnum });
-      if (!staffRecord) {
-        continue;
+      if (staffRecord) {
+        r.staffName = staffRecord.name;
+      } else {
+        r.staffName = '已变更';
       }
-      r.staffName = staffRecord.name;
       let events = [];
       // 查找所有动作记录
       const logRecords = await this.ctx.model.Statistic.find({ troubleId: troubleRecord._id });
