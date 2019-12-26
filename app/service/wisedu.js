@@ -142,7 +142,7 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async accomplish(mongoId, staffName, staffCardnum) {
+  async accomplish(mongoId, staffName, staffCardnum, summary) {
     // 故障等待验收
     this.ctx.logger.info('向东大服务台推送故障验收，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -161,6 +161,7 @@ class WiseduService extends Service {
           creatorCode: staffCardnum,
           creatorType: staffCardnum[0],
           thirdParty,
+          content: summary,
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });
@@ -170,6 +171,7 @@ class WiseduService extends Service {
           creatorCode: staffCardnum,
           creatorType: staffCardnum[0],
           thirdParty,
+          content: summary,
         });
         if (res.data.state === 'success') {
           break;

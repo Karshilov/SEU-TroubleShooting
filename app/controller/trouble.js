@@ -396,7 +396,7 @@ class TroubleController extends Controller {
     record.summary = summary;
     await record.save();
     // 向金智推送故障完成信息
-    await ctx.service.wisedu.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum);
+    await ctx.service.wisedu.accomplish(troubleId, ctx.userInfo.name, ctx.userInfo.cardnum, summary);
     // 创建统计日志
     const statisticRecord = new ctx.model.Statistic({
       timestamp: +moment(),
