@@ -268,7 +268,7 @@ class WiseduService extends Service {
     }
   }
   async reply(mongoId, name, cardnum, content, replyId) {
-    console.log('replyId:' + replyId);
+    console.log('1.replyId:' + replyId);
     // 故障回复（留言消息回复？？）
     this.ctx.logger.info('向东大服务台推送故障留言消息，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
@@ -277,10 +277,12 @@ class WiseduService extends Service {
       return;
     }
     const url = this.config.wiseduServer + 'reply';
-
+    console.log('2.replyId:' + replyId);
     let attempt = 0;
     while (attempt < 3) {
+      console.log('3.replyId:' + replyId);
       try {
+        console.log('4.replyId:' + replyId);
         this.ctx.logger.error('回复接口传参 : ' + qs.stringify({
           id: '' + mongoId,
           creatorName: name,
