@@ -181,7 +181,7 @@ class TroubleController extends Controller {
       const record = await ctx.model.Trouble.find({
         userCardnum: ctx.userInfo.cardnum,
         $or: statusFilter,
-      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
+      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
@@ -208,7 +208,7 @@ class TroubleController extends Controller {
         const temp = await ctx.model.Trouble.find({
           departmentId,
           $or: statusFilter,
-        }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
+        }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
           skip: pagesize * (page - 1),
           limit: pagesize,
           sort: { createdTime: -1 },
@@ -232,7 +232,7 @@ class TroubleController extends Controller {
       ctx.logger.info(`系统管理员 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 查看故障信息总览`);
       const record = await ctx.model.Trouble.find({
         $or: statusFilter,
-      }, ['_id', 'createdTime', 'typeName', 'status', 'desc'], {
+      }, [ '_id', 'createdTime', 'typeName', 'status', 'desc' ], {
         skip: pagesize * (page - 1),
         limit: pagesize,
         sort: { createdTime: -1 },
