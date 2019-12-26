@@ -290,7 +290,7 @@ class WiseduService extends Service {
           creatorType: cardnum[0],
           content,
           // thirdParty,
-          replyId,
+          replyId: replyId,
         }));
         const res = await axios.post(url, qs.stringify({
           id: '' + mongoId,
