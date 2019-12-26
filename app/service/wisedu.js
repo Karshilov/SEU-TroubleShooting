@@ -315,12 +315,16 @@ class WiseduService extends Service {
       attempt++;
     }
   }
-  async reject(mongoId, userCardnum, userName, userContent) {
+  async reject(mongoId, userCardnum, userName, userContent, staffCardnum) {
     // 故障驳回
     this.ctx.logger.info('向东大服务台推送故障驳回，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);
+    const recordOfStaff = await this.ctx.model.User.findOne({ cardnum: staffCardnum });
     const wiseduToken = await this.getToken();
     if (!record) {
+      return;
+    }
+    if (!recordOfStaff) {
       return;
     }
     const url = this.config.wiseduServer + 'reject';
@@ -334,6 +338,9 @@ class WiseduService extends Service {
           creatorType: userCardnum[0],
           content: userContent,
           thirdParty,
+          acceptUserCodes: recordOfStaff.name,
+          acceptUserNames: recordOfStaff.cardnum,
+          acceptUserTypes: recordOfStaff.cardnum[0],
         }), {
           headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
         });

@@ -461,7 +461,7 @@ class TroubleController extends Controller {
       record.status = 'PENDING';
       await record.save();
       // 向金智推送驳回消息
-      await ctx.service.wisedu.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name, '用户反馈故障仍未解决，请继续处理');
+      await ctx.service.wisedu.reject(troubleId, ctx.userInfo.cardnum, ctx.userInfo.name, '用户反馈故障仍未解决，请继续处理', record.staffCardnum);
 
       const staff = await ctx.model.User.findOne({ cardnum: record.staffCardnum });
       // 向用户推送重新申请故障的推送消息
