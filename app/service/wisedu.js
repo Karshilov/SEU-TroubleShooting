@@ -268,6 +268,7 @@ class WiseduService extends Service {
     }
   }
   async reply(mongoId, name, cardnum, content, replyId) {
+    console.log('replyId:' + replyId);
     // 故障回复（留言消息回复？？）
     this.ctx.logger.info('向东大服务台推送故障留言消息，故障单号：%s', mongoId);
     const record = await this.ctx.model.Trouble.findById(mongoId);

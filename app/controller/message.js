@@ -52,7 +52,7 @@ class MessageController extends Controller {
           this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id)
         );
 
-        const newChatInfo = ctx.model.ChatInfo({
+        const newChatInfo = new ctx.model.ChatInfo({
           time: now,
           fromWho: 'staff',
           troubleId: id,
@@ -77,7 +77,7 @@ class MessageController extends Controller {
           this.ctx.helper.oauthUrl(ctx, 'detail', resOfTroubleId._id) // url - 故障详情页面
         );
 
-        const newChatInfo = ctx.model.ChatInfo({
+        const newChatInfo = new ctx.model.ChatInfo({
           time: now,
           fromWho: 'user',
           troubleId: id,
