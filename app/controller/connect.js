@@ -439,7 +439,7 @@ class wiseduController extends Controller {
     }
     if (record.userCardnum === fromWho) {
       // 消息来自用户
-      const newChatInfo = ctx.model.ChatInfo({
+      const newChatInfo = new ctx.model.ChatInfo({
         time: +moment(),
         fromWho: 'user',
         troubleId: id,
@@ -517,6 +517,7 @@ class wiseduController extends Controller {
     if (endTime <= startTime) {
       ctx.paramsError('截止时间必须大于起始时间');
     }
+
     // 按照提报时间筛选
     const troubleRecords = await this.ctx.model.Trouble.find({ createdTime: { $gte: startTime, $lte: endTime } },
       [ '_id', 'desc', 'status', 'phonenum', 'summary', 'address', 'typeName', 'staffCardnum', 'userCardnum', 'userName', 'dealTime', 'checkTime', 'image', 'wiseduId', 'evaluation', 'evaluationLevel' ],
