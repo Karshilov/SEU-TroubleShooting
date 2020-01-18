@@ -4,32 +4,28 @@ const Controller = require('egg').Controller;
 
 class wechatKey extends Controller {
   async list() {
+    console.log('hello');
     // 获取关键字回复列表
     // 鉴权
-    // const { ctx } = this;
-    // if (!ctx.userInfo.isAdmin) {
-    //   ctx.permissionError('无权操作');
-    // }
-    // console.log('到达');
-    // const keyRecord = await ctx.model.KeyWords.find({});
-    // // 返回格式处理
-    // // eslint-disable-next-line prefer-const
-    // console.log('keyReord:' + keyRecord);
-    // let res = {
-    //   首次回复: '',
-    //   record: [],
-    // };
-    // console.log('1.res:' + res);
-    // keyRecord.forEach(item => {
-    //   if (item.key === '首次关注') {
-    //     res['首次关注'] = item.content;
-    //   } else {
-    //     res.record.push(item);
-    //   }
-    // });
-    // console.log('2.res:' + res);
-    // return res;
-    return 'ok';
+    const { ctx } = this;
+    if (!ctx.userInfo.isAdmin) {
+      ctx.permissionError('无权操作');
+    }
+    const keyRecord = await ctx.model.KeyWords.find({}, [ '_id', 'key', 'content' ]);
+    // 返回格式处理
+    // eslint-disable-next-line prefer-const
+    let res = {
+      首次关注: '',
+      record: [],
+    };
+    keyRecord.forEach(item => {
+      if (item.key === '首次关注') {
+        res['首次关注'] = item.content;
+      } else {
+        res.record.push(item);
+      }
+    });
+    return res;
   }
 
   async add() {
@@ -40,8 +36,8 @@ class wechatKey extends Controller {
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('无权操作');
     }
-    if (!(KeyWord && content)) {
-      ctx.error(1, '关键字或者回复内容未设置');
+    if (!(KeyWord)) {
+      ctx.error(1, '关键字未设置');
     }
     const keyRecord = await ctx.model.KeyWords.findOne({ key: KeyWord });
     if (keyRecord) {
@@ -61,15 +57,15 @@ class wechatKey extends Controller {
     // 删除关键字回复
     // 鉴权
     const { ctx } = this;
-    const { KeyWord } = ctx.query;
+    const { _id } = ctx.query;
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('无权操作');
     }
-    const keyRecord = await ctx.model.KeyWords.findOne({ key: KeyWord });
+    const keyRecord = await ctx.model.KeyWords.findById(_id);
     if (!keyRecord) {
       ctx.error(2, '未设置该关键字');
     }
-    await ctx.model.KeyWords.deleteOne({ key: KeyWord });
+    await ctx.model.KeyWords.deleteOne({ _id });
     return '删除成功';
 
   }
