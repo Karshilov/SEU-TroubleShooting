@@ -11,13 +11,7 @@ class wechatKey extends Controller {
       ctx.permissionError('无权操作');
     }
     console.log('到达');
-    let keyRecord = [];
-    try {
-      // keyRecord = await ctx.model.KeyWords.find({});
-    } catch (e) {
-      console.log(e);
-    }
-    
+    const keyRecord = await ctx.model.KeyWords.find({});
     // 返回格式处理
     // eslint-disable-next-line prefer-const
     console.log('keyReord:' + keyRecord);
@@ -34,7 +28,8 @@ class wechatKey extends Controller {
       }
     });
     console.log('2.res:' + res);
-    return res;
+    // return res;
+    return 'ok';
   }
 
   async add() {
