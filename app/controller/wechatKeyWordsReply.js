@@ -11,7 +11,13 @@ class wechatKeyWordsReply extends Controller {
       ctx.permissionError('无权操作');
     }
     console.log('到达');
-    const keyRecord = await ctx.model.KeyWords.find({});
+    let keyRecord;
+    try {
+      keyRecord = await ctx.model.KeyWords.find({});
+    } catch (e) {
+      console.log(e);
+    }
+    
     // 返回格式处理
     // eslint-disable-next-line prefer-const
     console.log('keyReord:' + keyRecord);
