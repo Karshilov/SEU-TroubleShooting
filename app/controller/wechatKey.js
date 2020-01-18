@@ -2,8 +2,8 @@
 
 const Controller = require('egg').Controller;
 
-class wechatKeyWordsReply extends Controller {
-  async get() {
+class wechatKey extends Controller {
+  async list() {
     // 获取关键字回复列表
     // 鉴权
     const { ctx } = this;
@@ -11,9 +11,9 @@ class wechatKeyWordsReply extends Controller {
       ctx.permissionError('无权操作');
     }
     console.log('到达');
-    let keyRecord;
+    let keyRecord = [];
     try {
-      keyRecord = await ctx.model.KeyWords.find({});
+      // keyRecord = await ctx.model.KeyWords.find({});
     } catch (e) {
       console.log(e);
     }
@@ -80,4 +80,4 @@ class wechatKeyWordsReply extends Controller {
   }
 }
 
-module.exports = wechatKeyWordsReply;
+module.exports = wechatKey;
