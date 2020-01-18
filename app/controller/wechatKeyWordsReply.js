@@ -10,9 +10,23 @@ class wechatKeyWordsReply extends Controller {
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('无权操作');
     }
+    console.log('到达');
     const keyRecord = await ctx.model.KeyWords.find({});
+    // 返回格式处理
+    // eslint-disable-next-line prefer-const
+    let res = {
+      首次回复: '',
+      record: [],
+    };
 
-    return keyRecord;
+    keyRecord.forEach(item => {
+      if (item.key === '首次关注') {
+        res['首次关注'] = item.content;
+      } else {
+        res.record.push(item);
+      }
+    });
+    return res;
   }
 
   async add() {

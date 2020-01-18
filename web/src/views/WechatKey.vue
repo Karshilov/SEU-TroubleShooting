@@ -1,55 +1,55 @@
 <template>
   <div id="type-view" class="page">
     <div>
-      <div class="title">微信菜单设置</div>
+      <div class="title">微信关键字回复设置设置</div>
       <div class="title-hint">
-        配置微信公众号底部菜单
-        <br />⚠️名称为“故障申报”和“处理进度”的二级菜单会被自动替换成对应的功能链接，您可以自由组合菜单排布。
-        <br />⚠️不包含二级菜单的一级菜单将不会显示
-      </div>
-      <div class="content">
-        <el-button type="primary" @click="push">更新菜单</el-button>
+        ⚠️设置首次关注时自动回复
+        <br/>⚠️设置「关键字」回复
       </div>
     </div>
     <div style="margin-top:40px;">
-      <div class="title">「菜单一」设置</div>
-      <div class="title-hint">设置公众号底部左起「第 1 个」菜单的内容</div>
+      <div class="title">首次关注回复</div>
       <div class="content">
         <el-form label-width="80px">
-          <el-form-item label="一级名称">
-            <el-input v-model="menu1Name" placeholder="左侧一级菜单显示名称"></el-input>
+          <el-form-item label="回复内容">
+            <el-input v-model="firstReply" placeholder="首次关注时回复" type="textarea" rows=4  ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="setMenu1Name">设置</el-button>
+            <el-button type="primary" @click="setFirstReply">设置</el-button>
+            <el-button type="danger" @click="deleteFirstReply">删除</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <div class="subtitle">「菜单一」二级菜单设置</div>
-      <div class="title-hint">设置公众号底部左起「第 1 个」菜单的二级菜单，如需修改现有菜单项请删除后重新添加</div>
+    </div>
+    <div style="margin-top:40px;">
+      <div class="title">设置「关键字」回复</div>
+      <div class="title-hint">此处列出所有关键字回复</div>
       <div class="content">
-        <el-form label-width="80px">
-          <el-form-item label="显示名称">
-            <el-input v-model="menu1NewSub.title" placeholder="指定二级菜单显示名称（不超过7个字符）"></el-input>
+        <el-form label-width="70px">
+          <el-form-item label="关键字">
+            <el-input v-model="keyWord"></el-input>
           </el-form-item>
-          <el-form-item label="菜单链接">
-            <el-input v-model="menu1NewSub.url" placeholder="指定菜单链接"></el-input>
+          <el-form-item label="回复内容">
+            <el-input v-model="content" type="textarea" row=2></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="addMenu1Sub">添加</el-button>
+            <el-button type="primary" @click="add">设置</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="menu1List" style="width: 100%">
-          <el-table-column prop="title" label="菜单名称"></el-table-column>
-          <el-table-column label="操作" width="120">
+      </div>
+      <div class="content">
+        <el-table :data="list" style="width: 100%">
+          <el-table-column prop="name" label="关键字"></el-table-column>
+          <el-table-column prop="staffCardnum" label="回复内容"></el-table-column>
+          <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="move(scope, 'UP', menu1List)" type="text" size="small">上移</el-button>
-              <el-button @click="move(scope, 'DOWN', menu1List)" type="text" size="small">下移</el-button>
-              <el-button @click="openDialog(scope.row)" type="text" size="small">删除</el-button>
+              <el-button @click="openDialog(scope.row.staffCardnum, 'staff')" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+
     <el-dialog title="提示" :visible.sync="dialogVisible" width="90%" >
       <span>是否确定删除</span>
       <span slot="footer" class="dialog-footer">
@@ -64,30 +64,40 @@
 export default {
   data() {
     return {
-      menu1Name: "",
-      menu2Name: "",
-      menu3Name: "",
-      menu1NewSub: {
-        title: "",
-        url: ""
-      },
-      menu2NewSub: {
-        title: "",
-        url: ""
-      },
-      menu3NewSub: {
-        title: "",
-        url: ""
-      },
-      menu1List: [],
-      menu2List: [],
-      menu3List: [],
+      firstReply: "",
+      setKey:"",
+      setContent:"",
+      keyRecord:[],
       token: "",
       dialogVisible: false,
       deleteTarget: ""
     };
   },
   methods: {
+    async setFirstReply() {
+      let res = await this.$axios.post(
+        "/wechatKey",
+        {
+          key: "首次关注",
+          content: "firstRely"
+        },
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (res.data.success) {
+        this.$message({
+          message: "推送成功",
+          type: "success"
+        });
+      } else {
+        this.$message({
+          message: "出现错误：" + res.data.errmsg,
+          type: "error"
+        });
+      }
+      this.load();
+    },
     async push() {
       let res = await this.$axios.post(
         "/menu/push",
@@ -281,16 +291,12 @@ export default {
       this.load();
     },
     async load() {
-      let res = await this.$axios.get("/menu", {
+      let res = await this.$axios.get("/wechatKey", {
         headers: { token: this.token }
       });
       res = res.data.result;
-      this.menu1Name = res.LEFT.title;
-      this.menu1List = res.LEFT.sub;
-      this.menu2Name = res.CENTER.title;
-      this.menu2List = res.CENTER.sub;
-      this.menu3Name = res.RIGHT.title;
-      this.menu3List = res.RIGHT.sub;
+      this.firstReply = res['首次关注'] ? res['首次关注']:'';
+      this.keyRecord = res.record;
     },
     async deleteItem() {
       const res = await this.$axios.delete("/menu?id=" + this.deleteTarget._id, {
