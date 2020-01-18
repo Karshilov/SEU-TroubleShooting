@@ -6,28 +6,28 @@ class wechatKey extends Controller {
   async list() {
     // 获取关键字回复列表
     // 鉴权
-    const { ctx } = this;
-    if (!ctx.userInfo.isAdmin) {
-      ctx.permissionError('无权操作');
-    }
-    console.log('到达');
-    const keyRecord = await ctx.model.KeyWords.find({});
-    // 返回格式处理
-    // eslint-disable-next-line prefer-const
-    console.log('keyReord:' + keyRecord);
-    let res = {
-      首次回复: '',
-      record: [],
-    };
-    console.log('1.res:' + res);
-    keyRecord.forEach(item => {
-      if (item.key === '首次关注') {
-        res['首次关注'] = item.content;
-      } else {
-        res.record.push(item);
-      }
-    });
-    console.log('2.res:' + res);
+    // const { ctx } = this;
+    // if (!ctx.userInfo.isAdmin) {
+    //   ctx.permissionError('无权操作');
+    // }
+    // console.log('到达');
+    // const keyRecord = await ctx.model.KeyWords.find({});
+    // // 返回格式处理
+    // // eslint-disable-next-line prefer-const
+    // console.log('keyReord:' + keyRecord);
+    // let res = {
+    //   首次回复: '',
+    //   record: [],
+    // };
+    // console.log('1.res:' + res);
+    // keyRecord.forEach(item => {
+    //   if (item.key === '首次关注') {
+    //     res['首次关注'] = item.content;
+    //   } else {
+    //     res.record.push(item);
+    //   }
+    // });
+    // console.log('2.res:' + res);
     // return res;
     return 'ok';
   }
