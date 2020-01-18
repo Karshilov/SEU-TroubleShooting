@@ -75,5 +75,10 @@ export default new Router({
       name: 'forbidden',
       component: () => import('./views/Forbidden.vue'),
     },
+    {
+      path: '/wechat-key/:token',
+      name: 'wechat-key',
+      component: () => import('./views/WechatKey.vue'),
+    },
   ]
 })
