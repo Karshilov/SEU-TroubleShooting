@@ -56,7 +56,8 @@ module.exports = app => {
   router.get('/message', controller.message.listMessage);
 
   router.get('/key', controller.wechatKey.list);
-  router.post('/key', controller.wechatKey.add);
+  router.post('/key/text', controller.wechatKey.addTextRely);
+  router.post('/key/news', controller.wechatKey.addNewsRely);
   router.delete('/key', controller.wechatKey.delete);
 
   router.get('/menu', controller.wechatMenu.get);
