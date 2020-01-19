@@ -42,7 +42,7 @@ class keywordsService extends Service {
       }
     } else if (ctx.request.body.MsgType === 'text') {
       // 响应非功能性关键字
-      console.log(keyword);
+      // console.log(keyword);
       ctx.status = 200;
       const keyRecord = await ctx.model.KeyWords.find({});
       let content = '';
@@ -52,7 +52,7 @@ class keywordsService extends Service {
         }
       });
       if (content) {
-        console.log(content);
+        // console.log(content);
         ctx.body = `<xml>
                           <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
                           <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
@@ -77,7 +77,7 @@ class keywordsService extends Service {
         }
       });
       if (content) {
-        console.log(content);
+        // console.log(content);
         ctx.body = `<xml>
                           <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
                           <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
