@@ -14,9 +14,10 @@
       <div class="btn-box">
       <el-button type="primary" @click="gotoMenu">微信菜单设置</el-button>
       </div>
+      <!--
       <div class="btn-box">
       <el-button type="primary" @click="gotoKey">微信关键字设置</el-button>
-      </div>
+      </div>-->
   </div>
 </template>
 
