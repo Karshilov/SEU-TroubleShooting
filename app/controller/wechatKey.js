@@ -40,15 +40,15 @@ class wechatKey extends Controller {
     }
     // eslint-disable-next-line prefer-const
     let keyRecord = [];
-    const keyRecordNews = await ctx.model.keyRecordNews.find({});
+    const keyRecordNews = await ctx.model.KeyWordsNews.find({});
     keyRecordNews.forEach(item => {
       keyRecord.push(item.key);
     });
     // 每个关键字只能设置一种类型
     if (keyRecord.indexOf(key) !== -1) {
-      ctx.error(2, '该关键字的回复类型已设置text');
+      ctx.error(2, '该关键字的回复类型已设置news');
     }
-    const newTextReply = new ctx.model.KeyWordsNews({
+    const newTextReply = new ctx.model.KeyWordsText({
       key,
       content,
     });
@@ -64,8 +64,9 @@ class wechatKey extends Controller {
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('无权操作');
     }
-    if (!key) {
-      ctx.error(1, '未设置关键字');
+    console.log({ key, title, description, picUrl, url });
+    if (!(key && title && description && picUrl && url)) {
+      ctx.error(1, '设置信息不完全');
     }
     // eslint-disable-next-line prefer-const
     let keyRecordNews = await ctx.model.KeyWordsNews.findOne({ key });
