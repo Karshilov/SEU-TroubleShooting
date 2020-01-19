@@ -78,13 +78,28 @@ class keywordsService extends Service {
       });
       if (content) {
         // console.log(content);
+        // ctx.body = `<xml>
+        //                   <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+        //                   <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+        //                   <CreateTime>${+moment()}</CreateTime>
+        //                   <MsgType><![CDATA[text]]></MsgType>
+        //                   <Content><![CDATA[${content}]]></Content>
+        //               </xml>`;
         ctx.body = `<xml>
-                          <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                          <CreateTime>${+moment()}</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[${content}]]></Content>
-                      </xml>`;
+        <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+        <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+        <CreateTime>${+moment()}</CreateTime>
+        <MsgType><![CDATA[news]]></MsgType>
+        <ArticleCount>1</ArticleCount>
+        <Articles>
+          <item>
+            <Title><![CDATA[测试]]></Title>
+            <Description><![CDATA[测试一下]]></Description>
+            <PicUrl><![CDATA[]]></PicUrl>
+            <Url><![CDATA[${content}]]></Url>
+          </item>
+        </Articles>
+        </xml>`;
       } else {
         ctx.body = 'success';
       }
