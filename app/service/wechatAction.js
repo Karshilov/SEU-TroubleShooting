@@ -40,69 +40,68 @@ class keywordsService extends Service {
                     <Content><![CDATA[${res}]]></Content>
                 </xml>`;
       }
-    } else if (ctx.request.body.MsgType === 'text') {
+    } else if (ctx.request.body.MsgType === 'text' && keyword === '我中奖了') {
       // 响应非功能性关键字
-      // console.log(keyword);
       ctx.status = 200;
-      const keyRecord = await ctx.model.KeyWords.find({});
-      let content = '';
-      keyRecord.forEach(item => {
-        if (item.key === keyword) {
-          content = item.content;
-        }
-      });
-      if (content) {
-        // console.log(content);
-        ctx.body = `<xml>
+      // const keyRecord = await ctx.model.KeyWords.find({});
+      // let content = '';
+      // keyRecord.forEach(item => {
+      //   if (item.key === keyword) {
+      //     content = item.content;
+      //   }
+      // });
+      // if (content) {
+      //   // console.log(content);
+      ctx.body = `<xml>
                           <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
                           <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
                           <CreateTime>${+moment()}</CreateTime>
                           <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[${content}]]></Content>
+                          <Content><![CDATA[<a href="https://www.wjx.cn/jq/54509382.aspx">点击填写获奖者信息统计表</a>]]></Content>
                       </xml>`;
-        // ctx.body = `<xml>
-        // <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-        // <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-        // <CreateTime>${+moment()}</CreateTime>
-        // <MsgType><![CDATA[news]]></MsgType>
-        // <ArticleCount>1</ArticleCount>
-        // <Articles>
-        //   <item>
-        //     <Title><![CDATA[测试]]></Title>
-        //     <Description><![CDATA[测试一下]]></Description>
-        //     <PicUrl><![CDATA[]]></PicUrl>
-        //     <Url><![CDATA[${content}]]></Url>
-        //   </item>
-        // </Articles>
-        // </xml>`;
-      } else {
-        ctx.body = 'success';
-      }
+      // ctx.body = `<xml>
+      // <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+      // <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+      // <CreateTime>${+moment()}</CreateTime>
+      // <MsgType><![CDATA[news]]></MsgType>
+      // <ArticleCount>1</ArticleCount>
+      // <Articles>
+      //   <item>
+      //     <Title><![CDATA[测试]]></Title>
+      //     <Description><![CDATA[测试一下]]></Description>
+      //     <PicUrl><![CDATA[]]></PicUrl>
+      //     <Url><![CDATA[${content}]]></Url>
+      //   </item>
+      // </Articles>
+      // </xml>`;
+      // } else {
+      //   ctx.body = 'success';
+      // }
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
       ctx.status = 200;
       ctx.status = 200;
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe') {
       // 关注时推送
       ctx.status = 200;
-      const keyRecord = await ctx.model.KeyWords.find({});
-      let content = '';
-      keyRecord.forEach(item => {
-        if (item.key === '首次关注') {
-          content = item.content;
-        }
-      });
-      if (content) {
-        // console.log(content);
-        ctx.body = `<xml>
-                          <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                          <CreateTime>${+moment()}</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[${content}]]></Content>
-                      </xml>`;
-      } else {
-        ctx.body = 'success';
-      }
+      // const keyRecord = await ctx.model.KeyWords.find({});
+      // let content = '';
+      // keyRecord.forEach(item => {
+      //   if (item.key === '首次关注') {
+      //     content = item.content;
+      //   }
+      // });
+      // if (content) {
+      //   // console.log(content);
+      //   ctx.body = `<xml>
+      //                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+      //                     <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+      //                     <CreateTime>${+moment()}</CreateTime>
+      //                     <MsgType><![CDATA[text]]></MsgType>
+      //                     <Content><![CDATA[${content}]]></Content>
+      //                 </xml>`;
+      // } else {
+      //   ctx.body = 'success';
+      // }
 
       //       ctx.body = `<xml>
       //                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
