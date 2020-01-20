@@ -13,6 +13,7 @@ class keywordsService extends Service {
       // 注销: this.logOut,
       // 微信签到功能
       签到: this.checkIn,
+      我中奖了: this.prize,
     };
     const dispatchClickEvent = {
       故障申报: 'post',
@@ -187,6 +188,10 @@ class keywordsService extends Service {
 
   async checkIn() {
     return '<a href="https://seicwxbz.seu.edu.cn/checkin">点击进入快捷签到</a>';
+  }
+
+  async prize() {
+    return '<a href="https://www.wjx.cn/jq/54509382.aspx">点击进入领奖登记</a>'
   }
 
   // 注销功能会对原有的数据造成破坏
