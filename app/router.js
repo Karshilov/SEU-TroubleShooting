@@ -70,6 +70,7 @@ module.exports = app => {
   router.get('/idsCallback/:idsSession', controller.idsCASCallback.callback);
 
   router.get('/connect/token', controller.connect.token);
+  router.get('/connect/wechatToken', controller.connect.wechatToken);
   router.post('/connect/submit', controller.connect.submit);
   router.post('/connect/accept', controller.connect.accept);
   router.post('/connect/accomplish', controller.connect.accomplish);

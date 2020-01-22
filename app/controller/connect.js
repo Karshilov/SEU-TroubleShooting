@@ -67,6 +67,23 @@ class wiseduController extends Controller {
     };
   }
 
+  async wechatToken() {
+    const { ctx } = this;
+    const { appId, timestamp, signature } = ctx.query;
+    console.log(this.config.seicApiKey);
+    if (appId !== this.config.seicApiKey) {
+      ctx.error(1, 'appId 不正确');
+    }
+    const signatureCheck = sha1(appId + timestamp + this.config.seicSecret);
+    if (signatureCheck !== signature) {
+      ctx.error(2, '签名校验未通过');
+    }
+    const wechatAccessToken = await this.service.getAccessToken.accessToken();
+    return {
+      wechatAccessToken,
+    };
+  }
+
   async submit() {
     await checkToken(this.ctx);
     let { id, sortId, desc, phonenum, address, image = null, createdTime, userCardnum, userName, staffCardnums } = this.ctx.request.body;
