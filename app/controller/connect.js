@@ -74,7 +74,7 @@ class wiseduController extends Controller {
     if (appId !== this.config.seicApiKey) {
       ctx.error(1, 'appId 不正确');
     }
-    const signatureCheck = sha1(appId + timestamp + this.config.seicSecret);
+    const signatureCheck = sha1(appId + timestamp + this.config.seicSecret + 'wechat_accessToken');
     if (signatureCheck !== signature) {
       ctx.error(2, '签名校验未通过');
     }
