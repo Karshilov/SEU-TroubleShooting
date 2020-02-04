@@ -70,7 +70,7 @@ class keywordsService extends Service {
                         <Title><![CDATA[${newsRelyRecord.title}]]></Title>
                         <Description><![CDATA[${newsRelyRecord.description}]]></Description>
                         <PicUrl><![CDATA[https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}]]></PicUrl>
-                        <Url><![${newsRelyRecord.url}]></Url>
+                        <Url><![CDATA[${newsRelyRecord.url}]]></Url>
                       </item>
                     </Articles>
                    </xml>`;
