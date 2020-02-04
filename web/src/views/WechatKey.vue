@@ -244,7 +244,6 @@ export default {
       }
       this.load();
     },
-
     async load() {
       let res = await this.$axios.get("/key", {
         headers: { token: this.token }

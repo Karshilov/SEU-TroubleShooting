@@ -41,45 +41,23 @@ class keywordsService extends Service {
                     <Content><![CDATA[${res}]]></Content>
                 </xml>`;
       }
-    } else if (ctx.request.body.MsgType === 'text' && keyword === '我中奖了') {
+    } else if (ctx.request.body.MsgType === 'text' && keyword) {
       // 响应非功能性关键字
       ctx.status = 200;
-      // const keyRecord = await ctx.model.KeyWords.find({});
-      // let content = '';
-      // keyRecord.forEach(item => {
-      //   if (item.key === keyword) {
-      //     content = item.content;
-      //   }
-      // });
-      // if (content) {
-      //   // console.log(content);
-      ctx.body = `<xml>
-                          <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                          <CreateTime>${+moment()}</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[<a href="https://www.wjx.cn/jq/54509382.aspx">点击填写获奖者信息统计表</a>]]></Content>
-                      </xml>`;
-      // ctx.body = `<xml>
-      // <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-      // <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-      // <CreateTime>${+moment()}</CreateTime>
-      // <MsgType><![CDATA[news]]></MsgType>
-      // <ArticleCount>1</ArticleCount>
-      // <Articles>
-      //   <item>
-      //     <Title><![CDATA[测试]]></Title>
-      //     <Description><![CDATA[测试一下]]></Description>
-      //     <PicUrl><![CDATA[]]></PicUrl>
-      //     <Url><![CDATA[${content}]]></Url>
-      //   </item>
-      // </Articles>
-      // </xml>`;
-      // } else {
-      //   ctx.body = 'success';
-      // }
+      // 首先查找文本关键字
+      const textRelyRecord = await ctx.model.KeyWordsText.findOne({ key: keyword });
+      if (textRelyRecord) {
+        ctx.body = `<xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[${textRelyRecord.content}]]></Content>
+                </xml>`;
+        return;
+      }
+      ctx.body = 'success';
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
-      ctx.status = 200;
       ctx.status = 200;
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe') {
       // 关注时推送
@@ -192,7 +170,7 @@ class keywordsService extends Service {
   }
 
   async prize() {
-    return '<a href="https://www.wjx.cn/jq/54509382.aspx">点击进入领奖登记</a>'
+    return '<a href="https://www.wjx.cn/jq/54509382.aspx">点击进入领奖登记</a>';
   }
 
   // 注销功能会对原有的数据造成破坏
