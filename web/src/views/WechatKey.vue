@@ -66,7 +66,6 @@
         <el-table :data="keyNews" style="width: 100%">
           <el-table-column prop="key" label="关键字"></el-table-column>
           <el-table-column prop="title" label="标题"></el-table-column>
-          <el-table-column prop="title" label="描述"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
               <el-button @click="deleteNewsRely(scope.row._id)" type="text" size="small">删除</el-button>
