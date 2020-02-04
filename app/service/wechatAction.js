@@ -75,6 +75,7 @@ class keywordsService extends Service {
                     </Articles>
                    </xml>`;
         console.log(`https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}`);
+        console.log(`${newsRelyRecord.url}`);
         return;
       }
       ctx.body = 'success';
