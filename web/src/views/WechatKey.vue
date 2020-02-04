@@ -205,7 +205,7 @@ export default {
           title: this.setNewsTitle,
           description: this.setNewsDescription,
           url: this.setNewsUrl,
-          picUrl: this.image + 'aas'
+          picUrl: this.image 
         },
         {
           headers: { token: this.token }
