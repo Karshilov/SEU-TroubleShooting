@@ -13,10 +13,10 @@
       <div class="content">
         <el-form label-width="70px">
           <el-form-item label="关键字">
-            <el-input v-model="setKey"></el-input>
+            <el-input v-model="setTestKey"></el-input>
           </el-form-item>
           <el-form-item label="回复内容">
-            <el-input v-model="setContent" type="textarea" row=2></el-input>
+            <el-input v-model="setTestContent" type="textarea" row=2></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="addTextRely">设置</el-button>
@@ -40,16 +40,16 @@
       <div class="content">
         <el-form label-width="70px">
           <el-form-item label="关键字">
-            <el-input v-model="setKey"></el-input>
+            <el-input v-model="setNewsKey"></el-input>
           </el-form-item>
           <el-form-item label="标题">
-            <el-input v-model="setTitle" ></el-input>
+            <el-input v-model="setNewsTitle" ></el-input>
           </el-form-item>
           <el-form-item label="描述">
-            <el-input v-model="setDescription" ></el-input>
+            <el-input v-model="setNewsDescription" ></el-input>
           </el-form-item>
           <el-form-item label="跳转链接">
-            <el-input v-model="setUrl" ></el-input>
+            <el-input v-model="setNewsUrl" ></el-input>
           </el-form-item>
           <el-form-item label="图片附件">
             <img v-if="localImage" :src="localImage" />
@@ -57,7 +57,7 @@
             <el-button type="danger" v-if="localImage" @click="()=>{this.localImage = ''}">删除图片</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="addKey">设置</el-button>
+            <el-button type="primary" @click="addNewsRely">设置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -68,7 +68,7 @@
           <el-table-column prop="title" label="描述"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="openDialog(scope.row._id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteNewsRely(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -79,7 +79,7 @@
       <span>是否确定删除</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="deleteKey">确定</el-button>
+        <el-button type="primary">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -89,30 +89,32 @@
 export default {
   data() {
     return {
-      setKey:"",
-      setContent:"",
-      setTitle:"",
-      setDescription:"",
-      setUrl:"",
-      setImage:"",
+      setTestKey:"",
+      setTestContent:"",
+      setNewsKey:"",
+      setNewsTitle:"",
+      setNewsDescription:"",
+      setNewsUrl:"",
+      image:"",
       keyText:[],
       keyNews:[],
       token: "",
       localImage: "",
+
       dialogVisible: false,
       deleteTarget: ""
     };
   },
   methods: {
     async addTextRely() {
-      if (!this.setKey) {
+      if (!this.setTestKey) {
         this.$message({
           message: "关键字不能为空",
           type: "error"
         });
         return;
       }
-      if (!this.setContent) {
+      if (!this.setTestContent) {
         this.$message({
           message: "回复内容不能为空",
           type: "error"
@@ -122,8 +124,8 @@ export default {
       let res = await this.$axios.post(
         "/key/text",
         {
-          key: this.setKey,
-          content: this.setContent
+          key: this.setTestKey,
+          content: this.setTestContent
         },
         {
           headers: { token: this.token }
@@ -163,6 +165,87 @@ export default {
       }
       this.load();
     },
+    async addNewsRely() {
+      if (!this.setNewsKey) {
+        this.$message({
+          message: "关键字不能为空",
+          type: "error"
+        });
+        return;
+      }
+      if (!this.setNewsTitle) {
+        this.$message({
+          message: "回复标题不能为空",
+          type: "error"
+        });
+        return;
+      }
+      if (!this.setNewsUrl) {
+        this.$message({
+          message: "跳转链接不能为空",
+          type: "error"
+        });
+        return;
+      }
+      if (!this.localImage) {
+        this.$message({
+          message: "未设置图片",
+          type: "error"
+        });
+        return;
+      }
+
+      // 上传图片
+      if (this.localImage) {
+        await this.uploadImage();
+      }
+      let res = await this.$axios.post(
+        "/key/news",
+        {
+          key: this.setNewsKey,
+          title: this.setNewsTitle,
+          description: this.setNewsDescription,
+          url: this.setNewsUrl,
+          picUrl: this.image + 'aas'
+        },
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (res.data.success) {
+        this.$message({
+          message: "设置成功",
+          type: "success"
+        });
+      } else {
+        this.$message({
+          message: "设置失败：" + res.data.errmsg,
+          type: "error"
+        });
+      }
+      this.load();
+    },
+    async deleteNewsRely(_id) {
+      let res = await this.$axios.delete(
+        '/key?type=news&id='+_id,
+        {
+          headers: { token: this.token }
+        }
+      );
+      if (res.data.success) {
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+      } else {
+        this.$message({
+          message: "删除失败：" + res.data.errmsg,
+          type: "error"
+        });
+      }
+      this.load();
+    },
+
     async load() {
       let res = await this.$axios.get("/key", {
         headers: { token: this.token }
@@ -195,7 +278,7 @@ export default {
           localId: that.localImage, // 需要上传的图片的本地ID，由chooseImage接口获得
           isShowProgressTips: 1, // 默认为1，显示进度提示
           success: function(res) {
-            that.setImage = res.serverId; // 返回图片的服务器端ID
+            that.image = res.serverId; // 返回图片的服务器端ID
             resolve();
           }
         });

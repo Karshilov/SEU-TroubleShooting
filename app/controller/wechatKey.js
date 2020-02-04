@@ -65,7 +65,7 @@ class wechatKey extends Controller {
       ctx.permissionError('无权操作');
     }
     console.log({ key, title, description, picUrl, url });
-    if (!(key && title && description && picUrl && url)) {
+    if (!(key && title && picUrl && url)) {
       ctx.error(1, '设置信息不完全');
     }
     // eslint-disable-next-line prefer-const
