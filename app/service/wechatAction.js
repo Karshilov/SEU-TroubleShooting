@@ -56,6 +56,27 @@ class keywordsService extends Service {
                 </xml>`;
         return;
       }
+      const newsRelyRecord = await ctx.model.KeyWordsNews.findOne({ key: keyword });
+      if (newsRelyRecord) {
+        const accessToken = await ctx.service.getAccessToken.accessToken();
+        ctx.body = `<xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[news]]></MsgType>
+                    <ArticleCount>1</ArticleCount>
+                    <Articles>
+                      <item>
+                        <Title><![CDATA[${newsRelyRecord.title}]]></Title>
+                        <Description><![CDATA[${newsRelyRecord.description}]]></Description>
+                        <PicUrl><![CDATA[https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}]]></PicUrl>
+                        <Url><![${newsRelyRecord.url}]></Url>
+                      </item>
+                    </Articles>
+                   </xml>`;
+        console.log(`https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}`);
+        return;
+      }
       ctx.body = 'success';
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
       ctx.status = 200;
