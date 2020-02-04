@@ -151,7 +151,6 @@ export default {
           headers: { token: this.token }
         }
       );
-      console.log(res.data)
       if (res.data.success) {
         this.$message({
           message: "删除成功",
@@ -251,9 +250,7 @@ export default {
         headers: { token: this.token }
       });
       this.keyText = res.data.result.text
-      console.log(this.keyText)
       this.keyNews = res.data.result.news
-      console.log(this.keyNews)
     },
     async openDialog(_id){
       this.dialogVisible = true;
