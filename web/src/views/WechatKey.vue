@@ -19,7 +19,7 @@
             <el-input v-model="setContent" type="textarea" row=2></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="addKey">设置</el-button>
+            <el-button type="primary" @click="addTextRely">设置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -29,7 +29,7 @@
           <el-table-column prop="content" label="回复内容"></el-table-column>
           <el-table-column label="操作" width="60">
             <template slot-scope="scope">
-              <el-button @click="openDialog(scope.row._id)" type="text" size="small">删除</el-button>
+              <el-button @click="deleteTextRely(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -89,7 +89,6 @@
 export default {
   data() {
     return {
-      firstReply: "",
       setKey:"",
       setContent:"",
       setTitle:"",
@@ -105,55 +104,7 @@ export default {
     };
   },
   methods: {
-    async setFirstReply() {
-      let res = await this.$axios.post(
-        "/key",
-        {
-          KeyWord: "首次关注",
-          content: this.firstReply
-        },
-        {
-          headers: { token: this.token }
-        }
-      );
-      if (res.data.success) {
-        this.$message({
-          message: "设置成功",
-          type: "success"
-        });
-      } else {
-        this.$message({
-          message: "设置失败：" + res.data.errmsg,
-          type: "error"
-        });
-      }
-      this.load();
-    },
-    async deleteFirstReply() {
-      let res = await this.$axios.post(
-        "/key",
-        {
-          KeyWord: "首次关注",
-          content: ""
-        },
-        {
-          headers: { token: this.token }
-        }
-      );
-      if (res.data.success) {
-        this.$message({
-          message: "删除成功",
-          type: "success"
-        });
-      } else {
-        this.$message({
-          message: "删除失败：" + res.data.errmsg,
-          type: "error"
-        });
-      }
-      this.load();
-    },
-    async addKey() {
+    async addTextRely() {
       if (!this.setKey) {
         this.$message({
           message: "关键字不能为空",
@@ -169,9 +120,9 @@ export default {
         return;
       }
       let res = await this.$axios.post(
-        "/key",
+        "/key/text",
         {
-          KeyWord: this.setKey,
+          key: this.setKey,
           content: this.setContent
         },
         {
@@ -191,10 +142,15 @@ export default {
       }
       this.load();
     },
-    async deleteKey() {
-      let res = await this.$axios.delete("/key?_id=" + this.deleteTarget, {
-        headers: { token: this.token }
-      });
+    async deleteTextRely(_id) {
+      console.log('/key?id='+_id)
+      let res = await this.$axios.delete(
+        '/key?id='+_id,
+        {
+          headers: { token: this.token }
+        }
+      );
+      console.log(res.data)
       if (res.data.success) {
         this.$message({
           message: "删除成功",
@@ -206,16 +162,16 @@ export default {
           type: "error"
         });
       }
-      this.dialogVisible = false;
       this.load();
     },
     async load() {
       let res = await this.$axios.get("/key", {
         headers: { token: this.token }
       });
-      res = res.data.result;
-      this.firstReply = res['首次关注'] ? res['首次关注']:'';
-      this.keyRecord = res.record;
+      this.keyText = res.data.result.text
+      console.log(this.keyText)
+      this.keyNews = res.data.result.news
+      console.log(this.keyNews)
     },
     async openDialog(_id){
       this.dialogVisible = true;

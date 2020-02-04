@@ -105,6 +105,7 @@ class wechatKey extends Controller {
     // 鉴权
     const { ctx } = this;
     const { type, id } = ctx.query;
+    console.log({ type, id });
     if (!ctx.userInfo.isAdmin) {
       ctx.permissionError('无权操作');
     }
