@@ -27,7 +27,7 @@
         <el-table :data="keyText" style="width: 100%">
           <el-table-column prop="key" label="关键字" width="90"></el-table-column>
           <el-table-column prop="content" label="回复内容"></el-table-column>
-          <el-table-column label="操作" width="60">
+          <el-table-column label="操作" width="50">
             <template slot-scope="scope">
               <el-button @click="deleteTextRely(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
@@ -64,9 +64,10 @@
       </div>
       <div class="content">
         <el-table :data="keyNews" style="width: 100%">
-          <el-table-column prop="key" label="关键字"></el-table-column>
+          <el-table-column prop="key" label="关键字" width="90"></el-table-column>
           <el-table-column prop="title" label="标题"></el-table-column>
-          <el-table-column label="操作" width="60">
+          <el-table-column prop="description" label="描述"></el-table-column>
+          <el-table-column label="操作" width="50">
             <template slot-scope="scope">
               <el-button @click="deleteNewsRely(scope.row._id)" type="text" size="small">删除</el-button>
             </template>
@@ -248,8 +249,28 @@ export default {
       let res = await this.$axios.get("/key", {
         headers: { token: this.token }
       });
-      this.keyText = res.data.result.text
-      this.keyNews = res.data.result.news
+      this.keyText = res.data.result.text.map( k => {
+        if (k.content.length > 13) {
+          k.content = k.content.slice(0,13) + '...'
+        }
+        if (k.key.length > 4) {
+          k.key = k.key.slice(0,4) + '...'
+        }
+        return k
+      })
+      this.keyNews = res.data.result.news.map( k => {
+     
+        if (k.key.length > 4) {
+          k.key = k.key.slice(0,4) + '...'
+        }
+        if (k.title.length> 5) {
+          k.title = k.title.slice(0,5) + '...'
+        }
+        if (k.description.length> 5) {
+          k.description = k.description.slice(0,5) + '...'
+        }
+        return k
+      })
     },
     async openDialog(_id){
       this.dialogVisible = true;

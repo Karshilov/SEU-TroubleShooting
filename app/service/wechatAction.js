@@ -13,7 +13,6 @@ class keywordsService extends Service {
       // 注销: this.logOut,
       // 微信签到功能
       签到: this.checkIn,
-      我中奖了: this.prize,
     };
     const dispatchClickEvent = {
       故障申报: 'post',
@@ -74,8 +73,6 @@ class keywordsService extends Service {
                       </item>
                     </Articles>
                    </xml>`;
-        console.log(`https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}`);
-        console.log(`${newsRelyRecord.url}`);
         return;
       }
       ctx.body = 'success';
@@ -84,43 +81,37 @@ class keywordsService extends Service {
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'subscribe') {
       // 关注时推送
       ctx.status = 200;
-      // const keyRecord = await ctx.model.KeyWords.find({});
-      // let content = '';
-      // keyRecord.forEach(item => {
-      //   if (item.key === '首次关注') {
-      //     content = item.content;
-      //   }
-      // });
-      // if (content) {
-      //   // console.log(content);
-      //   ctx.body = `<xml>
-      //                     <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-      //                     <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-      //                     <CreateTime>${+moment()}</CreateTime>
-      //                     <MsgType><![CDATA[text]]></MsgType>
-      //                     <Content><![CDATA[${content}]]></Content>
-      //                 </xml>`;
-      // } else {
-      //   ctx.body = 'success';
-      // }
-
-      ctx.body = `<xml>
-                          <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-                          <CreateTime>${+moment()}</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[[爱心]终于等到你[爱心]
-我们是东南大学网络与信息中心，致力于为全校师生提供更好、更全、更强的信息化服务。
-感谢你的关注，下方菜单栏里有更多功能等你探索[机智][机智][机智]
-                          
-[拳头]抗“疫”特殊时期，不在前线，却守一线，不在战场，仍稳后方。
-【疫情上报】：请点击下方“自助服务”——“疫情上报”
-【Skype云会议】：请点击下方“自助服务”——“Skype云会议”
-💪任何服务出现问题，均可通过网络报修平台快速线上报障～
-【网络报修】：请点击下方“网络报修”
-                          
-共同抗“疫”,中国加油！！！]]></Content>
-                      </xml>`;
+      const textRelyRecord = await ctx.model.KeyWordsText.findOne({ key: '首次关注' });
+      if (textRelyRecord) {
+        ctx.body = `<xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[${textRelyRecord.content}]]></Content>
+                </xml>`;
+        return;
+      }
+      const newsRelyRecord = await ctx.model.KeyWordsNews.findOne({ key: '首次关注' });
+      if (newsRelyRecord) {
+        const accessToken = await ctx.service.getAccessToken.accessToken();
+        ctx.body = `<xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[news]]></MsgType>
+                    <ArticleCount>1</ArticleCount>
+                    <Articles>
+                      <item>
+                        <Title><![CDATA[${newsRelyRecord.title}]]></Title>
+                        <Description><![CDATA[${newsRelyRecord.description}]]></Description>
+                        <PicUrl><![CDATA[https://api.weixin.qq.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${newsRelyRecord.picUrl}]]></PicUrl>
+                        <Url><![CDATA[${newsRelyRecord.url}]]></Url>
+                      </item>
+                    </Articles>
+                   </xml>`;
+      }
+      ctx.body = 'success';
     } else {
       ctx.body = 'success';
     }
@@ -189,10 +180,6 @@ class keywordsService extends Service {
 
   async checkIn() {
     return '<a href="https://seicwxbz.seu.edu.cn/checkin">点击进入快捷签到</a>';
-  }
-
-  async prize() {
-    return '<a href="https://www.wjx.cn/jq/54509382.aspx">点击进入领奖登记</a>';
   }
 
   // 注销功能会对原有的数据造成破坏
