@@ -37,6 +37,7 @@
     </div>
     <div style="margin-top:40px;">
       <div class="subtitle">设置「图文」类型「关键字」</div>
+      <div class="title-hint">上传图片较好的效果为大图360*200，小图200*200</div>
       <div class="content">
         <el-form label-width="70px">
           <el-form-item label="关键字">
@@ -295,5 +296,9 @@ export default {
 <style>
 #type-view {
   margin-top: 30px;
+}
+img {
+  width: 100%;
+  border-radius: 8px;
 }
 </style>
