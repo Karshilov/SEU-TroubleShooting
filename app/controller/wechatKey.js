@@ -114,7 +114,7 @@ class wechatKey extends Controller {
       if (!keyRecord) {
         ctx.error(1, '未设置该关键字');
       }
-      await ctx.model.KeyWordsText.deleteOne({ id });
+      await ctx.model.KeyWordsText.deleteOne({ _id: id });
       return '删除成功';
     }
     if (type === 'news') {
@@ -122,7 +122,7 @@ class wechatKey extends Controller {
       if (!keyRecord) {
         ctx.error(1, '未设置该关键字');
       }
-      await ctx.model.KeyWordsNews.deleteOne({ id });
+      await ctx.model.KeyWordsNews.deleteOne({ _id: id });
       return '删除成功';
     }
   }

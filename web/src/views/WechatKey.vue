@@ -143,9 +143,8 @@ export default {
       this.load();
     },
     async deleteTextRely(_id) {
-      console.log('/key?id='+_id)
       let res = await this.$axios.delete(
-        '/key?id='+_id,
+        '/key?type=text&id='+_id,
         {
           headers: { token: this.token }
         }
