@@ -7,12 +7,20 @@ const axios = require('axios');
 
 
 class casWeCanController extends Controller {
-  async index() {
+  async login() {
+    const { ctx } = this;
+    const { state } = ctx.request.query;
+    const service = 'https://seicwxbz.seu.edu.cn/api/cas-we-can/callback';
+    const casWeCanUrl = `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=${state}`)}`;
+    ctx.logger.debug('重定向：%s', casWeCanUrl);
+    ctx.redirect(casWeCanUrl);
+  }
 
+  async callback() {
     const { ctx } = this;
     const { ticket } = ctx.request.query;
     let state = ctx.request.query.state;
-    const service = 'https://seicwxbz.seu.edu.cn/api/cas-we-can';
+    const service = 'https://seicwxbz.seu.edu.cn/api/cas-we-can/callback';
     // 从 CAS-We-Can 获取用户信息
     let casWeRes;
     try {
