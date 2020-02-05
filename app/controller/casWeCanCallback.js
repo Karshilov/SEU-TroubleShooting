@@ -33,7 +33,7 @@ class casWeCanController extends Controller {
       ctx.redirect(retryUrl);
     }
     casWeRes = casWeRes.data;
-
+    console.log(casWeRes);
     let person = await ctx.model.User.findOne({ openid: casWeRes.openid });
     if (!person) {
       person = new ctx.model.User({
