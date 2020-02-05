@@ -24,7 +24,7 @@ class casWeCanController extends Controller {
     // 从 CAS-We-Can 获取用户信息
     let casWeRes;
     try {
-      casWeRes = await axios.get(`https://seicwxbz.seu.edu.cn/cas-we-can/serviceValidate?ticket=${ticket}&service=${service}`);
+      casWeRes = await axios.get(`https://seicwxbz.seu.edu.cn/cas-we-can/serviceValidate?ticket=${ticket}&service=${service}&json=1`);
     } catch (e) {
       // 如果出现错误则发起重试
       const retryUrl = `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=${state}`)}`;
