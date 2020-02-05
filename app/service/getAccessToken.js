@@ -8,25 +8,26 @@ const sha1 = require('sha1');
 
 class accessTokenService extends Service {
   async accessToken() {
-    const nowTime = moment().unix(); // 当前时间
-    const res = await this.ctx.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } }, [ 'accessToken' ], { sort: { stopTime: -1 }, limit: 1 });
-    if (res.length) {
-      this.ctx.logger.info('使用缓存的微信 access_token');
-      return res[0].accessToken;
-    }
-    this.ctx.logger.info('重新请求access_token');
-    const url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.config.wechat.appID}&secret=${this.config.wechat.appsecret}`;
+    // const nowTime = moment().unix(); // 当前时间
+    // const res = await this.ctx.model.Token.find({ startTime: { $lt: nowTime }, stopTime: { $gt: nowTime } }, [ 'accessToken' ], { sort: { stopTime: -1 }, limit: 1 });
+    // if (res.length) {
+    //   this.ctx.logger.info('使用缓存的微信 access_token');
+    //   return res[0].accessToken;
+    // }
+    // const url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.config.wechat.appID}&secret=${this.config.wechat.appsecret}`;
+    const url = `https://seicwxbz.seu.edu.cn/cas-we-can/access-token?grant_type=client_credential&appid=${this.config.wechat.casWeAppID}&secret=${this.config.wechat.casWeAppSecret}`;
     const result = await this.ctx.curl(url, {
       dataType: 'json',
     });
-    const now = moment().unix();
-    const newToken = this.ctx.model.Token({
-      accessToken: result.data.access_token,
-      expiresIn: result.data.expires_in,
-      startTime: now,
-      stopTime: now + result.data.expires_in,
-    });
-    await newToken.save();
+    // const now = moment().unix();
+    // const newToken = this.ctx.model.Token({
+    //   accessToken: result.data.access_token,
+    //   expiresIn: result.data.expires_in,
+    //   startTime: now,
+    //   stopTime: now + result.data.expires_in,
+    // });
+    // await newToken.save();
+    this.ctx.logger.info('请求 access_token:', result.data.access_token);
     return result.data.access_token;
 
   }

@@ -47,6 +47,8 @@ module.exports = appInfo => {
       token: configYaml.token,
       userTemplateId: configYaml.userTemplateId,
       staffTemplateId: configYaml.staffTemplateId,
+      casWeAppID: configYaml.casWeAppID,
+      casWeAppSecret: configYaml.casWeAppSecret,
     },
     redirectURL: configYaml.redirectURL,
     serverURL: configYaml.serverURL,

@@ -17,6 +17,8 @@ appsecret : '1234566789'
 token : 'zzj'
 userTemplateId: 'YDpJMjuLpl5cO1YjccV785H-ZfILsxGncIB-aqNhXk0'
 staffTemplateId: 'Ch_O3_EmPPyxrKee0FHCXCJIGEa6fgXecNgddyvJav8'
+casWeAppID: 'xxx'
+casWeAppSecret: 'yyy'
 
 #ids小程序签名
 idsSecret: 'xxxxxx'
