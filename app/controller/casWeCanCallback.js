@@ -31,6 +31,7 @@ class casWeCanController extends Controller {
       ctx.logger.error(e);
       ctx.logger.debug('访问 casWeCan 服务出现错误，发起重试，重定向：%s', retryUrl);
       ctx.redirect(retryUrl);
+      return;
     }
     casWeRes = casWeRes.data;
     console.log(casWeRes);
