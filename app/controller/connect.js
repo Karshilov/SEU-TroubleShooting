@@ -79,9 +79,7 @@ class wiseduController extends Controller {
       ctx.error(2, '签名校验未通过');
     }
     const wechatAccessToken = await this.service.getAccessToken.accessToken();
-    return {
-      wechatAccessToken,
-    };
+    return wechatAccessToken;
   }
 
   async submit() {
