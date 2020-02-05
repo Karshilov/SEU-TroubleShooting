@@ -148,15 +148,18 @@ class WechatMenuController extends Controller {
     const access_token = await ctx.service.getAccessToken.accessToken();
 
     // 替换链接并且分类
+    const service = 'https://seicwxbz.seu.edu.cn/api/cas-we-can/callback';
     menuRecord.forEach(k => {
       if (k.title === '故障申报' && k.level === 2) {
-        let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect';
-        url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID);
+        // let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=post#wechat_redirect';
+        // url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID);
+        const url = `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=post`)}`;
         k.url = url;
       }
       if (k.title === '处理进度' && k.level === 2) {
-        let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect';
-        url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID);
+        // let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=<APPID>&redirect_uri=<SERVER_URL>wechatOauth&response_type=code&scope=snsapi_base&state=list_USER#wechat_redirect';
+        // url = url.replace(/<SERVER_URL>/g, ctx.app.config.serverURL).replace(/<APPID>/g, ctx.app.config.wechat.appID);
+        const url = `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=list_USER`)}`;
         k.url = url;
       }
       if (k.position === 'LEFT') {

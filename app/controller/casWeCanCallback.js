@@ -28,13 +28,11 @@ class casWeCanController extends Controller {
     } catch (e) {
       // 如果出现错误则发起重试
       const retryUrl = `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=${state}`)}`;
-      ctx.logger.error(e);
       ctx.logger.debug('访问 casWeCan 服务出现错误，发起重试，重定向：%s', retryUrl);
       ctx.redirect(retryUrl);
       return;
     }
     casWeRes = casWeRes.data;
-    console.log(casWeRes);
     let person = await ctx.model.User.findOne({ openid: casWeRes.openid });
     if (!person) {
       person = new ctx.model.User({

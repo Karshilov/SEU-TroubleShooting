@@ -7,7 +7,10 @@ module.exports = {
     return arr[Math.floor((Math.random() * arr.length))];
   },
   oauthUrl(ctx, after, afterArgs) {
-    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${after}${afterArgs ? '_' + afterArgs : ''}#wechat_redirect`;
+    const service = 'https://seicwxbz.seu.edu.cn/api/cas-we-can/callback';
+    const state = `${after}${afterArgs ? '_' + afterArgs : ''}`;
+    return `https://seicwxbz.seu.edu.cn/cas-we-can/login?goto=${encodeURIComponent(`${service}?state=${state}`)}`;
+    // return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${ctx.app.config.wechat.appID}&redirect_uri=${ctx.app.config.serverURL}wechatOauth&response_type=code&scope=snsapi_base&state=${after}${afterArgs ? '_' + afterArgs : ''}#wechat_redirect`;
   },
   timeDifference(before, now) {
     const hour = 60 * 60 * 1000;
