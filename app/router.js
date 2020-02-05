@@ -13,6 +13,7 @@ module.exports = app => {
   router.post('/wechat', interceptorXML2json, checkSignature, controller.wechat.post);
 
   router.get('/wechatOauth', controller.wechatOAuth.index);
+  router.get('/cas-we-can', controller.casWeCanCallback.index);
 
   router.post('/user/bind', controller.user.bind);
   router.delete('/user/bind', controller.user.unbind);

@@ -2,7 +2,9 @@
 
 module.exports = () => {
   return async function responseFormatter(ctx, next) {
-    if (ctx.request.url.indexOf('wechat') !== -1 || ctx.request.url.indexOf('ids') !== -1) {
+    if (ctx.request.url.indexOf('wechat') !== -1 ||
+    ctx.request.url.indexOf('ids') !== -1 ||
+    ctx.request.url.indexOf('cas-we-can') !== -1) {
       await next();
     } else if (ctx.request.url.indexOf('callback') !== -1) {
       try {
