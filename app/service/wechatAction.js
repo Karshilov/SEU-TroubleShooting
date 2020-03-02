@@ -44,6 +44,7 @@ class keywordsService extends Service {
       // 响应非功能性关键字
       ctx.status = 200;
       // 首先查找文本关键字
+      console.log(keyword);
       const textRelyRecord = await ctx.model.KeyWordsText.findOne({ key: keyword });
       if (textRelyRecord) {
         ctx.body = `<xml>
