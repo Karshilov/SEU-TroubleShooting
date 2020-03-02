@@ -79,15 +79,16 @@ class keywordsService extends Service {
       if (keyword === '日历' || keyword === '校历' || keyword === '日曆' || keyword === '校曆') {
         console.log('ha');
         ctx.body = `<xml>
-        <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
-        <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
-        <CreateTime>${+moment()}</CreateTime>
-        <MsgType><![CDATA[image]]></MsgType>
-        <Image>
-          <MediaId><![CDATA[MpxiOBB4-Bh7KIR7epOswOi4pwiT4XfsWEE8Ed-cLgY]]></MediaId>
-        </Image>
-      </xml>
+                    <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
+                    <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
+                    <CreateTime>${+moment()}</CreateTime>
+                    <MsgType><![CDATA[image]]></MsgType>
+                    <Image>
+                      <MediaId><![CDATA[MpxiOBB4-Bh7KIR7epOswOi4pwiT4XfsWEE8Ed-cLgY]]></MediaId>
+                    </Image>
+                    </xml>
       `;
+        return;
       }
       ctx.body = 'success';
     } else if (ctx.request.body.MsgType === 'event' && ctx.request.body.Event === 'CLICK' && dispatchClickEvent[ctx.request.body.EventKey]) {
