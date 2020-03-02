@@ -76,6 +76,7 @@ class keywordsService extends Service {
         return;
       }
       if (keyword === '日历' || keyword === '校历' || keyword === '日曆' || keyword === '校曆') {
+        console.log('ha');
         ctx.body = `<xml>
         <ToUserName><![CDATA[${ctx.request.body.FromUserName}]]></ToUserName>
         <FromUserName><![CDATA[${ctx.request.body.ToUserName}]]></FromUserName>
