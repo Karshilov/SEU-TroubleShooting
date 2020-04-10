@@ -33,6 +33,7 @@ class WiseduService extends Service {
       this.ctx.logger.info('获取到东大服务台 token: %j', result.data);
       result = result.data;
       now = +moment();
+      console.log('result' + result);
       const newToken = new this.ctx.model.WiseduToken({
         token: result.data.apiToken,
         expiresTime: now + (result.data.expiresIn - 200) * 1000,
