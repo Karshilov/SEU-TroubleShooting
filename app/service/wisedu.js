@@ -27,17 +27,23 @@ class WiseduService extends Service {
     }
     await this.ctx.model.WiseduToken.deleteMany({});
     this.ctx.logger.info('重新请求wisedu_access_token');
-    const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
-    let result = await axios.get(url);
-    this.ctx.logger.info('获取到东大服务台 token: %j', result.data);
-    result = result.data;
-    now = +moment();
-    const newToken = new this.ctx.model.WiseduToken({
-      token: result.data.apiToken,
-      expiresTime: now + (result.data.expiresIn - 200) * 1000,
-    });
-    await newToken.save();
-    return result.data.apiToken;
+    try {
+      const url = `https://coca.wisedu.com/common-app/token?apiKey=${this.config.wiseduApiKey}&secret=${this.config.wiseduSecret}`;
+      let result = await axios.get(url);
+      this.ctx.logger.info('获取到东大服务台 token: %j', result.data);
+      result = result.data;
+      now = +moment();
+      const newToken = new this.ctx.model.WiseduToken({
+        token: result.data.apiToken,
+        expiresTime: now + (result.data.expiresIn - 200) * 1000,
+      });
+      await newToken.save();
+      return result.data.apiToken;
+    } catch (e) {
+      this.ctx.logger.error('获取东大服务台token出错，错误原因：%s', e);
+      return 'fake_token';
+    }
+
   }
 
   async submit(mongoId, desc, typeName, userName, userCardnum, createdTime, imageUrl = null, phonenum, address, staffCardnum, staffName) {
