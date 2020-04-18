@@ -620,6 +620,8 @@ class TroubleController extends Controller {
       ctx.identityError('非用户本人，禁止操作');
     }
     await ctx.model.Trouble.deleteOne({ _id: troubleId });
+    // 向东大服务台推送删除信息
+    await ctx.service.wisedu.delete(troubleId, trouble.userCardnum, trouble.userName, trouble.desc);
     ctx.logger.info(`用户 ${ctx.userInfo.name}(${ctx.userInfo.cardnum}) 取消了故障 ${troubleId} 的处理请求`);
     return '删除成功';
   }

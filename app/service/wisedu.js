@@ -374,6 +374,47 @@ class WiseduService extends Service {
       attempt++;
     }
   }
+  async delete(mongoId, userCardnum, userName, content) {
+    // 故障删除
+    this.ctx.logger.info('向东大服务台推送故障删除，故障单号：%s', mongoId);
+    const record = await this.ctx.model.Trouble.findById(mongoId);
+    const wiseduToken = await this.getToken();
+    if (!record) {
+      return;
+    }
+    const url = this.config.wiseduServer + 'delete';
+    let attempt = 0;
+    while (attempt < 3) {
+      try {
+        const res = await axios.post(url, qs.stringify({
+          id: '' + mongoId,
+          creatorName: userName,
+          creatorCode: userCardnum,
+          creatorType: userCardnum[0],
+          content,
+          thirdParty: '3',
+        }), {
+          headers: { 'x-api-token': wiseduToken, 'content-type': 'application/x-www-form-urlencoded' },
+        });
+        console.log({
+          id: '' + mongoId,
+          creatorName: userName,
+          creatorCode: userCardnum,
+          creatorType: userCardnum[0],
+          content,
+          thirdParty: '3',
+        });
+        if (res.data.state === 'success') {
+          break;
+        } else {
+          this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, res.data.msg);
+        }
+      } catch (e) {
+        this.ctx.logger.error('向东大服务台推送出现错误（故障单号：%s），重试，错误原因：%s', mongoId, e);
+      }
+      attempt++;
+    }
+  }
 }
 
 module.exports = WiseduService;
