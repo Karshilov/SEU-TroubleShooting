@@ -6,6 +6,7 @@ class JsSdkTicketController extends Controller {
   async index() {
     const { ctx } = this;
     let extraUrl = ctx.query.extraUrl;
+    console.log(extraUrl);
     extraUrl = extraUrl ? decodeURIComponent(extraUrl) : null;
     return {
       debug: false,
