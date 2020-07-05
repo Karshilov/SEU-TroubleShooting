@@ -7,7 +7,7 @@ class PushPending extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '15m', // 15 分钟间隔
+      interval: '12m', // 12 分钟间隔
       type: 'worker', // 随机选取单一work执行
     };
   }
@@ -18,7 +18,7 @@ class PushPending extends Subscription {
     const now = +moment();
     let record = await ctx.model.Trouble.find({
       // status: "PENDING", createdTime: { $lt: now - 15 * 60 * 1000 }
-      status: 'WAITING', createdTime: { $lt: now - 15 * 60 * 1000 }, // 15 * 60 * 1000
+      status: 'WAITING', createdTime: { $lt: now - 12 * 60 * 1000 }, // 12 * 60 * 1000
     }
     );
     record.forEach(async Element => {
@@ -33,10 +33,10 @@ class PushPending extends Subscription {
         '故障描述信息：' + Element.desc,
         this.ctx.helper.oauthUrl(ctx, 'detail', Element._id) // url - 故障详情页面
       );
-    }); // 向15分钟仍未处理完成的故障的负责工作人员发出信息
+    }); // 向12分钟仍未处理完成的故障的负责工作人员发出信息
 
     record = await ctx.model.Trouble.find({
-      status: 'WAITING', createdTime: { $lt: now - 30 * 60 * 1000 }, // 30 * 60 * 1000
+      status: 'WAITING', createdTime: { $lt: now - 12 * 60 * 1000 }, // 12 * 60 * 1000
     }
     );
     const adminList = await ctx.model.User.find({

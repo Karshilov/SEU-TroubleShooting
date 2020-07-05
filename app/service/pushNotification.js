@@ -57,13 +57,13 @@ class pushNotification extends Service {
   async staffNotification(cardnum, title, code, type, desc, phonenum, createdTime, remark, url) {
     const access_token = await this.service.getAccessToken.accessToken();
     const user = await this.ctx.model.User.findOne({ cardnum });
-    const nowHour = moment().hour();
+    const nowHour = moment().hour() + moment().minute() / 60;
     const nowDay = moment().day();
     if (!user) {
       return;
     }
-    if (nowHour > 18 || nowHour < 8 || nowDay === 6 || nowDay === 0) {
-      // 晚上7点到第二天7点以及周六日不推送故障报修通知,
+    if (nowHour > 18.5 || nowHour < 8 || nowDay === 6 || nowDay === 0) {
+      // 晚上6点半到第二天8点以及周六日不推送故障报修通知,
       this.ctx.logger.info('非工作时间，暂不推送故障报修通知');
       return;
     }
