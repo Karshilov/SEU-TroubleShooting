@@ -6,6 +6,10 @@
       请您准确详实的反馈遇到的问题，我们的运维人员将在工作时间集中受理您反馈的问题，会尽其所能为您提供帮助。
      （周一至周五 九龙湖：8:30-12:00 13:30-17:00，四牌楼、丁家桥：8:00-12:00 14:00-18:00）
     </div>
+    <div class="title-hint">
+      宿舍区WiFi问题，请参考推送文章:
+      <a href="https://mp.weixin.qq.com/s/I1MKxVVX050VYTYe3_lDoQ">宿舍区电脑搜不到WiFi 6无线信号?教你两招</a>
+    </div>
     <div style="margin-top: 30px;margin-right: 20px;margin-left: 10px;">
       <el-form :model="form" label-width="80px" v-loading="loading">
         <el-form-item label="故障类型">

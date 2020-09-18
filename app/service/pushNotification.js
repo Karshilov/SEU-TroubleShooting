@@ -62,8 +62,9 @@ class pushNotification extends Service {
     if (!user) {
       return;
     }
-    if (nowHour > 18.5 || nowHour < 8 || nowDay === 6 || nowDay === 0) {
-      // 晚上6点半到第二天8点以及周六日不推送故障报修通知,
+    if (nowHour > 18.5 || nowHour < 8) {
+    // if (nowHour > 18.5 || nowHour < 8 || nowDay === 6 || nowDay === 0) {
+      // 晚上6点半到第二天8点不推送故障报修通知,
       this.ctx.logger.info('非工作时间，暂不推送故障报修通知');
       return;
     }
