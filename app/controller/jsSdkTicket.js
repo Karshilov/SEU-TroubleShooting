@@ -13,7 +13,7 @@ class JsSdkTicketController extends Controller {
       appId: ctx.app.config.wechat.appID,
       jsApiList: [ 'chooseImage', 'previewImage', 'uploadImage', 'downloadImage',
         'hideAllNonBaseMenuItem', 'hideOptionMenu',
-        'startRecord', 'stopRecord', 'openLocation', 'getLocation' ],
+        'startRecord', 'stopRecord', 'openLocation', 'getLocation', 'scanQRCode' ],
     };
   }
 
