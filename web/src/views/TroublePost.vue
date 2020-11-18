@@ -7,8 +7,8 @@
      （周一至周五 九龙湖：8:30-12:00 13:30-17:00，四牌楼、丁家桥：8:00-12:00 14:00-18:00）
     </div>
     <div class="title-hint">
-      宿舍区WiFi问题，请参考推送文章:
-      <a href="https://mp.weixin.qq.com/s/I1MKxVVX050VYTYe3_lDoQ">宿舍区电脑搜不到WiFi 6无线信号?教你两招</a>
+      您可先浏览以下常见问题：
+      <a href="https://nic.seu.edu.cn/info/1067/1408.htm">常见报障问题与解决方法（FAQ）</a>
     </div>
     <div style="margin-top: 30px;margin-right: 20px;margin-left: 10px;">
       <el-form :model="form" label-width="80px" v-loading="loading">
